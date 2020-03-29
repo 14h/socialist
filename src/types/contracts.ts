@@ -1,7 +1,7 @@
 export type ReplyTextOption = {
     type: 'text',
     name: string,
-    title: string,
+    title: TranslationRef,
 };
 
 export type ReplyImageOption = {
@@ -16,6 +16,7 @@ export type ReplyOption =
 export type QuestionMulti = {
     type: 'multi',
     name: string,
+    description: TranslationRef,
     options: ReplyOption[],
     randomize?: boolean,
     maxOptions?: number,
@@ -24,14 +25,14 @@ export type QuestionMulti = {
 export type QuestionFreeformText = {
     type: 'freeform-text',
     name: string,
-    title: string,
+    description: TranslationRef,
     maxCharacters?: number,
 };
 
 export type QuestionFreeformDate = {
     type: 'freeform-date',
     name: string,
-    title: string,
+    description: TranslationRef,
     notBefore?: number,
     notAfter?: number,
 };
@@ -39,7 +40,7 @@ export type QuestionFreeformDate = {
 export type QuestionFreeformNumber = {
     type: 'freeform-number',
     name: string,
-    title: string,
+    description: TranslationRef,
 };
 
 export type QuestionFreeform =
@@ -59,6 +60,13 @@ export type SectionCondition =
 
 export type Section = {
     name: string,
+    description: TranslationRef,
+    questions: (QuestionFreeform | QuestionMulti)[],
     condition?: SectionCondition[],
-    questions: QuestionFreeform | QuestionMulti,
+};
+
+export type Survey = Section[];
+
+export type TranslationRef = {
+    id: string,
 };
