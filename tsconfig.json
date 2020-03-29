@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // "baseUrl": ".",
+    "outDir": "./dist",
+    "module": "commonjs",
+    "target": "es2018",
+    "lib": [
+      "es6",
+      "es7",
+      "esnext"
+    ],
+    "allowJs": false,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "noUnusedLocals": true,
+    "strict": true
+  },
+  "include": [
+    "src/*.ts"
+  ],
+  "exclude": [
+    "node_modules/",
+    "node_modules/apollo-server-express/dist/ApolloServer.d.ts",
+    "node_modules/@types/express/index.d.ts",
+    "node_modules/@types/cors/index.d.ts"
+  ]
+}
