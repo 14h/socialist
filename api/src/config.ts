@@ -1,9 +1,3 @@
-/*
- * DO NOT IMPORT ANY OTHER FILE HERE.
- * IT WILL BREAK APM AND YOU WILL NOT
- * NOTICE IT.
- */
-
 export type Config = {
     env: 'prod' | 'stage' | 'dev',
 };
