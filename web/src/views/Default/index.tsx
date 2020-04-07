@@ -3,11 +3,16 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { useStyles } from '../styles';
 import { CoreCtx } from '../../utils/store';
+import { Redirect } from "react-router-dom";
 
 export const DefaultView = () => {
     const classes = useStyles();
 
     const [user,] = useContext(CoreCtx).user;
+
+    if (!user) {
+        return <Redirect to='/login' />
+    }
 
     return (
         <div>

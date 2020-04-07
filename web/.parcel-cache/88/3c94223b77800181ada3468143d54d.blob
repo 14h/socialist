@@ -1,0 +1,214 @@
+"use strict";
+
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.Root = void 0;
+
+  var _react = _interopRequireWildcard(require("react"));
+
+  var _AppBar = _interopRequireDefault(require("@material-ui/core/AppBar"));
+
+  var _Toolbar = _interopRequireDefault(require("@material-ui/core/Toolbar"));
+
+  var _Typography = _interopRequireDefault(require("@material-ui/core/Typography"));
+
+  var _IconButton = _interopRequireDefault(require("@material-ui/core/IconButton"));
+
+  var _CssBaseline = _interopRequireDefault(require("@material-ui/core/CssBaseline"));
+
+  var _Container = _interopRequireDefault(require("@material-ui/core/Container"));
+
+  var _MenuItem = _interopRequireDefault(require("@material-ui/core/MenuItem"));
+
+  var _Menu = _interopRequireDefault(require("@material-ui/core/Menu"));
+
+  var _Tooltip = _interopRequireDefault(require("@material-ui/core/Tooltip"));
+
+  var _Grid = _interopRequireDefault(require("@material-ui/core/Grid"));
+
+  var _Card = _interopRequireDefault(require("@material-ui/core/Card"));
+
+  var _CardActionArea = _interopRequireDefault(require("@material-ui/core/CardActionArea"));
+
+  var _CardContent = _interopRequireDefault(require("@material-ui/core/CardContent"));
+
+  var _AccountCircle = _interopRequireDefault(require("@material-ui/icons/AccountCircle"));
+
+  var _VerifiedUser = _interopRequireDefault(require("@material-ui/icons/VerifiedUser"));
+
+  var _ExitToApp = _interopRequireDefault(require("@material-ui/icons/ExitToApp"));
+
+  var _SpeakerNotes = _interopRequireDefault(require("@material-ui/icons/SpeakerNotes"));
+
+  var _PeopleAlt = _interopRequireDefault(require("@material-ui/icons/PeopleAlt"));
+
+  var _Language = _interopRequireDefault(require("@material-ui/icons/Language"));
+
+  var _styles = require("../styles");
+
+  require("./styles.css");
+
+  var _store = require("../../utils/store");
+
+  var _s = $RefreshSig$();
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+  const sections = [{
+    name: 'Surveys',
+    icon: _react.default.createElement(_SpeakerNotes.default, null),
+    id: 'yolo'
+  }, {
+    name: 'Translations',
+    icon: _react.default.createElement(_Language.default, null),
+    id: 'yolo2'
+  }, {
+    name: 'People',
+    icon: _react.default.createElement(_PeopleAlt.default, null),
+    id: 'yolo3'
+  }];
+
+  const Root = ({
+    children
+  }) => {
+    _s();
+
+    const userScopedAdmin = false;
+    const classes = (0, _styles.useStyles)();
+    const [open, setOpen] = (0, _react.useState)(false);
+    const [selectedSection, setSelectedSection] = (0, _react.useState)(null);
+    const anchorRef = (0, _react.useRef)(null);
+    const [user] = (0, _react.useContext)(_store.CoreCtx).user;
+
+    if (user === null) {
+      return _react.default.createElement(_react.default.Fragment, null, " ", children, " ");
+    }
+
+    const handleOpen = () => setOpen(true);
+
+    const handleClose = () => setOpen(false);
+
+    return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_CssBaseline.default, null), _react.default.createElement(_AppBar.default, {
+      position: "static"
+    }, _react.default.createElement(_Toolbar.default, {
+      className: "AppBar"
+    }, _react.default.createElement(_Typography.default, {
+      variant: "h6",
+      className: classes.navbarTitle,
+      onClick: () => setSelectedSection(-1)
+    }, _react.default.createElement("div", null, _react.default.createElement("img", {
+      src: "https://www.globaldrugsurvey.com/wp-content/themes/globaldrugsurvey/assets/img/logomark.svg",
+      style: {
+        filter: 'grayscale(1)',
+        width: '50px',
+        margin: '-15px 15px'
+      },
+      className: "stylaLogoNavBar"
+    }))), _react.default.createElement(_Grid.default, {
+      container: true,
+      justify: "center",
+      wrap: "wrap"
+    }, sections.map((section, index) => _react.default.createElement(_Grid.default, {
+      key: index,
+      item: true,
+      xs: 2,
+      style: {
+        opacity: selectedSection === index ? 1 : 0.5,
+        minWidth: '120px'
+      },
+      onClick: () => setSelectedSection(index)
+    }, _react.default.createElement("div", null, _react.default.createElement(_Card.default, {
+      style: {
+        backgroundColor: '#000',
+        color: '#FFF'
+      }
+    }, _react.default.createElement(_CardActionArea.default, null, _react.default.createElement(_CardContent.default, null, _react.default.createElement(_Typography.default, {
+      gutterBottom: true,
+      align: "center",
+      variant: "h5",
+      component: "h2"
+    }, section.icon), _react.default.createElement(_Typography.default, {
+      align: "center",
+      variant: "body2"
+    }, section.name)))))))), _react.default.createElement("div", null, _react.default.createElement(_IconButton.default, {
+      "aria-label": "Logged User",
+      "aria-controls": "menu-appbar",
+      "aria-haspopup": "true",
+      onClick: handleOpen,
+      ref: anchorRef,
+      className: "accountIcon"
+    }, _react.default.createElement(_AccountCircle.default, null)), _react.default.createElement(_Menu.default, {
+      anchorEl: anchorRef.current,
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'right'
+      },
+      keepMounted: true,
+      transformOrigin: {
+        vertical: 'top',
+        horizontal: 'right'
+      },
+      open: open,
+      onClose: handleClose
+    }, _react.default.createElement("div", null, _react.default.createElement(_MenuItem.default, null, _react.default.createElement(_Typography.default, {
+      variant: "body1",
+      display: "block",
+      gutterBottom: true
+    }, user === null || user === void 0 ? void 0 : user.email), "\xA0", userScopedAdmin && _react.default.createElement(_Typography.default, {
+      variant: "caption",
+      display: "block",
+      gutterBottom: true
+    }, _react.default.createElement(_Tooltip.default, {
+      title: "Global Admin"
+    }, _react.default.createElement(_VerifiedUser.default, {
+      fontSize: "small"
+    }))))), _react.default.createElement(_MenuItem.default, {
+      onClick: () => {}
+    }, _react.default.createElement(_Typography.default, {
+      variant: "overline",
+      display: "block",
+      gutterBottom: true
+    }, _react.default.createElement(_ExitToApp.default, {
+      style: {
+        verticalAlign: 'middle',
+        marginBottom: '2px'
+      },
+      fontSize: "small"
+    }), " LOGOUT")))))), _react.default.createElement(_Grid.default, {
+      container: true,
+      spacing: 0,
+      className: "gridContainer"
+    }, _react.default.createElement(_Container.default, {
+      className: classes.mainContainer,
+      maxWidth: "md"
+    }, children)));
+  };
+
+  exports.Root = Root;
+
+  _s(Root, "nm/oz0hXKogWQWC+JpzdLK/4bUs=", false, function () {
+    return [_styles.useStyles];
+  });
+
+  _c = Root;
+
+  var _c;
+
+  $RefreshReg$(_c, "Root");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

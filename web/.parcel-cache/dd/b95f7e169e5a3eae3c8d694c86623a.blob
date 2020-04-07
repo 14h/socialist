@@ -1,0 +1,97 @@
+"use strict";
+
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.ConfiguredApp = exports.BaseRouter = void 0;
+
+  var _react = _interopRequireDefault(require("react"));
+
+  var _useMediaQuery = _interopRequireDefault(require("@material-ui/core/useMediaQuery"));
+
+  var _createMuiTheme = _interopRequireDefault(require("@material-ui/core/styles/createMuiTheme"));
+
+  var _ThemeProvider = _interopRequireDefault(require("@material-ui/styles/ThemeProvider"));
+
+  var _Root = require("../Root");
+
+  var _store = require("../../utils/store");
+
+  var _reactRouterDom = require("react-router-dom");
+
+  var _Login = require("../Login");
+
+  var _User = require("../User");
+
+  var _Default = require("../Default");
+
+  var _s = $RefreshSig$();
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  const BaseRouter = () => {
+    return _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
+      default: true,
+      path: "/login"
+    }, _react.default.createElement(_Login.Login, null)), _react.default.createElement(_reactRouterDom.Route, {
+      path: "/survey/:action?/:id?"
+    }, _react.default.createElement(_User.UserView, null)), _react.default.createElement(_reactRouterDom.Route, {
+      path: "/"
+    }, _react.default.createElement(_Default.DefaultView, null)), _react.default.createElement(_reactRouterDom.Redirect, {
+      from: "/",
+      to: "/login"
+    }));
+  };
+
+  exports.BaseRouter = BaseRouter;
+  _c = BaseRouter;
+
+  const ConfiguredApp = () => {
+    _s();
+
+    const prefersLightMode = (0, _useMediaQuery.default)('(prefers-color-scheme: light)');
+
+    const theme = _react.default.useMemo(() => (0, _createMuiTheme.default)({
+      palette: {
+        type: prefersLightMode ? 'light' : 'dark',
+        primary: {
+          main: prefersLightMode ? '#FFF' : '#000',
+          dark: '#000',
+          light: '#FFF'
+        },
+        text: {
+          secondary: prefersLightMode ? '#AAA' : '#BBB',
+          hint: prefersLightMode ? '#666' : '#EEE'
+        }
+      }
+    }), [prefersLightMode]);
+
+    return _react.default.createElement(_ThemeProvider.default, {
+      theme: theme
+    }, _react.default.createElement(_store.CoreProvider, null, _react.default.createElement(_reactRouterDom.BrowserRouter, null, _react.default.createElement(_Root.Root, null, _react.default.createElement(BaseRouter, null)))));
+  };
+
+  exports.ConfiguredApp = ConfiguredApp;
+
+  _s(ConfiguredApp, "1tVRSyC0um1xkcLjaTVCOJD710k=", false, function () {
+    return [_useMediaQuery.default];
+  });
+
+  _c2 = ConfiguredApp;
+
+  var _c, _c2;
+
+  $RefreshReg$(_c, "BaseRouter");
+  $RefreshReg$(_c2, "ConfiguredApp");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

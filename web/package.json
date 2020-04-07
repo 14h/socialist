@@ -25,6 +25,7 @@
     "fp-ts": "2.4.4",
     "io-ts": "2.0.6",
     "io-ts-reporters": "1.0.0",
+    "notistack": "^0.9.9",
     "parcel": "^2.0.0-alpha.3.2",
     "react": "16.12.0",
     "react-ace": "8.0.0",

@@ -23,41 +23,43 @@ import PeopleAlt from '@material-ui/icons/PeopleAlt';
 import Language from '@material-ui/icons/Language';
 
 import { useStyles } from '../styles';
-import './styles.css'
+import './styles.css';
 import { CoreCtx } from '../../utils/store';
+import { Login } from '../Login';
 
 type Props = PropsWithChildren<{}>;
 
 const sections = [
     {
         name: 'Surveys',
-        icon: <SpeakerNotes />,
-        id: 'yolo'
+        icon: <SpeakerNotes/>,
+        id: 'yolo',
     },
     {
         name: 'Translations',
-        icon: <Language />,
-        id: 'yolo2'
+        icon: <Language/>,
+        id: 'yolo2',
     },
     {
         name: 'People',
-        icon: <PeopleAlt />,
-        id: 'yolo3'
+        icon: <PeopleAlt/>,
+        id: 'yolo3',
     },
 ];
 
-export const Root = ( { children }: Props ) => {
+export const Root = ({ children }: Props) => {
     const userScopedAdmin = false;
 
     const classes = useStyles();
     const [open, setOpen] = useState<boolean>(false);
-    const [selectedSection, setSelectedSection] = useState<string | null>(null);
+    const [selectedSection, setSelectedSection] = useState<number | null>(null);
+
     const anchorRef = useRef(null);
 
-    const [user,] = useContext(CoreCtx).user;
+    const [user, setUser] = useContext(CoreCtx).user;
 
     if (user === null) {
-        return <> {children} </>;
+        return <Login />;
     }
 
     const handleOpen = () =>
@@ -68,18 +70,18 @@ export const Root = ( { children }: Props ) => {
 
     return (
         <>
-            <CssBaseline />
+            <CssBaseline/>
 
-            <AppBar position='static' >
+            <AppBar position='static'>
                 <Toolbar className='AppBar'>
                     <Typography
                         variant='h6'
                         className={classes.navbarTitle}
-                        onClick={()=>setSelectedSection(-1)}
+                        onClick={() => setSelectedSection(-1)}
                     >
                         <div>
                             <img
-                                src={"https://www.globaldrugsurvey.com/wp-content/themes/globaldrugsurvey/assets/img/logomark.svg"}
+                                src={'https://www.globaldrugsurvey.com/wp-content/themes/globaldrugsurvey/assets/img/logomark.svg'}
                                 style={{
                                     filter: 'grayscale(1)',
                                     width: '50px',
@@ -91,20 +93,23 @@ export const Root = ( { children }: Props ) => {
                     </Typography>
                     <Grid container justify='center' wrap='wrap'>
                         {
-                            sections
-                                .map((section, i) =>
+                            sections.map((
+                                section,
+                                index,
+                            ) =>
                                     <Grid
-                                        key={i}
+                                        key={index}
                                         item
                                         xs={2}
-                                        style={{opacity: selectedSection === 0 ? 1 : 0.5, minWidth: '120px'}}
-                                        onClick={() => setSelectedSection(section.id)}
+                                        style={{ opacity: selectedSection === index ? 1 : 0.5, minWidth: '120px' }}
+                                        onClick={() => setSelectedSection(index)}
                                     >
                                         <div>
-                                            <Card style={{backgroundColor: '#000', color: '#FFF'}}>
+                                            <Card style={{ backgroundColor: '#000000', color: '#ffffff' }}>
                                                 <CardActionArea>
                                                     <CardContent>
-                                                        <Typography gutterBottom align="center" variant="h5" component="h2">
+                                                        <Typography gutterBottom align="center" variant="h5"
+                                                                    component="h2">
                                                             {section.icon}
                                                         </Typography>
                                                         <Typography align="center" variant="body2">
@@ -114,8 +119,8 @@ export const Root = ( { children }: Props ) => {
                                                 </CardActionArea>
                                             </Card>
                                         </div>
-                                    </Grid>
-                                )
+                                    </Grid>,
+                            )
                         }
                     </Grid>
                     <div>
@@ -123,14 +128,14 @@ export const Root = ( { children }: Props ) => {
                             aria-label='Logged User'
                             aria-controls='menu-appbar'
                             aria-haspopup='true'
-                            onClick={ handleOpen }
+                            onClick={handleOpen}
                             ref={anchorRef}
                             className='accountIcon'
                         >
-                            <AccountCircle />
+                            <AccountCircle/>
                         </IconButton>
                         <Menu
-                            anchorEl={ anchorRef.current }
+                            anchorEl={anchorRef.current}
                             anchorOrigin={{
                                 vertical: 'top',
                                 horizontal: 'right',
@@ -140,20 +145,20 @@ export const Root = ( { children }: Props ) => {
                                 vertical: 'top',
                                 horizontal: 'right',
                             }}
-                            open={ open }
+                            open={open}
                             onClose={handleClose}
                         >
                             <div>
                                 <MenuItem>
 
                                     <Typography variant='body1' display='block' gutterBottom>
-                                        { user?.email }
+                                        {user?.email}
                                     </Typography>
                                     &nbsp;
-                                    { userScopedAdmin &&
+                                    {userScopedAdmin &&
                                     <Typography variant='caption' display='block' gutterBottom>
                                         <Tooltip title="Global Admin">
-                                            <VerifiedUser fontSize='small' />
+                                            <VerifiedUser fontSize='small'/>
                                         </Tooltip>
                                     </Typography>
                                     }
@@ -161,13 +166,13 @@ export const Root = ( { children }: Props ) => {
                                 </MenuItem>
                             </div>
 
-                            <MenuItem onClick={ ()=>{} }>
+                            <MenuItem onClick={() => setUser(null)}>
                                 <Typography variant='overline' display='block' gutterBottom>
                                     <ExitToApp
                                         style={
                                             {
                                                 verticalAlign: 'middle',
-                                                marginBottom: '2px'
+                                                marginBottom: '2px',
                                             }
                                         }
                                         fontSize='small'
@@ -181,13 +186,13 @@ export const Root = ( { children }: Props ) => {
 
             <Grid container spacing={0} className='gridContainer'>
                 <Container
-                    className={ classes.mainContainer }
+                    className={classes.mainContainer}
                     maxWidth="md"
                 >
-                    { children }
+                    {children}
                 </Container>
             </Grid>
 
         </>
-    )
+    );
 };

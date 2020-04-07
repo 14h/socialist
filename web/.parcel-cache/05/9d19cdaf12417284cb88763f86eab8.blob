@@ -1,0 +1,55 @@
+"use strict";
+
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.UserView = void 0;
+
+  var _react = _interopRequireDefault(require("react"));
+
+  var _Paper = _interopRequireDefault(require("@material-ui/core/Paper"));
+
+  var _Typography = _interopRequireDefault(require("@material-ui/core/Typography"));
+
+  var _styles = require("../styles");
+
+  var _s = $RefreshSig$();
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  const UserView = () => {
+    _s();
+
+    const classes = (0, _styles.useStyles)();
+    return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_Typography.default, {
+      variant: "h5",
+      component: "h2",
+      className: classes.title
+    }, "Edit User"), /*#__PURE__*/_react.default.createElement(_Paper.default, {
+      className: [classes.paper, classes['paper--withMinHeight']].join(' ')
+    }, "yyyx"));
+  };
+
+  exports.UserView = UserView;
+
+  _s(UserView, "8g5FPXexvSEOsxdmU7HicukHGqY=", false, function () {
+    return [_styles.useStyles];
+  });
+
+  _c = UserView;
+
+  var _c;
+
+  $RefreshReg$(_c, "UserView");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

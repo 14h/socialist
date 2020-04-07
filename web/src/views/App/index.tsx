@@ -4,6 +4,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 import { Root } from '../Root';
 import { CoreProvider } from '../../utils/store';
+import { SnackbarProvider } from 'notistack';
 
 import {
     BrowserRouter as Router,
@@ -29,7 +30,7 @@ export const BaseRouter = () => {
         </Route>
         <Redirect from="/" to="/login" />
     </Switch>;
-}
+};
 
 export const ConfiguredApp = () => {
     const prefersLightMode = useMediaQuery('(prefers-color-scheme: light)');
@@ -57,9 +58,11 @@ export const ConfiguredApp = () => {
         <ThemeProvider theme={ theme }>
             <CoreProvider>
                 <Router>
-                    <Root>
-                        <BaseRouter />
-                    </Root>
+                    <SnackbarProvider maxSnack={3}>
+                        <Root>
+                            <BaseRouter />
+                        </Root>
+                    </SnackbarProvider>
                 </Router>
             </CoreProvider>
         </ThemeProvider>
