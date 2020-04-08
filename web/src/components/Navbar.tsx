@@ -36,17 +36,17 @@ const sections: Section[] = [
     {
         name: 'Surveys',
         icon: <SpeakerNotes/>,
-        path: '/yolo',
+        path: '/surveys',
     },
     {
         name: 'Translations',
         icon: <Language/>,
-        path: '/yolo2',
+        path: '/translations',
     },
     {
         name: 'People',
         icon: <PeopleAlt/>,
-        path: '/yolo3',
+        path: '/people',
     },
 ];
 

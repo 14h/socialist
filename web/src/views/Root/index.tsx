@@ -12,11 +12,11 @@ import { NavBar } from '../../components/Navbar';
 
 type Props = PropsWithChildren<{}>;
 
-
 export const Root = ({ children }: Props) => {
     const classes = useStyles();
 
     const [user,] = useContext(CoreCtx).user;
+    console.log(user)
 
     if (user === null) {
         return <Login />;

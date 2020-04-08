@@ -1,4 +1,4 @@
-import React, { memo, useContext, useState } from 'react';
+import React, { memo, useContext } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
@@ -14,6 +14,7 @@ import { useStyles } from '../styles';
 import './styles.css';
 
 import { CoreCtx } from '../../utils/store';
+import { useLocalStorage } from '../../utils/hooks';
 
 const attemptLogin = async (
     email: string,
@@ -42,10 +43,13 @@ export const Login = memo(() => {
         return <Redirect to="/" />;
     }
 
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [ email, setEmail ] = useLocalStorage('gds_email', '');
+    const [ password, setPassword ] = useLocalStorage('gds_password', '');
 
-    const onClick = async () => {
+    const login = async (
+        email: string,
+        password: string,
+    ) => {
         if( !email || !password ) {
             return;
         }
@@ -120,7 +124,7 @@ export const Login = memo(() => {
                             <Button
                                 variant='contained'
                                 className={classes.button}
-                                onClick={ onClick }
+                                onClick={ () => login(email, password) }
                                 color='primary'
                             >
                                 Login

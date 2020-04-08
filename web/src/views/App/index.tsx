@@ -16,6 +16,8 @@ import {
 import { Login } from '../Login';
 import { UserView } from '../User';
 import { DefaultView } from '../Default';
+import { Surveys } from '../Surveys';
+import { CreateSurvey } from '../CreateSurvey';
 
 export const ConfiguredApp = () => {
     const prefersLightMode = useMediaQuery('(prefers-color-scheme: light)');
@@ -49,14 +51,23 @@ export const ConfiguredApp = () => {
                                 <Route default path="/login">
                                     <Login />
                                 </Route>
-                                <Route path="/survey/:action?/:id?">
+                                <Route exact path="/survey/:action?/:id?">
                                     <UserView/>
                                 </Route>
-                                <Route path="/">
+                                <Route exact path="/">
                                     <DefaultView />
                                 </Route>
+                                <Route exact path="/surveys">
+                                    <Surveys />
+                                </Route>
+                                <Route exact path="/surveys/create">
+                                    <CreateSurvey />
+                                </Route>
+                                <Route exact path="/surveys/view/:surveyId">
+                                    {/*<ViewSurvey />*/}
+                                </Route>
                                 <Redirect from="/" to="/login" />
-                            </Switch>
+                            </Switch> 
                         </Root>
                     </SnackbarProvider>
                 </Router>
