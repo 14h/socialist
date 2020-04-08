@@ -67,7 +67,7 @@ export const ConfiguredApp = () => {
                                     {/*<ViewSurvey />*/}
                                 </Route>
                                 <Redirect from="/" to="/login" />
-                            </Switch> 
+                            </Switch>
                         </Root>
                     </SnackbarProvider>
                 </Router>
