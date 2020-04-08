@@ -17,21 +17,6 @@ import { Login } from '../Login';
 import { UserView } from '../User';
 import { DefaultView } from '../Default';
 
-export const BaseRouter = () => {
-    return <Switch>
-        <Route default path="/login">
-            <Login />
-        </Route>
-        <Route path="/survey/:action?/:id?">
-            <UserView/>
-        </Route>
-        <Route path="/">
-            <DefaultView />
-        </Route>
-        <Redirect from="/" to="/login" />
-    </Switch>;
-};
-
 export const ConfiguredApp = () => {
     const prefersLightMode = useMediaQuery('(prefers-color-scheme: light)');
 
@@ -60,11 +45,22 @@ export const ConfiguredApp = () => {
                 <Router>
                     <SnackbarProvider maxSnack={3}>
                         <Root>
-                            <BaseRouter />
+                            <Switch>
+                                <Route default path="/login">
+                                    <Login />
+                                </Route>
+                                <Route path="/survey/:action?/:id?">
+                                    <UserView/>
+                                </Route>
+                                <Route path="/">
+                                    <DefaultView />
+                                </Route>
+                                <Redirect from="/" to="/login" />
+                            </Switch>
                         </Root>
                     </SnackbarProvider>
                 </Router>
             </CoreProvider>
         </ThemeProvider>
     );
-}
+};
