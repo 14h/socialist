@@ -17,7 +17,7 @@ import { Login } from '../Login';
 import { UserView } from '../User';
 import { DefaultView } from '../Default';
 import { Surveys } from '../Surveys';
-import { CreateSurvey } from '../CreateSurvey';
+import { EditSurvey } from '../EditSurvey';
 
 export const ConfiguredApp = () => {
     const prefersLightMode = useMediaQuery('(prefers-color-scheme: light)');
@@ -43,8 +43,8 @@ export const ConfiguredApp = () => {
 
     return (
         <ThemeProvider theme={ theme }>
-            <CoreProvider>
-                <Router>
+            <Router>
+                <CoreProvider>
                     <SnackbarProvider maxSnack={3}>
                         <Root>
                             <Switch>
@@ -61,17 +61,17 @@ export const ConfiguredApp = () => {
                                     <Surveys />
                                 </Route>
                                 <Route exact path="/surveys/create">
-                                    <CreateSurvey />
+                                    <EditSurvey />
                                 </Route>
-                                <Route exact path="/surveys/view/:surveyId">
-                                    {/*<ViewSurvey />*/}
+                                <Route exact path="/surveys/edit/:surveyId">
+                                    <EditSurvey />
                                 </Route>
                                 <Redirect from="/" to="/login" />
                             </Switch>
                         </Root>
                     </SnackbarProvider>
-                </Router>
-            </CoreProvider>
+                </CoreProvider>
+            </Router>
         </ThemeProvider>
     );
 };
