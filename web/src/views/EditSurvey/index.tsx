@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import './styles.css';
@@ -10,87 +10,79 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemSecondaryAction,
-    ListItemText,
+    ListItemText, TextField,
 } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Condition, Page, Question, Survey } from '../../types';
+import { Condition, Question, Survey } from '../../types';
 import { useParams } from 'react-router-dom';
-import Paper from '@material-ui/core/Paper';
 import DraggableList from 'react-draggable-list';
 import { useLocalStorage } from '../../utils/hooks';
 
-const PRESETS = [
-    {
-        type: 'base',
-        name: 'number',
-    },
-    {
-        type: 'base',
-        name: 'text',
-    },
-];
-
+const PRESETS = [ 'number', 'text', 'page', 'date', 'image', 'multi'];
 
 type Props = {};
 
 
-type SurveyListItem = SurveyListItemHeader | SurveyListItemBase | Question;
-type SurveyListItemHeader = {
-    type: 'header';
+type SurveyListItem = SurveyListItemPage | Question;
+type SurveyListItemPage = {
+    type: 'page';
     name: string;
+    title: string;
     conditions?: Condition[];
 };
-type SurveyListItemBase = {
-    type: 'base';
-    name: string;
-}
 
 
-const SURVEY: Survey = [
-    {
-        name: 'page1',
-        conditions: [],
-        questions: [
-            {
-                type: 'number',
-                name: 'question1',
-                title: 'question title',
-                minValue: 0,
-                maxValue: 10,
-            },
-            {
-                type: 'number',
-                name: 'question2',
-                title: 'question title2',
-                minValue: 0,
-                maxValue: 10,
-            }
-        ],
-    },
-    {
-        name: 'page2',
-        conditions: [],
-        questions: [
-            {
-                type: 'number',
-                name: 'question21',
-                title: 'question title222',
-                minValue: 0,
-                maxValue: 10,
-            },
-            {
-                type: 'number',
-                name: 'question22',
-                title: 'question title22',
-                minValue: 0,
-                maxValue: 10,
-            }
-        ],
-    }
-];
+const SURVEY: Survey = {
+    name: 'survey1',
+    title: 'survey name',
+    pages: [
+        {
+            name: 'page1',
+            title: 'page1',
+            conditions: [],
+            questions: [
+                {
+                    type: 'number',
+                    name: 'question1',
+                    title: 'question title',
+                    minValue: 0,
+                    maxValue: 10,
+                },
+                {
+                    type: 'number',
+                    name: 'question2',
+                    title: 'question title2',
+                    minValue: 0,
+                    maxValue: 10,
+                }
+            ],
+        },
+        {
+            name: 'page2',
+            title: 'page2',
+            conditions: [],
+            questions: [
+                {
+                    type: 'number',
+                    name: 'question21',
+                    title: 'question title222',
+                    minValue: 0,
+                    maxValue: 10,
+                },
+                {
+                    type: 'number',
+                    name: 'question22',
+                    title: 'question title22',
+                    minValue: 0,
+                    maxValue: 10,
+                }
+            ],
+        }
+    ],
+};
 
 class SurveyListItemComponent extends React.Component<{
     item: SurveyListItem;
@@ -102,26 +94,15 @@ class SurveyListItemComponent extends React.Component<{
         const {item, itemSelected, dragHandleProps} = this.props;
         const scale = itemSelected * 0.05 + 1;
         const shadow = itemSelected * 15 + 1;
-        const dragged = itemSelected !== 0;
+        // const dragged = itemSelected !== 0;
 
-        if (item.type === 'base') {
+        if (item.type === 'page') {
             return (
                 <ListItem>
-                    <div className="dragHandle" {...dragHandleProps}>
-                        <Chip
-                            label={ item.name }
-                        />
-                    </div>
-                </ListItem>
-            );
-        }
-
-        if (item.type === 'header') {
-            return (
-                <ListItem>
-                    <Typography align="center" variant="body2">
-                        {item.name}
-                    </Typography>
+                    <TextField
+                        required
+                        defaultValue={ item.title }
+                    />
                 </ListItem>
             );
         }
@@ -135,14 +116,23 @@ class SurveyListItemComponent extends React.Component<{
             >
                 <div className="dragHandle" {...dragHandleProps}>
                     <ListItemAvatar>
-                        <Avatar>
-                            <MenuIcon />
-                        </Avatar>
+                        <Chip
+                            avatar={ <Avatar>
+                                <MenuIcon />
+                            </Avatar> }
+                            label={ item.type }
+                            clickable={ true }
+                        />
+
                     </ListItemAvatar>
                 </div>
-                <ListItemText
-                    primary={item.title}
-                    secondary={null}
+                <TextField
+                    required
+                    defaultValue={ item.title }
+                    style={{
+                        margin: '0 auto',
+                        width: '500px',
+                    }}
                 />
                 <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="edit">
@@ -161,14 +151,11 @@ class SurveyListItemComponent extends React.Component<{
 const mapSurveyToSurveyList = (survey: Survey): SurveyListItem[] => {
     const surveyListBase: SurveyListItem[] = [];
 
-    surveyListBase.push(
-        ...PRESETS
-    );
-
-    for (const page of survey) {
+    for (const page of survey.pages) {
         surveyListBase.push({
-            type: 'header',
+            type: 'page',
             name: page.name,
+            title: page.title,
             conditions: page.conditions,
         });
         surveyListBase.push(...page.questions);
@@ -182,7 +169,17 @@ export const EditSurvey = (props: Props) => {
     const params = useParams<{surveyId: string}>();
     console.log('surveyId', params.surveyId);
 
-    const [surveyList, setSurveyList] = useLocalStorage('gds-surveyList', mapSurveyToSurveyList(SURVEY));
+    // const [surveyList, setSurveyList] = useLocalStorage('gds-surveyList', mapSurveyToSurveyList(SURVEY));
+    const [surveyList, setSurveyList] = useState(mapSurveyToSurveyList(SURVEY));
+    const updateSurveyList = (list: SurveyListItem[]) => {
+        setSurveyList(list.map( (item: SurveyListItem, index: number) => Object.assign(
+            {},
+            item,
+            {
+                name: `item-${index}`,
+            }
+        )));
+    }
 
 
     // const [survey, setSurvey] = useLocalStorage('gds-survey', SURVEY);
@@ -203,47 +200,74 @@ export const EditSurvey = (props: Props) => {
     // }
 
     const handleMoveEnd = (newList: SurveyListItem[], movedItem: SurveyListItem, oldIndex: number, newIndex: number) => {
-        if (newIndex < PRESETS.length) {
-            // something got moved in the presets
-            return;
-        }
         setSurveyList(newList);
         return;
+    }
 
-        // const newSurveyList = [];
-        //
-        // if (oldIndex < PRESETS.length && newIndex > PRESETS.length) {
-        //     // a preset got moved in
-        //     newSurveyList.push(
-        //         ...PRESETS
-        //     );
-        //
-        //     const list = newList
-        //         .slice(PRESETS.length - 1)
-        //         .map(
-        //             (item: SurveyListItem, index: number) => {
-        //                 if (item.type === 'base') {
-        //                     return (
-        //                         {
-        //                             type: item.name,
-        //                             name: `${item.name}-${index * Math.floor(Math.random() * 100)}`,
-        //                             title: `${item.name}-${index}`,
-        //                         }
-        //                     )
-        //                 }
-        //
-        //                 return item;
-        //             }
-        //         );
-        //
-        //     newSurveyList.push(
-        //         ...list,
-        //     )
-        //
-        //
-        // }
-        //
-        // setSurveyList(newSurveyList)
+    const addPreset = (preset: string) => {
+        const surveyListClone = surveyList.slice();
+        switch (preset) {
+            case 'number':
+                surveyListClone.push(
+                    {
+                        type: 'number',
+                        name: 'question21',
+                        title: 'question title222',
+                        minValue: 0,
+                        maxValue: 10,
+                    }
+                );
+                break;
+            case 'text':
+                surveyListClone.push(
+                    {
+                        type: 'text',
+                        name: 'question1',
+                        title: 'lorem Ipsum'
+                    }
+                );
+                break;
+            case 'page':
+                surveyListClone.push(
+                    {
+                        type: 'page',
+                        name: 'page.name',
+                        title: 'Lorum Ipsum Page',
+                        conditions: [],
+                    }
+                );
+                break;
+            case 'date':
+                surveyListClone.push(
+                    {
+                        type: 'date',
+                        name: 'page.name',
+                        title: 'Lorem Ipsum Date'
+                    }
+                );
+                break;
+            // case 'image':
+            //     surveyListClone.push(
+            //         {
+            //             type: 'image',
+            //             name: 'page.name',
+            //             title: 'Lorem Ipsum Date'
+            //         }
+            //     );
+            //     break;
+            case 'multi':
+                surveyListClone.push(
+                    {
+                        type: 'multi',
+                        name: 'page.name',
+                        title: 'Lorem Ipsum Multi'
+                    }
+                );
+                break;
+        }
+        updateSurveyList(
+            surveyListClone
+        );
     }
 
 
@@ -260,18 +284,18 @@ export const EditSurvey = (props: Props) => {
                             </Typography>
                         }
                     >
-                        <ListItem>
-                            <ListItemText
-                                primary="Single-line item"
-                                secondary={null}
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Single-line item"
-                                secondary={null}
-                            />
-                        </ListItem>
+                        {
+                            PRESETS.map( (preset: string, index: number) => (
+                                <ListItem key={ `preset-${index}` }>
+                                    <Chip
+                                        label={ preset }
+                                        clickable={ true }
+                                        onClick={ () => addPreset(preset) }
+                                    />
+                                </ListItem>
+                            ))
+                        }
+
                     </List>
                 </Grid>
                 <Grid item xs={12} md={10}>
@@ -283,33 +307,13 @@ export const EditSurvey = (props: Props) => {
                             </Typography>
                         }
                     >
-                    <DraggableList<SurveyListItem, void, SurveyListItemComponent>
-                        itemKey="name"
-                        template={SurveyListItemComponent}
-                        list={surveyList}
-                        onMoveEnd={handleMoveEnd}
-                        container={() => document.body}
-                    />
-                    {/*{survey.map((page: Page, pageIndex: number) => (*/}
-                    {/*    <Paper className={classes.paper} elevation={0} key={`page-${pageIndex}`}>*/}
-                    {/*        <List*/}
-                    {/*            dense={false}*/}
-                    {/*            subheader={*/}
-                    {/*                <Typography variant="h6" className={classes.title}>*/}
-                    {/*                    {page.name}*/}
-                    {/*                </Typography>*/}
-                    {/*            }*/}
-                    {/*        >*/}
-                    {/*            <DraggableList<Question, void, QuestionItem>*/}
-                    {/*                itemKey="name"*/}
-                    {/*                template={QuestionItem}*/}
-                    {/*                list={page.questions}*/}
-                    {/*                onMoveEnd={(questions: Question[]) => updatePageInSurvey(pageIndex, page.name, page.conditions, questions)}*/}
-                    {/*                container={() => document.body}*/}
-                    {/*            />*/}
-                    {/*        </List>*/}
-                    {/*    </Paper>*/}
-                    {/*))}*/}
+                        <DraggableList<SurveyListItem, void, SurveyListItemComponent>
+                            itemKey="name"
+                            template={SurveyListItemComponent}
+                            list={surveyList}
+                            onMoveEnd={handleMoveEnd}
+                            container={() => document.body}
+                        />
                     </List>
                 </Grid>
             </Grid>

@@ -91,7 +91,12 @@ export type MultiQuestion = {
 export type Question = MultiQuestion | TextQuestion | DateQuestion | NumberQuestion;
 export type Page = {
     name: string;
+    title: string;
     conditions?: Condition[];
     questions: Question[];
 };
-export type Survey = Page[];
+export type Survey = {
+    name: string;
+    title: string;
+    pages: Page[];
+};
