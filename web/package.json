@@ -5,7 +5,7 @@
   "description": "Coeus",
   "author": "Kenan Sulayman",
   "scripts": {
-    "start": "rm -rf .cache dist .parcel-cache && parcel src/index.html",
+    "start": "parcel src/index.html",
     "build": "parcel build src/index.html",
     "build:development": "echo noop",
     "build:production": "NODE_ENV=production parcel build src/index.html --no-source-maps",

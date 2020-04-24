@@ -30,7 +30,7 @@ export const Root = ({ children }: Props) => {
             <Grid container spacing={0} className='gridContainer'>
                 <Container
                     className={classes.mainContainer}
-                    maxWidth="md"
+                    maxWidth="xl"
                 >
                     {children}
                 </Container>

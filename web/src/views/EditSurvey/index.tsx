@@ -114,7 +114,7 @@ const renderQuestionForm = (item: SurveyListItem) => {
     switch (item.type) {
         case 'text':
             return (
-                <FormControl>
+                <>
                     <div
                         style={{
                             borderTop: '1px #777 solid',
@@ -122,29 +122,31 @@ const renderQuestionForm = (item: SurveyListItem) => {
                             marginTop: '10px'
                         }}
                     />
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-around"
-                    >
-                        <TextField
-                            label="Min Characters"
-                            type="number"
-                            InputLabelProps={{
-                                shrink: true,
-                                style: {color: '#BBB'}
-                            }}
-                        />
-                        <TextField
-                            label="Max Characters"
-                            type="number"
-                            InputLabelProps={{
-                                shrink: true,
-                                style: {color: '#BBB'}
-                            }}
-                        />
-                    </Grid>
-                </FormControl>
+                    <FormControl>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="space-around"
+                        >
+                            <TextField
+                                label="Min Characters"
+                                type="number"
+                                InputLabelProps={{
+                                    shrink: true,
+                                    style: {color: '#BBB'}
+                                }}
+                            />
+                            <TextField
+                                label="Max Characters"
+                                type="number"
+                                InputLabelProps={{
+                                    shrink: true,
+                                    style: {color: '#BBB'}
+                                }}
+                            />
+                        </Grid>
+                    </FormControl>
+                </>
             );
         case 'number':
             return (
@@ -191,10 +193,12 @@ class SurveyListItemComponent extends React.Component<{
     item: SurveyListItem;
     itemSelected: number;
     dragHandleProps: object;
+    commonProps: any;
 }, {}> {
 
     render() {
-        const {item, itemSelected, dragHandleProps, anySelected} = this.props;
+        const {item, itemSelected, dragHandleProps, anySelected, commonProps} = this.props;
+        const {setSelectedQuestion} = commonProps;
         console.log(this.props)
         const scale = itemSelected * 0.05 + 1;
         const shadow = itemSelected * 15 + 1;
@@ -233,32 +237,17 @@ class SurveyListItemComponent extends React.Component<{
                                 width: '450px',
                             }}
                         />
-                        <FormControl>
-                            <Select
-                                value={item.type}
-                                onChange={console.log}
-                                style={{
-                                    width: '100px',
-                                }}
-                            >
-                                {
-                                    PRESETS.map((preset: string, index: number) =>(
-                                        <MenuItem
-                                            value={preset}
-                                            key={`preset-${index}`}
-                                        >
-                                            {preset}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
+                        <IconButton
+                            edge="end"
+                            aria-label="edit"
+                            onClick={() => setSelectedQuestion(item)}
+                        >
+                            <EditIcon />
+                        </IconButton>
                         <IconButton edge="end" aria-label="delete">
                             <DeleteIcon />
                         </IconButton>
                     </Grid>
-
-                    { renderQuestionForm(item) }
                 </Grid>
 
             </ListItem>
@@ -282,10 +271,45 @@ const mapSurveyToSurveyList = (survey: Survey): SurveyListItem[] => {
     return surveyListBase;
 };
 
+const EditQuestion = ({selectedQuestion}: {selectedQuestion: SurveyListItem | null}) => {
+    const classes = useStyles();
+    if (!selectedQuestion) {
+        return null;
+    }
+
+    return (
+        <Paper className={classes.paper}>
+            <Typography variant="h6" className={classes.title}>
+                {selectedQuestion.title}
+            </Typography>
+            {/*<FormControl>*/}
+            {/*    <Select*/}
+            {/*        value={item.type}*/}
+            {/*        onChange={console.log}*/}
+            {/*        style={{*/}
+            {/*            width: '100px',*/}
+            {/*        }}*/}
+            {/*    >*/}
+            {/*        {*/}
+            {/*            PRESETS.map((preset: string, index: number) => (*/}
+            {/*                <MenuItem*/}
+            {/*                    value={preset}*/}
+            {/*                    key={`preset-${index}`}*/}
+            {/*                >*/}
+            {/*                    {preset}*/}
+            {/*                </MenuItem>*/}
+            {/*            ))*/}
+            {/*        }*/}
+            {/*    </Select>*/}
+            {/*</FormControl>*/}
+            { renderQuestionForm(selectedQuestion) }
+        </Paper>
+    )
+}
 
 export const EditSurvey = (props: Props) => {
     const classes = useStyles();
-    const params = useParams<{surveyId: string}>();
+    // const params = useParams<{surveyId: string}>();
 
     // const [surveyList, setSurveyList] = useLocalStorage('gds-surveyList', mapSurveyToSurveyList(SURVEY));
     const [surveyList, setSurveyList] = useState(mapSurveyToSurveyList(SURVEY));
@@ -298,6 +322,8 @@ export const EditSurvey = (props: Props) => {
             }
         )));
     }
+
+    const [selectedQuestion, setSelectedQuestion] = useState<SurveyListItem | null>(null);
 
 
     // const [survey, setSurvey] = useLocalStorage('gds-survey', SURVEY);
@@ -324,9 +350,14 @@ export const EditSurvey = (props: Props) => {
 
 
     return (
-        <Paper className={classes.paper}>
-            <Grid container spacing={1}>
-                <Grid item xs={12} md={12}>
+        <Grid container spacing={1}>
+            <Grid item xs={12} md={6}>
+                <EditQuestion
+                    selectedQuestion={selectedQuestion}
+                />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Paper className={classes.paper}>
                     <List
                         dense={false}
                         subheader={
@@ -341,10 +372,11 @@ export const EditSurvey = (props: Props) => {
                             list={surveyList}
                             onMoveEnd={handleMoveEnd}
                             container={() => document.body}
+                            commonProps={{setSelectedQuestion}}
                         />
                     </List>
-                </Grid>
+                </Paper>
             </Grid>
-        </Paper>
+        </Grid>
     );
 };
