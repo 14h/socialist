@@ -1,0 +1,11 @@
+.surveys-container-layout {
+    padding: 0 24px 24px;
+    min-height: calc( 100vh - 65px);
+}
+
+@media screen and (min-width: 1000px) {
+    .surveys-container-layout {
+        width: 1000px;
+        margin: 0 auto;
+    }
+}

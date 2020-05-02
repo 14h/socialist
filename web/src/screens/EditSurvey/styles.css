@@ -1,0 +1,69 @@
+.surveys-container-layout {
+    padding: 0 24px 24px;
+    min-height: calc( 100vh - 65px);
+
+}
+.sider {
+    background: #f0f2f5;
+}
+
+
+.edit-survey-content {
+    margin: 0;
+    padding: 24px;
+    background: #FEFEFEBB;
+}
+.survey-item-option {
+    width: 100%;
+    user-select: none;
+}
+
+.sider-item {
+    height: 48px;
+    background: #FFF;
+    padding: 12px;
+
+    border: 1px solid #3f51b511;
+    border-left: 1px solid #3f51b5;
+    border-right: 1px solid #3f51b5;
+}
+.sider-item-page {
+    margin-top: 24px;
+    border-top: 1px solid #3f51b5;
+    border-right: 1px solid #3f51b5;
+    border-left: 1px solid #3f51b5;
+}
+.sider-item-selected {
+    background: #EEE;
+    border-bottom: 3px solid #AAA;
+}
+.edit-surveyListItem-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.option-item {
+    margin-top: 16px;
+    width: 400px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.sider-actions {
+    width: 100%;
+    background: #FFF;
+    padding: 12px;
+}
+.sider-list {
+    height: 100%;
+    border-right: 0;
+    background: #f0f2f5;
+}
+@media screen and (min-width: 1000px) {
+    .surveys-container-layout {
+        width: 1000px;
+        margin: 0 auto;
+    }
+}

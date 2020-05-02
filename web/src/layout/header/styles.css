@@ -1,0 +1,27 @@
+.user-options {
+    float: right;
+}
+
+.logo {
+    width: 31px;
+    height: 31px;
+}
+.left {
+    float: left;
+}
+.logo img {
+    width: 100%;
+    filter: grayscale(1);
+}
+.header-menu {
+    text-align: center;
+}
+
+.user-outlined-icon {
+    font-size: 20px;
+    color: #FFF;
+    transition: all ease-in-out 0.2s;
+}
+.user-outlined-icon:hover {
+    color: #AAA;
+}
