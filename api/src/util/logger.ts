@@ -4,7 +4,7 @@ import { LoggerOptions } from 'bunyan';
 const logLevel = process.env.level || 'debug';
 
 export const logger = bunyan.createLogger({
-    name: 'coeus',
+    name: 'socialist',
     level: logLevel as bunyan.LogLevel,
     serializers: bunyan.stdSerializers,
 });

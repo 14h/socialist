@@ -1,3 +1,9 @@
+/*
+ * DO NOT IMPORT ANY OTHER FILE HERE.
+ * IT WILL BREAK APM AND YOU WILL NOT
+ * NOTICE IT.
+ */
+
 export type Config = {
     env: 'prod' | 'stage' | 'dev',
 };
@@ -21,7 +27,7 @@ const baseConfig: ConfigBundle = {
 };
 
 export const establish_config = () => {
-    const env = (process.env.NODE_ENV || 'stage') as unknown as keyof ConfigBundle;
+    const env = (process.env.NODE_ENV || 'dev') as unknown as keyof ConfigBundle;
 
     const matchedConfig = baseConfig[env];
 

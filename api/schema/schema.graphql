@@ -1,0 +1,383 @@
+scalar Date
+scalar JSON
+
+directive @deprecated(
+    reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE
+
+directive @auth(
+    perms: [String]
+    """Specifies if resource rejects non-privileged users."""
+    privileged: Boolean
+    """Specifies if resource rejects readonly tokens."""
+    mutation: Boolean
+) on OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+enum ResourceType {
+    USER
+    ORG
+    SURVEY
+}
+
+enum NonUserResourceType {
+    ORG
+    SURVEY
+}
+
+"""Request data type authenticating a user, including username or email and password."""
+input UserCredInput {
+    email: String!
+    password: String!
+}
+
+"""Type of request used when creating a user."""
+input UserCreateInput {
+    """E-Mail of the user."""
+    email: String!
+
+    """Firstname of the user."""
+    firstname: String!
+
+    """Lastname of the user."""
+    lastname: String!
+
+    """The password of the user."""
+    password: String!
+}
+
+"""Query type updating general informaton about the user."""
+input UserMetaUpdate {
+    """E-Mail of the user."""
+    email: String
+
+    """Firstname of the user."""
+    firstname: String
+
+    """Lastname of the user."""
+    lastname: String
+}
+
+"""Identifies a user by either an email address or their user id. Used as part of UserMultiQuery."""
+input UserEntry {
+    """Email identifiying a user account. [related OR privileged]"""
+    email: String
+    """User GUID identifiying a user account. Defaults to the currently authenticated user. [related OR privileged]"""
+    userId: ID
+}
+
+"""User rights on the specific resource."""
+type Rights {
+    roles: [String]!
+    perms: [String]!
+}
+
+"""General information about the user."""
+type UserMeta {
+    """E-Mail of the user."""
+    email: String!
+
+    """Firstname of the user."""
+    firstname: String!
+
+    """Lastname of the user."""
+    lastname: String!
+
+    """The hashed password of the user. [privileged]"""
+    authKey: String! @auth(privileged: true)
+}
+
+"""Entities related to a user, including organizations and surveys."""
+type UserRelatedEntities {
+    """Surveys with explicit role set for the user."""
+    surveys: [Survey]!
+
+    """Surveys and surveys of organizations with explicit role set for the user. This is equivalent to a query for related surveys and surveys of related organizations."""
+    effectiveSurveys: [Survey]!
+
+    """Organizations with explicit role set for the user."""
+    orgs: [Org]!
+}
+
+"""A user."""
+type User {
+    """A scope-local GUID identifying this user."""
+    id: String!
+
+    """General information about the user."""
+    meta: UserMeta!
+
+    """User config: user-provided, arbitrary JSON structure. Uses custom scalar to bypass field-level schema enforcement and can carry any valid JSON structure."""
+    config: JSON!
+
+    """Rights of this user."""
+    rights: Rights!
+
+    """Entities related to this user, including organizations and surveys."""
+    related: UserRelatedEntities!
+
+    """Flags of this user."""
+    flags: [String]!
+}
+
+"""Rights of a user on a survey or organization."""
+type ResourceUserRights {
+    """Rights of the user on this resource."""
+    rights: Rights!
+
+    """The user related to these rights."""
+    user: User!
+}
+
+"""General information about the organization."""
+type OrgMeta {
+    """The name of the organization."""
+    name: String!
+}
+
+"""Entities related to an organization, including surveys and users."""
+type OrgRelatedEntities {
+    """Surveys associated with this organization."""
+    surveys: [Survey]!
+
+    """Users associated with this organization."""
+    users: [User]! @auth
+}
+
+"""An organization."""
+type Org {
+    """A scope-local GUID identifying this organization."""
+    id: ID!
+
+    """General information about the organization."""
+    meta: OrgMeta!
+
+    """Organization config: user-provided, arbitrary JSON structure. Uses custom scalar to bypass field-level schema enforcement and can carry any valid JSON structure."""
+    config: JSON!
+
+    """List of surveys belonging to this organization."""
+    surveys: [Survey]!
+
+    """Rights of the current user on this organization. If permissions are less than readonly, the organization will be invisible."""
+    rights: Rights @auth @deprecated(reason: "Use `viewerRights` instead.")
+
+    """Rights of the current user on this organization. If permissions are less than readonly, the organization will be invisible."""
+    viewerRights: Rights @auth
+
+    """Aggregated user rights on this organization."""
+    userRights: [ResourceUserRights!]! @auth
+
+    """Entities related to this organization, including its associated surveys and users."""
+    related: OrgRelatedEntities
+
+    """Flags of this organization."""
+    flags: [String]!
+}
+
+"""General information about the survey."""
+type SurveyMeta {
+    """The name of the survey."""
+    name: String!
+}
+
+"""Entities related to an survey, including surveys and users."""
+type SurveyRelatedEntities {
+    """Users associated with this survey."""
+    users: [User]! @auth
+}
+
+"""A survey."""
+type Survey {
+    """A scope-local GUID identifying this survey."""
+    id: ID!
+
+    """General information about the survey."""
+    meta: SurveyMeta!
+
+    """Survey config: user-provided, arbitrary JSON structure. Uses custom scalar to bypass field-level schema enforcement and can carry any valid JSON structure."""
+    config: JSON!
+
+    """The organization this survey belongs to."""
+    org: Org!
+
+    """Rights of the current user on this survey. If permissions are less than readonly, the survey will be invisible."""
+    rights: Rights @auth @deprecated(reason: "Use `viewerRights` instead.")
+
+    """Rights of the current user on this organization. If permissions are less than readonly, the organization will be invisible."""
+    viewerRights: Rights @auth
+
+    """Aggregated user rights on this survey."""
+    userRights: [ResourceUserRights!]! @auth
+
+    """Entities related to this survey, including its associated users."""
+    related: SurveyRelatedEntities
+
+    """Flags of this survey."""
+    flags: [String]!
+}
+
+"""The response of a search query, limited to the types of results as specified by the user. If the requester authorization is not privileged these search results will be limited to the directly related entities of the user."""
+type SearchResult {
+    """List of users with matching email address."""
+    users: [User]! @auth(privileged: true)
+
+    """List of organizations with matching names."""
+    orgs: [Org]!
+
+    """List of surveys with matching names."""
+    surveys: [Survey]!
+}
+
+"""The response of a login chip request including a single-use authentication token (chip) and a readonly-scoped token for the user account and its flags."""
+type LoginChip {
+    """Single-use chip allowing a full-permission token to be obtained."""
+    chip: String!
+
+    """Readonly-scoped token for the specified user account."""
+    userToken: String!
+}
+
+"""The response of a login chip request including a single-use authentication token (chip) and a readonly-scoped token for the user account and its flags."""
+type UserToken {
+    userToken: String!
+}
+
+type Query {
+    """Query for an organization based on its name or GUID."""
+    org(
+        """Name identifying an organization."""
+        orgName: String,
+        """GUID identifying an organization."""
+        orgId: ID
+        """Email of a user account that should be used as context (i.e. for querying rights of a user on an organization). [privileged]"""
+        email: String @auth(privileged: true)
+        """GUID of a user account that should be used as context (i.e. for querying rights of a user on an organization). [privileged]"""
+        userId: ID @auth(privileged: true)
+    ): Org
+
+    """Query for an survey based on its name or GUID."""
+    survey(
+        """Name identifying a survey."""
+        surveyName: String,
+        """GUID identifying a survey."""
+        surveyId: ID
+        """Email of a user account that should be used as context (i.e. for querying rights of a user on a survey). [privileged]"""
+        email: String @auth(privileged: true)
+        """GUID of a user account that should be used as context (i.e. for querying rights of a user on a survey). [privileged]"""
+        userId: ID @auth(privileged: true)
+    ): Survey
+
+    """Query for a user based on their email or GUID."""
+    user(
+        """Email identifiying a user account. [related OR privileged]"""
+        email: String @auth # the privilege access control is handled implicitly by the edge resolver
+        """User GUID identifiying a user account. Defaults to the currently authenticated user. [related OR privileged]"""
+        userId: ID @auth # the privilege access control is handled implicitly by the edge resolver
+    ): User @auth
+
+    """Query for a batch of users based on their email or GUID."""
+    user_multi(
+        users: [UserEntry]!
+    ): [User] @auth
+
+    """Fulltext search for any kind of entity."""
+    search(
+        """Substring to be searched in the database."""
+        query: String!
+
+        """If specified, filters results to given resource types."""
+        type: [ResourceType]
+    ): SearchResult! @auth
+}
+
+type Mutation {
+    # User handshake
+
+    """Request a single-use authentication token (chip) using user credentials."""
+    createLoginChip(creds: UserCredInput!): LoginChip
+
+    """Verify (and "redeem", aka invalidate) a single-use authentication token (chip) and if valid, returns a user authentication token with all permissions of the respective user."""
+    redeemLoginChip(chip: String!): UserToken
+
+    """Verify, invalidate and reissue a user token. Use this method with care, your user will be invalidated and you will have to use the returned user token."""
+    reissueUserToken: UserToken @auth
+
+    """Revoke a user authentication token. [privileged, user-behalf]"""
+    revokeUserToken(userToken: String!): Boolean @auth
+
+    # Operations
+
+    ## User
+
+    """Create a user account using email and password. [privileged]"""
+    createUser(
+        """A map including an email and a password of the user to be created."""
+        creds: UserCreateInput!,
+    ): User @auth(privileged: true)
+
+    """Delete a user account using email or GUID. [privileged]"""
+    deleteUser(email: String, userId: ID): Boolean! @auth(privileged: true)
+
+    """Set the configuration of a user account using email or GUID. [[[privileged]]]"""
+    setUserConfig(email: String, userId: ID, config: JSON!): Boolean! @auth(privileged: true)
+
+    """Set general information about the user such as firstname, lastname and email."""
+    setUserMeta(email: String, userId: ID, meta: UserMetaUpdate!): Boolean! @auth
+
+    """Change the password of a user account to a given new one. [privileged]"""
+    updateUserPassword(email: String, userId: ID, newPassword: String!): Boolean!  @auth(privileged: true)
+
+    """Add flags to a user account. [privileged]"""
+    addUserFlags(email: String, userId: ID, flags: [String!]!): Boolean! @auth(privileged: true)
+
+    """Remove flags from a user account. [privileged]"""
+    removeUserFlags(email: String, userId: ID, flags: [String!]!): Boolean! @auth(privileged: true)
+
+    """Add flags to any resource. [privileged]"""
+    addResourceFlags(type: NonUserResourceType!, resId: ID, resName: String, flags: [String!]!): Boolean! @auth(privileged: true)
+
+    """Remove flags from any resource. [privileged]"""
+    removeResourceFlags(type: NonUserResourceType!, resId: ID, resName: String, flags: [String!]!): Boolean! @auth(privileged: true)
+
+    """Add role to a user account. [privileged]"""
+    addUserRoles(email: String, userId: ID, roles: [String!]!): Boolean! @auth(privileged: true)
+
+    """Remove role from a user account. Warning: this can remove your own permissions and void your warranty. [privileged]"""
+    removeUserRoles(email: String, userId: ID, roles: [String!]!): Boolean! @auth(privileged: true)
+
+    """Add role of a user to a specified resource. [privileged]"""
+    addResourceUserRoles(type: NonUserResourceType!, resId: ID, resName: String, email: String, userId: ID, roles: [String!]!): Boolean! @auth(privileged: true)
+
+    """Remove role of a user from a specified resource. Warning: this can remove your own permissions and void your warranty. [privileged]"""
+    removeResourceUserRoles(type: NonUserResourceType!, resId: ID, resName: String, email: String, userId: ID, roles: [String!]!): Boolean! @auth(privileged: true)
+
+    ## Organization
+
+    """Create an organization using a name. [privileged]"""
+    createOrganization(orgName: String!): Org @auth(privileged: true)
+
+    """Delete an organization using its name or GUID. [privileged]"""
+    deleteOrganization(orgName: String, orgId: ID): Boolean @auth(privileged: true)
+
+    """Rename an organization using its name or GUID and a new name. [privileged]"""
+    renameOrganization(orgName: String, orgId: ID, newName: String!): Boolean! @auth(privileged: true)
+
+    """Set the configuration of an organization using its name or GUID. [[[privileged]]]"""
+    setOrgConfig(orgName: String, orgId: ID, config: JSON!): Boolean! @auth(privileged: true)
+
+    ## Survey
+
+    """Create a survey using a name and the organization name or id. [privileged]"""
+    createSurvey(surveyName: String!, orgName: String, orgId: ID): Survey @auth(privileged: true)
+
+    """Delete a survey using its name or its GUID. [privileged]"""
+    deleteSurvey(surveyName: String, surveyId: ID): Boolean @auth(privileged: true)
+
+    """Rename a survey using name or its GUID and a new name. [privileged]"""
+    renameSurvey(surveyName: String, surveyId: ID, newName: String!): Boolean! @auth(privileged: true)
+
+    """Change ownership of a survey to a different organization using its name or GUID and the name or GUID of the target organization. [privileged]"""
+    moveSurvey(surveyName: String, surveyId: ID, orgName: String, orgId: ID): Boolean! @auth(privileged: true)
+
+    """Set the configuration of a survey using its name or GUID. [[[privileged]]]"""
+    setSurveyConfig(surveyName: String, surveyId: ID, config: JSON!): Boolean! @auth(privileged: true)
+}
