@@ -4,14 +4,13 @@
 
 }
 .sider {
-    background: #f0f2f5;
+    /*background: #f0f2f5;*/
 }
-
 
 .edit-survey-content {
     margin: 0;
     padding: 24px;
-    background: #FEFEFEBB;
+    /*background: #FEFEFEBB;*/
 }
 .survey-item-option {
     width: 100%;
@@ -20,7 +19,6 @@
 
 .sider-item {
     height: 48px;
-    background: #FFF;
     padding: 12px;
 
     border: 1px solid #3f51b511;
@@ -48,13 +46,13 @@
 }
 .sider-actions {
     width: 100%;
-    background: #FFF;
+    /*background: #FFF;*/
     padding: 12px;
 }
 .sider-list {
     height: 100%;
     border-right: 0;
-    background: #f0f2f5;
+    /*background: #f0f2f5;*/
 }
 @media screen and (min-width: 1000px) {
     .surveys-container-layout {
