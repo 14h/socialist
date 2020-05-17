@@ -150,8 +150,8 @@ const Surveys = () => {
     const history = useHistory();
 
     return (
-        <Layout className="surveys-container-layout">
-            <Content className="surveys-container-content">
+        <Layout className="container-layout">
+            <Content>
                 <Button onClick={() => setShowAddModal(true)} type="primary" className="create-survey-button">
                     Create a survey
                 </Button>

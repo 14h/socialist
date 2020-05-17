@@ -441,8 +441,8 @@ const EditSurvey = () => {
                     </Breadcrumb.Item>
                 )}
             </Breadcrumb>
-            <Layout className="surveys-container-layout">
-                <Sider width={300} theme="light" className='sider'>
+            <Layout className="container-layout">
+                <Sider width={300}  className='sider'>
                     <div className='sider-actions'>
                         <Switch checked={jsonEditMode} onChange={() => setJsonEditMode(state => !state)} /> edit JSON
                         <Divider type="vertical" />

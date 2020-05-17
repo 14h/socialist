@@ -3,3 +3,24 @@
 @import 'styles/generic';
 @import 'styles/base';
 @import 'styles/trumps';
+
+.container-layout {
+  min-height: calc( 100vh - 65px);
+  padding: 24px;
+}
+
+.breadcrumb {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.create-survey-button {
+  margin-bottom: 16px;
+}
+
+@media screen and (min-width: 1000px) {
+  .container-layout {
+    width: 1200px;
+    margin: 0 auto;
+  }
+}

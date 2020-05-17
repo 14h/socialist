@@ -1,62 +1,22 @@
-.surveys-container-layout {
-    padding: 0 24px 24px;
-    min-height: calc( 100vh - 65px);
 
-}
-.sider {
-    /*background: #f0f2f5;*/
-}
 
-.edit-survey-content {
-    margin: 0;
-    padding: 24px;
-    /*background: #FEFEFEBB;*/
-}
-.survey-item-option {
+.translation-table {
     width: 100%;
-    user-select: none;
+    min-height: 500px;
+    background: #111;
+    border-radius: 4px;
 }
 
-.sider-item {
-    height: 48px;
-    padding: 12px;
-
-    border: 1px solid #3f51b511;
-}
-.sider-item-warning {
-    border-left: 2px solid red;
-}
-.sider-item-selected {
-    background: #EEE;
-    border-bottom: 3px solid #3f51b5;
-}
-.edit-surveyListItem-header {
+.translation-row {
+    width: 100%;
+    margin-bottom: 24px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
-.option-item {
-    margin-top: 16px;
-    width: 400px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-.sider-actions {
-    width: 100%;
-    /*background: #FFF;*/
-    padding: 12px;
-}
-.sider-list {
-    height: 100%;
-    border-right: 0;
-    /*background: #f0f2f5;*/
-}
-@media screen and (min-width: 1000px) {
-    .surveys-container-layout {
-        width: 1000px;
-        margin: 0 auto;
-    }
+.translation-column {
+    width: 50%;
+    /*padding: 12px;*/
+    border: #333 1px solid;
 }
