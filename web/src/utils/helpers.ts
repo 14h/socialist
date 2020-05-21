@@ -1,7 +1,14 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 export const sum = (a: number, b: number): number => a + b;
 
+export const useSocialistContext = <S>(initialValue: S) => {
+  const [value, setValue] = useState<any>(initialValue);
+  return {
+    value,
+    setValue,
+  }
+}
 export function useLocalStorage<T>(key: string, initialValue: T) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once

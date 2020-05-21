@@ -75,7 +75,8 @@ const TranslationTable = ({
                                         ...translation,
                                         [langTo]: content,
                                     })
-                                }}/>
+                                }}
+                            />
                         </div>
 
                     </div>
@@ -117,7 +118,6 @@ const Translations = () => {
             ...item,
             ...translation,
         });
-        console.log(newData)
         setTranslations(newData);
     };
 

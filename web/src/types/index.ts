@@ -47,7 +47,7 @@ export type Condition = [
   QuestionAnswer
 ];
 
-export type NumberQuestion = {
+export type NumberItem = {
   type: 'number';
   name: string;
   title: string;
@@ -55,13 +55,13 @@ export type NumberQuestion = {
   maxValue?: number;
 };
 
-export type DateQuestion = {
+export type DateItem = {
   type: 'date';
   name: string;
   title: string;
 };
 
-export type TextQuestion = {
+export type TextItem = {
   type: 'text';
   name: string;
   title: string;
@@ -74,12 +74,14 @@ export type ImageOption = {
   name: string;
   url: string;
 }
+
 export type TextOption = {
   type: 'text';
   name: string;
   title: string;
 }
-export type MultiQuestion = {
+
+export type MultiItem = {
   type: 'multi',
   name: string;
   title: string;
@@ -87,13 +89,52 @@ export type MultiQuestion = {
   minOptions?: number;
   options?: ReadonlyArray<ImageOption | TextOption>
 }
+export type PageItem = {
+  type: 'page',
+  title: string;
+  name: string;
+  conditions?: Condition[];
+}
 
-export type Question = MultiQuestion | TextQuestion | DateQuestion | NumberQuestion;
+export type MultiImageItem = {
+  type: 'multi-image',
+  title: string;
+  name: string;
+}
+
+export type RatingItem = {
+  type: 'rating',
+  title: string;
+  name: string;
+}
+
+export type RatingImageItem = {
+  type: 'rating-image',
+  title: string;
+  name: string;
+}
+
+export type ImagesItem = {
+  type: 'images',
+  title: string;
+  name: string;
+}
+
+export type Item = MultiItem
+    | TextItem
+    | DateItem
+    | NumberItem
+    | PageItem
+    | MultiImageItem
+    | RatingItem
+    | RatingImageItem
+    | ImagesItem;
+
 export type Page = {
   name: string;
   title: string;
   conditions?: Condition[];
-  questions: Question[];
+  questions: Item[];
 };
 export type Survey = {
   name: string;
