@@ -20,3 +20,16 @@
     /*padding: 12px;*/
     border: #333 1px solid;
 }
+
+.translations-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.translations-actions-select {
+    width: 120px;
+}

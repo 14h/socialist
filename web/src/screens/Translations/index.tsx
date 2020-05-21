@@ -2,45 +2,52 @@ import React, { useEffect, useState } from 'react';
 import {
     Button,
     Layout,
-    Tabs,
-    Typography,
+    Select,
 } from 'antd';
 
 import './styles.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
+import { useLocalStorage } from '@utils/helpers';
 
 
 
 type Translation = {
-    key: number;
-    en?: string;
-    de?: string;
+    [key: string]: string
 }
 
-type Lang = 'en' | 'de';
-const AVAILABLE_LANGS: Lang[] = ['en', 'de'];
+type Lang = 'en' | 'de' | 'ar' | 'it' | 'fi'
+const AVAILABLE_LANGS: Lang[] = ['en', 'de', 'ar', 'it', 'fi'];
 const DEFAULT_TRANSLATIONS: Translation[] = [
     {
-        key: 1,
+        key: '11234',
         en: 'Who am I?',
         de: 'Wer bin ich?'
     },
     {
-        key: 2,
+        key: '11235',
         en: 'what am I doing?',
     },
+    {
+        key: '11236',
+        en: 'English',
+        de: 'German',
+        ar: 'arabic'
+    }
 ]
 
 const TranslationTable = ({
     translations,
     handleSave,
+    langFrom,
+    langTo,
 }: {
     translations: Translation[];
     handleSave: (translation: Translation) => void;
+    langFrom: Lang;
+    langTo: Lang
 }) => {
-    console.log(translations)
     return (
         <div className="translation-table">
             {
@@ -49,13 +56,12 @@ const TranslationTable = ({
                         <div className="translation-column">
                             <ReactQuill
                                 theme="snow"
-                                value={translation.en}
+                                value={translation[langFrom] || ''}
                                 onChange={(content: string) => {
-                                    console.log(content)
-                                    // handleSave({
-                                    //     ...translation,
-                                    //     en: content,
-                                    // })
+                                    handleSave({
+                                        ...translation,
+                                        [langFrom]: content,
+                                    })
                                 }}
                             />
                         </div>
@@ -63,9 +69,12 @@ const TranslationTable = ({
                         <div className="translation-column">
                             <ReactQuill
                                 theme="snow"
-                                value={translation.de}
+                                value={translation[langTo] || ''}
                                 onChange={(content: string) => {
-                                    console.log(content)
+                                    handleSave({
+                                        ...translation,
+                                        [langTo]: content,
+                                    })
                                 }}/>
                         </div>
 
@@ -78,25 +87,21 @@ const TranslationTable = ({
 
 
 const Translations = () => {
-    const [translations, setTranslations] = useState<Translation[]>([]);
-    const [lang, setLang] = useState<Lang>('en');
-    const [selectedItem, setSelectedItem] = useState<Translation | null>(null);
-
-    useEffect(()=>{
-        setTranslations(DEFAULT_TRANSLATIONS);
-    },[]);
+    const [translations, setTranslations] = useLocalStorage<Translation[]>('SURVEY_TRANSLATIONS', DEFAULT_TRANSLATIONS);
+    const [langFrom, setLangFrom] = useState<Lang>('en');
+    const [langTo, setLangTo] = useState<Lang>('de');
 
 
-    const deleteItem = (index: number) => {
-        const list = translations.slice();
-        list.splice(index, 1);
-        setTranslations(list);
-    };
+    // const deleteItem = (index: number) => {
+    //     const list = translations.slice();
+    //     list.splice(index, 1);
+    //     setTranslations(list);
+    // };
 
     const handleAdd = () => {
         setTranslations((t: Translation[]) => [
             {
-                key: 3,
+                key: '123444',
                 en: '',
                 de: ''
             },
@@ -112,18 +117,50 @@ const Translations = () => {
             ...item,
             ...translation,
         });
+        console.log(newData)
         setTranslations(newData);
     };
 
 
     return (
         <Layout className="container-layout">
-            <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                Add a row
-            </Button>
+            <div className="translations-actions">
+                <div>
+                    <Select
+                        className="translations-actions-select"
+                        defaultValue={langFrom}
+                        onChange={setLangFrom}
+                        disabled
+                    >
+                        {
+                            AVAILABLE_LANGS.map((lang: Lang) => (
+                                <Select.Option key={`from-${lang}`} value={lang}>{lang}</Select.Option>
+                            ))
+                        }
+
+                    </Select>
+                    <ArrowRightOutlined />
+                    <Select
+                        className="translations-actions-select"
+                        defaultValue={langTo}
+                        onChange={setLangTo}
+                    >
+                        {
+                            AVAILABLE_LANGS.filter((lang: Lang) => lang !== 'en').map((lang: Lang) => (
+                                <Select.Option key={`to-${lang}`} value={lang}>{lang}</Select.Option>
+                            ))
+                        }
+                    </Select>
+                </div>
+                <Button onClick={handleAdd} type="primary">
+                    Add a row
+                </Button>
+            </div>
             <TranslationTable
                 translations={translations}
                 handleSave={handleSave}
+                langFrom={langFrom}
+                langTo={langTo}
             />
         </Layout>
     );
