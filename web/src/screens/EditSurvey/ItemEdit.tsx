@@ -4,7 +4,7 @@ import './styles.css';
 import { translations } from './types';
 
 
-export const ItemEdit = ({item, updateItem, currentLang}: any) => {
+export const ItemEdit = ({ item, updateItem, currentLang }: any) => {
     if (item.type === 'multi') {
         return (
             <div>
@@ -16,7 +16,10 @@ export const ItemEdit = ({item, updateItem, currentLang}: any) => {
                     onChange={console.log}
                 >
                     {
-                        translations.map((t: any, index: number) => (
+                        translations.map((
+                            t: any,
+                            index: number,
+                        ) => (
                             <Select.Option key={t.key} value={t.key}>
                                 {t[currentLang]}
                             </Select.Option>
@@ -24,8 +27,8 @@ export const ItemEdit = ({item, updateItem, currentLang}: any) => {
                     }
                 </Select>
             </div>
-        )
+        );
     }
 
-    return null
-}
+    return null;
+};

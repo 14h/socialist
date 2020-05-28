@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Button,
-    Layout,
-    Select,
-} from 'antd';
+import React, { useState } from 'react';
+import { Button, Layout, Select } from 'antd';
 
 import './styles.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useLocalStorage } from '@utils/helpers';
-
 
 
 type Translation = {
@@ -23,7 +18,7 @@ const DEFAULT_TRANSLATIONS: Translation[] = [
     {
         key: '11234',
         en: 'Who am I?',
-        de: 'Wer bin ich?'
+        de: 'Wer bin ich?',
     },
     {
         key: '11235',
@@ -33,9 +28,9 @@ const DEFAULT_TRANSLATIONS: Translation[] = [
         key: '11236',
         en: 'English',
         de: 'German',
-        ar: 'arabic'
-    }
-]
+        ar: 'arabic',
+    },
+];
 
 const TranslationTable = ({
     translations,
@@ -51,7 +46,10 @@ const TranslationTable = ({
     return (
         <div className="translation-table">
             {
-                translations.map((translation: Translation, index: number) => (
+                translations.map((
+                    translation: Translation,
+                    index: number,
+                ) => (
                     <div className="translation-row" key={`translation-${index}`}>
                         <div className="translation-column">
                             <ReactQuill
@@ -61,11 +59,11 @@ const TranslationTable = ({
                                     handleSave({
                                         ...translation,
                                         [langFrom]: content,
-                                    })
+                                    });
                                 }}
                             />
                         </div>
-                        <ArrowRightOutlined />
+                        <ArrowRightOutlined/>
                         <div className="translation-column">
                             <ReactQuill
                                 theme="snow"
@@ -74,7 +72,7 @@ const TranslationTable = ({
                                     handleSave({
                                         ...translation,
                                         [langTo]: content,
-                                    })
+                                    });
                                 }}
                             />
                         </div>
@@ -83,8 +81,8 @@ const TranslationTable = ({
                 ))
             }
         </div>
-    )
-}
+    );
+};
 
 
 const Translations = () => {
@@ -104,11 +102,11 @@ const Translations = () => {
             {
                 key: '123444',
                 en: '',
-                de: ''
+                de: '',
             },
             ...t,
-        ])
-    }
+        ]);
+    };
 
     const handleSave = (translation: Translation) => {
         const newData = [...translations];
@@ -139,7 +137,7 @@ const Translations = () => {
                         }
 
                     </Select>
-                    <ArrowRightOutlined />
+                    <ArrowRightOutlined/>
                     <Select
                         className="translations-actions-select"
                         defaultValue={langTo}

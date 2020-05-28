@@ -1,5 +1,5 @@
 .sider {
-    background: #000;
+    background: #000000;
 }
 
 
@@ -12,29 +12,33 @@
     /*height: 48px;*/
     padding: 12px;
 
-    border-top: 1px solid #BBBBBB11;
-    border-left: 1px solid #333;
-    border-right: 1px solid #333;
-    color: #BBB;
+    border-top: 1px solid #bbbbbb11;
+    border-left: 1px solid #333333;
+    border-right: 1px solid #333333;
+    color: #bbbbbb;
 }
+
 .sider-item-page {
     margin-top: 36px;
-    border-top: 1px solid #333;
-    border-right: 1px solid #333;
-    border-left: 1px solid #333;
+    border-top: 1px solid #333333;
+    border-right: 1px solid #333333;
+    border-left: 1px solid #333333;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
 }
+
 .sider-item-selected {
-    background: #111;
+    background: #111111;
 }
+
 .edit-surveyListItem {
     padding: 16px;
     margin: 32px;
-    border: 1px solid #333;
+    border: 1px solid #333333;
     border-radius: 8px;
-    background: #111;
+    background: #111111;
 }
+
 .edit-surveyListItem-header {
     display: flex;
     flex-direction: row;
@@ -42,6 +46,7 @@
     align-items: center;
     margin-bottom: 16px;
 }
+
 .edit-surveyListItem-actions {
     text-align: right;
     display: flex;
@@ -57,11 +62,13 @@
     justify-content: space-between;
     margin-left: 12px;
 }
+
 .edit-surveyListItem-block {
     margin: 16px 8px;
-    border-top: 1px solid #222;
+    border-top: 1px solid #222222;
     padding: 8px;
 }
+
 .option-item {
     margin-top: 16px;
     width: 300px;
@@ -70,10 +77,12 @@
     justify-content: space-between;
     align-items: center;
 }
+
 .sider-actions {
     width: 100%;
     padding: 12px;
 }
+
 .sider-list {
     height: 100%;
     border-right: 0;
@@ -84,8 +93,9 @@
     padding: 16px;
     width: 1200px;
     margin: 0 auto;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid #222222;
 }
+
 .survey-actions {
     width: 100%;
     height: 48px;
@@ -94,6 +104,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .survey-actions > * {
     margin: auto 8px;
 }
@@ -104,6 +115,7 @@
     justify-content: space-between;
     align-items: center;
 }
+
 .item-wrapper > * {
     width: 49%;
 }
@@ -120,9 +132,11 @@
     opacity: 0.3;
     transition: all 0.2s linear;
 }
+
 .add-new-item:hover {
     opacity: 1;
 }
+
 .add-new-item-table {
     width: 100%;
     display: flex;
@@ -130,6 +144,7 @@
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .add-new-item-table > * {
     width: 48%;
 }

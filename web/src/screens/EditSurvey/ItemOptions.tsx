@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-    InputNumber,
-} from 'antd';
+import { InputNumber } from 'antd';
 import './styles.css';
 import { SurveyListItem } from './types';
 
@@ -10,24 +8,24 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
     if (item.type === 'page') {
         return (
             <div/>
-        )
+        );
     }
 
     if (item.type === 'text') {
         const updateMinChars = (minCharacters: number | undefined) =>
-            updateItem(Object.assign({}, item, {minCharacters}));
+            updateItem(Object.assign({}, item, { minCharacters }));
         const updateMaxChars = (maxCharacters: number | undefined) =>
-            updateItem(Object.assign({}, item, {maxCharacters}));
+            updateItem(Object.assign({}, item, { maxCharacters }));
         return (
             <div className='edit-surveyListItem-block'>
                 <span>Question options:</span>
                 <div className='option-item'>
                     <span>Min Characters:  </span>
-                    <InputNumber defaultValue={item?.minCharacters} onChange={updateMinChars} />
+                    <InputNumber defaultValue={item?.minCharacters} onChange={updateMinChars}/>
                 </div>
                 <div className='option-item'>
                     <span>Max Characters: </span>
-                    <InputNumber defaultValue={item?.minCharacters} onChange={updateMaxChars} />
+                    <InputNumber defaultValue={item?.minCharacters} onChange={updateMaxChars}/>
                 </div>
 
             </div>
@@ -36,20 +34,20 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
 
     if (item.type === 'number') {
         const updateMinValue = (minValue: number | undefined) =>
-            updateItem(Object.assign({}, item, {minValue}))
+            updateItem(Object.assign({}, item, { minValue }));
         const updateMaxValue = (maxValue: number | undefined) =>
-            updateItem(Object.assign({}, item, {maxValue}))
+            updateItem(Object.assign({}, item, { maxValue }));
 
         return (
             <div className='edit-surveyListItem-block'>
                 <span>Question options:</span>
                 <div className='option-item'>
                     <span>Min Value:  </span>
-                    <InputNumber defaultValue={item?.minValue} onChange={updateMinValue} />
+                    <InputNumber defaultValue={item?.minValue} onChange={updateMinValue}/>
                 </div>
                 <div className='option-item'>
                     <span>Max Value: </span>
-                    <InputNumber defaultValue={item?.maxValue} onChange={updateMaxValue} />
+                    <InputNumber defaultValue={item?.maxValue} onChange={updateMaxValue}/>
                 </div>
 
             </div>
@@ -58,9 +56,9 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
 
     if (item.type === 'multi') {
         const updateMinOptions = (minOptions: number | undefined) =>
-            updateItem(Object.assign({}, item, {minOptions}))
+            updateItem(Object.assign({}, item, { minOptions }));
         const updateMaxOptions = (maxOptions: number | undefined) =>
-            updateItem(Object.assign({}, item, {maxOptions}))
+            updateItem(Object.assign({}, item, { maxOptions }));
 
         return (
 
@@ -68,11 +66,11 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
                 <span>Question options:</span>
                 <div className='option-item'>
                     <span>Min Options:  </span>
-                    <InputNumber defaultValue={item?.minOptions} onChange={updateMinOptions} />
+                    <InputNumber defaultValue={item?.minOptions} onChange={updateMinOptions}/>
                 </div>
                 <div className='option-item'>
                     <span>Max Options: </span>
-                    <InputNumber defaultValue={item?.maxOptions} onChange={updateMaxOptions} />
+                    <InputNumber defaultValue={item?.maxOptions} onChange={updateMaxOptions}/>
                 </div>
 
             </div>
@@ -87,5 +85,5 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
 
     return (
         <div/>
-    )
-}
+    );
+};

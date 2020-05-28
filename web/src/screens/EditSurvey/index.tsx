@@ -43,9 +43,9 @@ type EditSurveyListItem = {
 
 const renderItem = (item: any) => {
 
-    return <div>1234</div>
+    return <div>1234</div>;
 
-}
+};
 
 const EditSurveyListItem = ({
     item,
@@ -59,8 +59,6 @@ const EditSurveyListItem = ({
         return null;
     }
 
-    const updateTitle = (title: string) =>
-        updateItem(Object.assign({}, item, { title }));
     const updateName = (name: string) =>
         updateItem(Object.assign({}, item, { name }));
     const onChangeType = (type: Item['type']) =>
@@ -75,24 +73,24 @@ const EditSurveyListItem = ({
 
                         <div className="edit-surveyListItem-actions">
                             <ItemFormat callback={onChangeType} className="edit-format">
-                                <a href="#">
+                                <Button>
                                     {item.type}
                                     <EditOutlined/>
-                                </a>
+                                </Button>
                             </ItemFormat>
 
-                            <a href="#" onClick={duplicateItem}>
+                            <Button onClick={duplicateItem}>
                                 Duplicate <CopyOutlined/>
-                            </a>
+                            </Button>
                             <Popconfirm
                                 title="Are you sure?"
                                 onConfirm={deleteItem}
                                 okText="Delete"
                                 cancelText="Cancel"
                             >
-                                <a href="#" style={{ color: '#ff4d4faa' }}>
+                                <Button style={{ color: '#ff4d4faa' }}>
                                     Delete <DeleteOutlined/>
-                                </a>
+                                </Button>
                             </Popconfirm>
                         </div>
                     </div>
@@ -157,8 +155,6 @@ const EditSurvey = () => {
         list.splice(index, 1);
         setSurveyList(list);
     };
-
-    console.log('surveyList', surveyList);
 
     return (
         <>

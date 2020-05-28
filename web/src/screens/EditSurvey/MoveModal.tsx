@@ -4,7 +4,7 @@ import { ReactSortable } from 'react-sortablejs';
 import { SurveyListItem } from './types';
 import './styles.css';
 
-export const MoveModal = ({surveyListStore}: { surveyListStore: any }) => {
+export const MoveModal = ({ surveyListStore }: { surveyListStore: any }) => {
     const [surveyList, setSurveyList] = surveyListStore;
     const [showModal, setShowModal] = useState(false);
 
@@ -21,9 +21,12 @@ export const MoveModal = ({surveyListStore}: { surveyListStore: any }) => {
                 footer={null}
             >
                 <ReactSortable list={surveyList} setList={setSurveyList} className='sider-list'>
-                    {surveyList.map((item: SurveyListItem, index: number) => (
+                    {surveyList.map((
+                        item: SurveyListItem,
+                        index: number,
+                    ) => (
                         <div
-                            className={ `sider-item ${item.type === 'page' && 'sider-item-page'}`}
+                            className={`sider-item ${item.type === 'page' && 'sider-item-page'}`}
                             key={`surveyListItem-${index}`}
                         >
                             <div className="survey-item-option">{item.name}</div>
@@ -33,4 +36,4 @@ export const MoveModal = ({surveyListStore}: { surveyListStore: any }) => {
             </Modal>
         </>
     );
-}
+};

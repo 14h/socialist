@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import { Button, Dropdown, Layout, Menu } from 'antd';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import './styles.css';
-import { CoreCtx } from '../../configs/store';
 import { Link } from 'react-router-dom';
+import { CoreCtx } from '../../index';
 
 const { Header } = Layout;
 
@@ -23,9 +23,7 @@ const UserOptionsMenu = () => {
 };
 
 export const LayoutHeader = () => {
-    // const { t } = useTranslation('header');
     const selectedMenuItem = window.location.pathname.split('/')[1];
-    console.log(window.location.pathname);
 
     return (
         <Header className="header">
@@ -38,9 +36,9 @@ export const LayoutHeader = () => {
                 />
             </Link>
             <Dropdown className="user-options" overlay={<UserOptionsMenu/>}>
-                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                <Button className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                     <UserOutlined className="user-outlined-icon"/>
-                </a>
+                </Button>
             </Dropdown>
             <Menu
                 className="header-menu"

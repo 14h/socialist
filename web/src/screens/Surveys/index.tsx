@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb, Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
+import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import './styles.css';
 import { Link } from 'react-router-dom';
@@ -11,46 +11,58 @@ const deleteSurvey = async (id: string) => {
     const hide = message.loading(`Deleting ${id}..`, 0);
 
     try {
-        await new Promise((resolve, _reject) => {
+        await new Promise((
+            resolve,
+            _reject,
+        ) => {
             setTimeout(() => resolve('survey_1'), 3000);
         });
         hide();
         message.success(`${id} got successfully deleted!`);
-    } catch(error) {
+    } catch (error) {
         hide();
-        message.error(`Failed to delete ${id}: ${error.message}`)
+        message.error(`Failed to delete ${id}: ${error.message}`);
     }
-}
+};
 
-const createSurvey = async (title: string, history: any) => {
+const createSurvey = async (
+    title: string,
+    history: any,
+) => {
     const hide = message.loading('Creating survey..', 0);
     try {
-        const newSurveyId = await new Promise((resolve, _reject) => {
+        const newSurveyId = await new Promise((
+            resolve,
+            _reject,
+        ) => {
             setTimeout(() => resolve('survey_1'), 3000);
         });
         hide();
         message.success(`${title} got successfully created!`);
         history.push(`/surveys/${newSurveyId}`);
-    } catch(error) {
+    } catch (error) {
         hide();
-        message.error(`Failed to create ${title}: ${error.message}`)
+        message.error(`Failed to create ${title}: ${error.message}`);
     }
-}
+};
 
 const duplicateSurvey = async (id: string) => {
     const hide = message.loading(`Duplicating survey ${id} ..`, 0);
     try {
-        const newSurveyId = await new Promise((resolve, _reject) => {
+        const newSurveyId = await new Promise((
+            resolve,
+            _reject,
+        ) => {
             setTimeout(() => resolve('survey_1'), 3000);
         });
         hide();
         message.success(`${newSurveyId} got successfully duplicated!`);
         // history.push(`/surveys/${newSurveyId}`);
-    } catch(error) {
+    } catch (error) {
         hide();
-        message.error(`Failed to duplicated: ${error.message}`)
+        message.error(`Failed to duplicated: ${error.message}`);
     }
-}
+};
 
 const SURVEYS_LIST = [
     {
@@ -104,7 +116,10 @@ const columns = [
     {
         title: 'Responses',
         dataIndex: 'responses',
-        sorter: (a: any, b: any) => a.responses - b.responses,
+        sorter: (
+            a: any,
+            b: any,
+        ) => a.responses - b.responses,
     },
     {
         title: 'Last Edited',
@@ -112,7 +127,10 @@ const columns = [
         render: (lastUpdated: number) => (
             <span>{(new Date(lastUpdated)).toDateString()}</span>
         ),
-        sorter: (a: any, b: any) => a.updatedAt - b.updatedAt,
+        sorter: (
+            a: any,
+            b: any,
+        ) => a.updatedAt - b.updatedAt,
     },
     {
         title: 'Date created',
@@ -120,25 +138,31 @@ const columns = [
         render: (lastUpdated: number) => (
             <span>{(new Date(lastUpdated)).toDateString()}</span>
         ),
-        sorter: (a: any, b: any) => a.createdAt - b.createdAt,
+        sorter: (
+            a: any,
+            b: any,
+        ) => a.createdAt - b.createdAt,
     },
     {
         title: null,
         key: 'action',
-        render: (_text: any, record: any) => (
+        render: (
+            _text: any,
+            record: any,
+        ) => (
             <Space size="middle">
                 <Popconfirm
                     title={`Duplicate survey ${record.title}`}
                     onConfirm={() => duplicateSurvey(record.id)}
                 >
-                    <a>Duplicate</a>
+                    <Button>Duplicate</Button>
                 </Popconfirm>
                 <Link to={`/surveys/${record.id}`}>Edit</Link>
                 <Popconfirm
                     title={`Delete survey ${record.title}`}
                     onConfirm={() => deleteSurvey(record.id)}
                 >
-                    <a>Delete</a>
+                    <Button>Delete</Button>
                 </Popconfirm>
             </Space>
         ),
@@ -175,17 +199,19 @@ const Surveys = () => {
                     >
                         <Form.Item
                             name="title"
-                            rules={[{
-                                required: true,
-                                whitespace: true,
-                                message: 'Please input your a valid name for your survey!',
-                            }]}
+                            rules={[
+                                {
+                                    required: true,
+                                    whitespace: true,
+                                    message: 'Please input your a valid name for your survey!',
+                                },
+                            ]}
                         >
-                            <Input />
+                            <Input/>
                         </Form.Item>
 
-                        <Form.Item style={{textAlign: 'center', marginTop: '60px'}} >
-                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>
+                        <Form.Item style={{ textAlign: 'center', marginTop: '60px' }}>
+                            <Button type="primary" htmlType="submit" style={{ width: '40%' }}>
                                 Create
                             </Button>
                         </Form.Item>

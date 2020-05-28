@@ -1,31 +1,31 @@
 import { Dispatch, SetStateAction } from 'react';
 
 export type TUserStateMeta = Shallow<{
-  email: string;
-  username: string;
-  firstname: string;
-  lastname: string;
+    email: string;
+    username: string;
+    firstname: string;
+    lastname: string;
 }>;
 
 export type TUserStateId = Shallow<{
-  id: string;
+    id: string;
 }>;
 
 export type TUserState =
-  TUserStateMeta
-  & TUserStateId
+    TUserStateMeta
+    & TUserStateId
 
 export type TCoreStateAuth = Shallow<{
-  userToken: string;
+    userToken: string;
 }>;
 
 export type TCoreState = {
-  auth: TCoreStateAuth;
-  user: TUserState | null;
+    auth: TCoreStateAuth;
+    user: TUserState | null;
 };
 
 export type TUseStateEnvelope<T> = {
-  [P in keyof T]: [T[P], Dispatch<SetStateAction<T[P]>>];
+    [P in keyof T]: [T[P], Dispatch<SetStateAction<T[P]>>];
 };
 
 export type TCoreCtxUseStateEnv = TUseStateEnvelope<TCoreState>;
@@ -33,7 +33,7 @@ export type TCoreCtxUseStateEnv = TUseStateEnvelope<TCoreState>;
 // util
 
 export type Shallow<T> = {
-  [P in keyof T]: T[P] | null;
+    [P in keyof T]: T[P] | null;
 };
 
 
@@ -42,82 +42,82 @@ export type ConditionType = '<' | '>' | '=' | '!';
 export type QuestionKey = string;
 export type QuestionAnswer = string;
 export type Condition = [
-  QuestionKey,
-  ConditionType,
-  QuestionAnswer
+    QuestionKey,
+    ConditionType,
+    QuestionAnswer
 ];
 
 export type NumberItem = {
-  type: 'number';
-  name: string;
-  title: string;
-  minValue?: number;
-  maxValue?: number;
+    type: 'number';
+    name: string;
+    title: string;
+    minValue?: number;
+    maxValue?: number;
 };
 
 export type DateItem = {
-  type: 'date';
-  name: string;
-  title: string;
+    type: 'date';
+    name: string;
+    title: string;
 };
 
 export type TextItem = {
-  type: 'text';
-  name: string;
-  title: string;
-  maxCharacters?: number;
-  minCharacters?: number;
+    type: 'text';
+    name: string;
+    title: string;
+    maxCharacters?: number;
+    minCharacters?: number;
 }
 
 export type ImageOption = {
-  type: 'image';
-  name: string;
-  url: string;
+    type: 'image';
+    name: string;
+    url: string;
 }
 
 export type TextOption = {
-  type: 'text';
-  name: string;
-  title: string;
+    type: 'text';
+    name: string;
+    title: string;
 }
 
 export type MultiItem = {
-  type: 'multi',
-  name: string;
-  title: string;
-  maxOptions?: number;
-  minOptions?: number;
-  options?: ReadonlyArray<ImageOption | TextOption>
+    type: 'multi',
+    name: string;
+    title: string;
+    maxOptions?: number;
+    minOptions?: number;
+    options?: ReadonlyArray<ImageOption | TextOption>
 }
 export type PageItem = {
-  type: 'page',
-  title: string;
-  name: string;
-  conditions?: Condition[];
+    type: 'page',
+    title: string;
+    name: string;
+    conditions?: Condition[];
 }
 
 export type MultiImageItem = {
-  type: 'multi-image',
-  title: string;
-  name: string;
+    type: 'multi-image',
+    title: string;
+    name: string;
 }
 
 export type RatingItem = {
-  type: 'rating',
-  title: string;
-  name: string;
+    type: 'rating',
+    title: string;
+    name: string;
 }
 
 export type RatingImageItem = {
-  type: 'rating-image',
-  title: string;
-  name: string;
+    type: 'rating-image',
+    title: string;
+    name: string;
 }
 
 export type ImagesItem = {
-  type: 'images',
-  title: string;
-  name: string;
+    type: 'images',
+    title: string;
+    name: string;
 }
 
 export type Item = MultiItem
@@ -131,13 +131,13 @@ export type Item = MultiItem
     | ImagesItem;
 
 export type Page = {
-  name: string;
-  title: string;
-  conditions?: Condition[];
-  questions: Item[];
+    name: string;
+    title: string;
+    conditions?: Condition[];
+    questions: Item[];
 };
 export type Survey = {
-  name: string;
-  title: string;
-  pages: Page[];
+    name: string;
+    title: string;
+    pages: Page[];
 };

@@ -3,6 +3,7 @@ import './styles.css';
 import { Button, Modal, Radio, Typography } from 'antd';
 import { WarningOutlined } from '@ant-design/icons';
 import { Item } from '../../types';
+
 const { Title } = Typography;
 
 export type TItemFormat =
@@ -21,7 +22,7 @@ const radioStyle = {
     lineHeight: '30px',
 };
 
-const ItemDescription = ({selectedQuestion}: { selectedQuestion: Item["type"] | null }) => {
+const ItemDescription = ({ selectedQuestion }: { selectedQuestion: Item['type'] | null }) => {
     switch (selectedQuestion) {
         case 'page':
             return (
@@ -84,10 +85,10 @@ const ItemDescription = ({selectedQuestion}: { selectedQuestion: Item["type"] | 
                 <span>Select from items on the left to see the description</span>
             </div>;
     }
-}
+};
 
 type SelectFormatModalProps = {
-    callback: (selectedQuestion: Item["type"]) => void;
+    callback: (selectedQuestion: Item['type']) => void;
     visible: boolean;
     onCancel: () => void;
 }
@@ -96,7 +97,7 @@ export const SelectFormatModal = ({
     visible,
     onCancel,
 }: SelectFormatModalProps) => {
-    const [selectedQuestion, setSelectedQuestion] = useState<Item["type"] | null>(null)
+    const [selectedQuestion, setSelectedQuestion] = useState<Item['type'] | null>(null);
 
     return (
         <Modal
@@ -104,12 +105,13 @@ export const SelectFormatModal = ({
             visible={visible}
             onCancel={onCancel}
             width={800}
-            footer={selectedQuestion && <Button onClick={()=>callback(selectedQuestion)}>{`Select ${selectedQuestion || ''}`}</Button>}
+            footer={selectedQuestion &&
+            <Button onClick={() => callback(selectedQuestion)}>{`Select ${selectedQuestion || ''}`}</Button>}
         >
 
             <div className='add-new-item-table'>
 
-                <div style={{borderRight: '1px solid #333'}}>
+                <div style={{ borderRight: '1px solid #333' }}>
                     <Radio.Group
                         onChange={(e) => setSelectedQuestion(e.target.value)}
                         value={selectedQuestion}
@@ -151,29 +153,32 @@ export const SelectFormatModal = ({
                 <span>Warning: Changing the question format will drop some of your question properties.</span>
             </div>
         </Modal>
-    )
-}
+    );
+};
 
 type AddItemProps = {
-    callback: (selectedQuestion: Item["type"]) => void;
+    callback: (selectedQuestion: Item['type']) => void;
     children: any;
     className: string;
 }
 
-export const ItemFormat = ({callback, children, className}: AddItemProps) => {
+export const ItemFormat = ({ callback, children, className }: AddItemProps) => {
     const [visible, setVisible] = useState(false);
 
 
     return (
         <div className={className}>
-            <div onClick={()=> setVisible(true)}>
+            <div onClick={() => setVisible(true)}>
                 {children}
             </div>
 
             <SelectFormatModal
-                callback={(type: Item["type"]) => {callback(type); setVisible(false)}}
+                callback={(type: Item['type']) => {
+                    callback(type);
+                    setVisible(false);
+                }}
                 visible={visible}
-                onCancel={()=>setVisible(false)}
+                onCancel={() => setVisible(false)}
             />
         </div>
     );

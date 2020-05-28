@@ -3,10 +3,10 @@ import './styles.css';
 import { MoveModal } from './MoveModal';
 import { Button } from 'antd';
 
-export const SurveyActions = ({surveyListStore}: any) => (
+export const SurveyActions = ({ surveyListStore }: any) => (
     <div className="survey-actions">
         <MoveModal
-            surveyListStore={ surveyListStore }
+            surveyListStore={surveyListStore}
         />
         <Button onClick={console.log}>
             Share
@@ -24,4 +24,4 @@ export const SurveyActions = ({surveyListStore}: any) => (
             Publish
         </Button>
     </div>
-)
+);
