@@ -79,17 +79,6 @@
     border-right: 0;
 }
 
-.edit-survey-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.edit-survey-container > * {
-    width: 49%;
-}
-
 .survey-title {
     text-align: center;
     padding: 16px;
@@ -107,6 +96,16 @@
 }
 .survey-actions > * {
     margin: auto 8px;
+}
+
+.item-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.item-wrapper > * {
+    width: 49%;
 }
 
 
