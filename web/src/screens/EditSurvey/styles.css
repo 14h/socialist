@@ -31,7 +31,7 @@
     background: #111111;
 }
 
-.edit-surveyListItem {
+.item {
     padding: 16px;
     margin: 32px;
     border: 1px solid #333333;
@@ -39,7 +39,7 @@
     background: #111111;
 }
 
-.edit-surveyListItem-header {
+.item-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -47,7 +47,7 @@
     margin-bottom: 16px;
 }
 
-.edit-surveyListItem-actions {
+.item-actions {
     text-align: right;
     display: flex;
     flex-direction: row;
@@ -55,7 +55,7 @@
     align-items: center;
 }
 
-.edit-surveyListItem-actions > * {
+.item-actions > * {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -63,7 +63,7 @@
     margin-left: 12px;
 }
 
-.edit-surveyListItem-block {
+.item-block {
     margin: 16px 8px;
     border-top: 1px solid #222222;
     padding: 8px;

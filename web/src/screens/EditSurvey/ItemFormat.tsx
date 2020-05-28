@@ -165,7 +165,6 @@ type AddItemProps = {
 export const ItemFormat = ({ callback, children, className }: AddItemProps) => {
     const [visible, setVisible] = useState(false);
 
-
     return (
         <div className={className}>
             <div onClick={() => setVisible(true)}>

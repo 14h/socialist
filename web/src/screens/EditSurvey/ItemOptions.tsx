@@ -17,7 +17,7 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
         const updateMaxChars = (maxCharacters: number | undefined) =>
             updateItem(Object.assign({}, item, { maxCharacters }));
         return (
-            <div className='edit-surveyListItem-block'>
+            <div className='item-block'>
                 <span>Question options:</span>
                 <div className='option-item'>
                     <span>Min Characters:  </span>
@@ -39,7 +39,7 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
             updateItem(Object.assign({}, item, { maxValue }));
 
         return (
-            <div className='edit-surveyListItem-block'>
+            <div className='item-block'>
                 <span>Question options:</span>
                 <div className='option-item'>
                     <span>Min Value:  </span>
@@ -62,7 +62,7 @@ export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; update
 
         return (
 
-            <div className='edit-surveyListItem-block'>
+            <div className='item-block'>
                 <span>Question options:</span>
                 <div className='option-item'>
                     <span>Min Options:  </span>

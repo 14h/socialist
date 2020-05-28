@@ -2,59 +2,39 @@ import React from 'react';
 import { Button, Layout, Popconfirm, Typography } from 'antd';
 
 import './styles.css';
-import { Item, Survey } from '../../types';
+import { Item } from '../../types';
 import { useParams } from 'react-router';
-import { useLocalStorage } from '@utils/helpers';
 import { CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ItemOptions } from './ItemOptions';
 import { ItemEdit } from './ItemEdit';
-import { SURVEY, SurveyListItem } from './types';
+import { SurveyListItem } from './types';
 import { SurveyActions } from './SurveyActions';
 import { ItemFormat, TItemFormat } from './ItemFormat';
-
+import { useSurvey } from './hooks';
+import { renderItem } from './renderItem';
 const { Title, Text } = Typography;
 
-const mapSurveyToSurveyList = (survey: Survey): SurveyListItem[] => {
-    const surveyListBase: SurveyListItem[] = [];
 
-    for (const page of survey.pages) {
-        surveyListBase.push({
-            type: 'page',
-            name: page.name,
-            title: page.title,
-            conditions: page.conditions,
-        });
-        surveyListBase.push(...page.questions);
-    }
-    return surveyListBase;
-};
-
-type EditSurveyListItem = {
+type ItemComponentProps = {
     item: any;
     updateItem: any;
     currentLang: any;
     deleteItem: any;
     duplicateItem: any;
-    index: any;
     addItem: any;
 };
+const ItemComponent = (props: ItemComponentProps) => {
+    const {
+        item,
+        updateItem,
+        currentLang,
+        deleteItem,
+        duplicateItem,
+        addItem,
+    } = props;
 
-const renderItem = (item: any) => {
-
-    return <div>1234</div>;
-
-};
-
-const EditSurveyListItem = ({
-    item,
-    updateItem,
-    currentLang,
-    deleteItem,
-    duplicateItem,
-    addItem,
-}: EditSurveyListItem) => {
     if (!item) {
         return null;
     }
@@ -67,11 +47,11 @@ const EditSurveyListItem = ({
     return (
         <>
             <div className="item-wrapper">
-                <div className="edit-surveyListItem">
-                    <div className="edit-surveyListItem-header">
+                <div className="item">
+                    <div className="item-header">
                         <Text editable={{ onChange: updateName }}>{item.name}</Text>
 
-                        <div className="edit-surveyListItem-actions">
+                        <div className="item-actions">
                             <ItemFormat callback={onChangeType} className="edit-format">
                                 <Button>
                                     {item.type}
@@ -101,7 +81,6 @@ const EditSurveyListItem = ({
                             console.log(content);
                         }}
                     />
-                    {/*<Title level={4} editable={{ onChange: updateTitle }}>{item.title}</Title>*/}
 
                     <ItemEdit
                         item={item}
@@ -120,64 +99,26 @@ const EditSurveyListItem = ({
     );
 };
 
-const EditSurvey = () => {
-    const surveyListStore: any = useLocalStorage(
-        's',
-        mapSurveyToSurveyList(SURVEY),
-    );
-    const [surveyList, setSurveyList] = surveyListStore;
-    const { survey_id } = useParams();
-    const currentLang = 'en';
 
-    const duplicateItem = (index: number) => {
-        const list = surveyList.slice();
-        list.splice(
-            index + 1,
-            0,
-            Object.assign({}, list[index], { name: `${list[index].name}_duplicate` }),
-        );
-        setSurveyList(list);
-    };
-    const insertNewItem = (
-        index: number,
-        type: TItemFormat,
-    ) => {
-        const list = surveyList.slice();
-        list.splice(index, 0, {
-            name: 'new_item',
-            title: 'New Item, please change name and title',
-            type,
-        });
-        setSurveyList(list);
-    };
-    const deleteItem = (index: number) => {
-        const list = surveyList.slice();
-        list.splice(index, 1);
-        setSurveyList(list);
-    };
+const EditSurvey = () => {
+    const { survey_id } = useParams();
+    const surveyStore = useSurvey(survey_id);
+    const currentLang = 'en';
 
     return (
         <>
             <Title className="survey-title">{survey_id}</Title>
-            <SurveyActions surveyListStore={surveyListStore}/>
+            <SurveyActions surveyStore={surveyStore}/>
             <Layout className="container-layout">
-                {surveyList.map((
-                    item: SurveyListItem,
-                    index: number,
-                ) => (
-                    <EditSurveyListItem
+                {surveyStore.list.map((item: SurveyListItem, index: number) => (
+                    <ItemComponent
                         key={`EditSurveyListItem-${index}`}
-                        index={index}
                         item={item}
-                        addItem={(type: TItemFormat) => insertNewItem(index + 1, type)}
-                        deleteItem={() => deleteItem(index)}
-                        duplicateItem={() => duplicateItem(index)}
+                        addItem={(type: TItemFormat) => surveyStore.insertNewItem(index + 1, type)}
+                        deleteItem={() => surveyStore.deleteItem(index)}
+                        duplicateItem={() => surveyStore.duplicateItem(index)}
                         currentLang={currentLang}
-                        updateItem={(newItem: SurveyListItem) => {
-                            const newSurveyList = surveyList.slice();
-                            newSurveyList[index] = newItem;
-                            setSurveyList(newSurveyList);
-                        }}
+                        updateItem={() => surveyStore.updateItem(item, index)}
                     />
                 ))}
             </Layout>

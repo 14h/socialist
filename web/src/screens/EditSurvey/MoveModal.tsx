@@ -3,9 +3,9 @@ import { Button, Modal } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
 import { SurveyListItem } from './types';
 import './styles.css';
+import { SurveyStore } from './hooks';
 
-export const MoveModal = ({ surveyListStore }: { surveyListStore: any }) => {
-    const [surveyList, setSurveyList] = surveyListStore;
+export const MoveModal = ({ surveyStore }: { surveyStore: SurveyStore }) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
@@ -20,8 +20,8 @@ export const MoveModal = ({ surveyListStore }: { surveyListStore: any }) => {
                 onCancel={() => setShowModal(false)}
                 footer={null}
             >
-                <ReactSortable list={surveyList} setList={setSurveyList} className='sider-list'>
-                    {surveyList.map((
+                <ReactSortable list={surveyStore.list} setList={surveyStore.setList} className='sider-list'>
+                    {surveyStore.list.map((
                         item: SurveyListItem,
                         index: number,
                     ) => (
