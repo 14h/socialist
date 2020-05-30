@@ -128,7 +128,8 @@ export type Item = MultiItem
     | MultiImageItem
     | RatingItem
     | RatingImageItem
-    | ImagesItem;
+    | ImagesItem
+    | PageItem;
 
 export type Page = {
     name: string;

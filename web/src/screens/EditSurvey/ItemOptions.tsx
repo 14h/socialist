@@ -1,10 +1,10 @@
 import React from 'react';
 import { InputNumber } from 'antd';
 import './styles.css';
-import { SurveyListItem } from './types';
+import { Item } from '../../types';
 
 
-export const ItemOptions = ({ item, updateItem }: { item: SurveyListItem; updateItem: (item: SurveyListItem) => void; }) => {
+export const ItemOptions = ({ item, updateItem }: { item: Item; updateItem: (item: Item) => void; }) => {
     if (item.type === 'page') {
         return (
             <div/>

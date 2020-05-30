@@ -83,10 +83,3 @@ export const translations = [
     },
 ];
 
-export type SurveyListItem = SurveyListItemPage | Item;
-export type SurveyListItemPage = {
-    type: 'page';
-    name: string;
-    title: string;
-    conditions?: Condition[];
-};
