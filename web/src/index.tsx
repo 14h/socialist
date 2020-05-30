@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, Suspense, useContext } from 'react';
+import React, { Suspense, useContext, useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
@@ -8,46 +8,50 @@ import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
 
-
 const Home = React.lazy(() => import('./screens/home/Home'));
 const Surveys = React.lazy(() => import('./screens/Surveys/index'));
 const EditSurvey = React.lazy(() => import('./screens/EditSurvey/index'));
 const Translations = React.lazy(() => import('./screens/Translations/index'));
 
-
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 
+const useTranslations = () => {
+    return useState([]);
+};
 
 export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
-    // TODO figure out why store can't take TCoreCtxUseStateEnv as type
+    const auth = useState({ userToken: 'foo' });
+    const user = useState({
+        id: '19h',
+        username: '19h',
+        email: 'kenan@sig.dev',
+        firstname: 'Kenan',
+        lastname: 'Sulayman',
+    });
+    const translations = useTranslations();
+
     const store: any = {
-        auth: React.useState({
-            userToken: 'foo'
-        }),
-        user: React.useState({
-            id: '19h',
-            username: '19h',
-            email: 'kenan@sig.dev',
-            firstname: 'Kenan',
-            lastname: 'Sulayman'
-        })
+        auth,
+        user,
+        translations,
     };
 
     return <CoreCtx.Provider value={store}>{props.children}</CoreCtx.Provider>;
 };
 
-
-export const Root = ({ children }: PropsWithChildren<{}>) => {
+export const App = () => {
     const [user] = useContext(CoreCtx).user;
 
     if (user === null) {
-        return <Login />;
+        return <Login/>;
     }
 
     return (
         <Layout>
-            <LayoutHeader />
-            {children}
+            <LayoutHeader/>
+            <Switch>
+                <Suspense fallback={<div/>}>{publicRoutes}</Suspense>
+            </Switch>
         </Layout>
     );
 };
@@ -63,19 +67,14 @@ const publicRoutes = publicPaths.map(({ path, ...props }) => (
     <Route key={path} path={path} {...props} />
 ));
 
-export const App = () => (
+ReactDOM.render(
     <BrowserRouter>
         <CoreProvider>
-            <Root>
-                <Switch>
-                    <Suspense fallback={<div/>}>{publicRoutes}</Suspense>
-                </Switch>
-            </Root>
+            <App/>
         </CoreProvider>
-    </BrowserRouter>
+    </BrowserRouter>,
+    document.getElementById('root'),
 );
-
-ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

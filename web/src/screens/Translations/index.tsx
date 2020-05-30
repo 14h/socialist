@@ -7,14 +7,13 @@ import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useLocalStorage } from '@utils/helpers';
 
-
 type Translation = {
-    [key: string]: string
-}
+    [key: string]: string;
+};
 
-type Lang = 'en' | 'de' | 'ar' | 'it' | 'fi'
+export type Lang = 'en' | 'de' | 'ar' | 'it' | 'fi';
 const AVAILABLE_LANGS: Lang[] = ['en', 'de', 'ar', 'it', 'fi'];
-const DEFAULT_TRANSLATIONS: Translation[] = [
+export const DEFAULT_TRANSLATIONS: Translation[] = [
     {
         key: '11234',
         en: 'Who am I?',
@@ -41,61 +40,53 @@ const TranslationTable = ({
     translations: Translation[];
     handleSave: (translation: Translation) => void;
     langFrom: Lang;
-    langTo: Lang
+    langTo: Lang;
 }) => {
     return (
         <div className="translation-table">
-            {
-                translations.map((
-                    translation: Translation,
-                    index: number,
-                ) => (
-                    <div className="translation-row" key={`translation-${index}`}>
-                        <div className="translation-column">
-                            <ReactQuill
-                                theme="snow"
-                                value={translation[langFrom] || ''}
-                                onChange={(content: string) => {
-                                    handleSave({
-                                        ...translation,
-                                        [langFrom]: content,
-                                    });
-                                }}
-                            />
-                        </div>
-                        <ArrowRightOutlined/>
-                        <div className="translation-column">
-                            <ReactQuill
-                                theme="snow"
-                                value={translation[langTo] || ''}
-                                onChange={(content: string) => {
-                                    handleSave({
-                                        ...translation,
-                                        [langTo]: content,
-                                    });
-                                }}
-                            />
-                        </div>
-
+            {translations.map((
+                translation: Translation,
+                index: number,
+            ) => (
+                <div className="translation-row" key={`translation-${index}`}>
+                    <div className="translation-column">
+                        <ReactQuill
+                            theme="snow"
+                            value={translation[langFrom] || ''}
+                            onChange={(content: string) => {
+                                handleSave({
+                                    ...translation,
+                                    [langFrom]: content,
+                                });
+                            }}
+                        />
                     </div>
-                ))
-            }
+                    <ArrowRightOutlined/>
+                    <div className="translation-column">
+                        <ReactQuill
+                            theme="snow"
+                            value={translation[langTo] || ''}
+                            onChange={(content: string) => {
+                                handleSave({
+                                    ...translation,
+                                    [langTo]: content,
+                                });
+                            }}
+                        />
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
-
 const Translations = () => {
-    const [translations, setTranslations] = useLocalStorage<Translation[]>('SURVEY_TRANSLATIONS', DEFAULT_TRANSLATIONS);
+    const [translations, setTranslations] = useLocalStorage<Translation[]>(
+        'SURVEY_TRANSLATIONS',
+        DEFAULT_TRANSLATIONS,
+    );
     const [langFrom, setLangFrom] = useState<Lang>('en');
     const [langTo, setLangTo] = useState<Lang>('de');
-
-
-    // const deleteItem = (index: number) => {
-    //     const list = translations.slice();
-    //     list.splice(index, 1);
-    //     setTranslations(list);
-    // };
 
     const handleAdd = () => {
         setTranslations((t: Translation[]) => [
@@ -119,7 +110,6 @@ const Translations = () => {
         setTranslations(newData);
     };
 
-
     return (
         <Layout className="container-layout">
             <div className="translations-actions">
@@ -130,12 +120,11 @@ const Translations = () => {
                         onChange={setLangFrom}
                         disabled
                     >
-                        {
-                            AVAILABLE_LANGS.map((lang: Lang) => (
-                                <Select.Option key={`from-${lang}`} value={lang}>{lang}</Select.Option>
-                            ))
-                        }
-
+                        {AVAILABLE_LANGS.map((lang: Lang) => (
+                            <Select.Option key={`from-${lang}`} value={lang}>
+                                {lang}
+                            </Select.Option>
+                        ))}
                     </Select>
                     <ArrowRightOutlined/>
                     <Select
@@ -143,11 +132,13 @@ const Translations = () => {
                         defaultValue={langTo}
                         onChange={setLangTo}
                     >
-                        {
-                            AVAILABLE_LANGS.filter((lang: Lang) => lang !== 'en').map((lang: Lang) => (
-                                <Select.Option key={`to-${lang}`} value={lang}>{lang}</Select.Option>
-                            ))
-                        }
+                        {AVAILABLE_LANGS.filter((lang: Lang) => lang !== 'en').map(
+                            (lang: Lang) => (
+                                <Select.Option key={`to-${lang}`} value={lang}>
+                                    {lang}
+                                </Select.Option>
+                            ),
+                        )}
                     </Select>
                 </div>
                 <Button onClick={handleAdd} type="primary">
