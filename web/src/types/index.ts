@@ -50,7 +50,7 @@ export type Condition = [
 export type NumberItem = {
     type: 'number';
     name: string;
-    title: string;
+    translationId: string;
     minValue?: number;
     maxValue?: number;
 };
@@ -58,13 +58,13 @@ export type NumberItem = {
 export type DateItem = {
     type: 'date';
     name: string;
-    title: string;
+    translationId: string;
 };
 
 export type TextItem = {
     type: 'text';
     name: string;
-    title: string;
+    translationId: string;
     maxCharacters?: number;
     minCharacters?: number;
 }
@@ -78,45 +78,45 @@ export type ImageOption = {
 export type TextOption = {
     type: 'text';
     name: string;
-    title: string;
+    translationId: string;
 }
 
 export type MultiItem = {
     type: 'multi',
     name: string;
-    title: string;
+    translationId: string;
     maxOptions?: number;
     minOptions?: number;
     options?: ReadonlyArray<ImageOption | TextOption>
 }
 export type PageItem = {
     type: 'page',
-    title: string;
+    translationId: string;
     name: string;
     conditions?: Condition[];
 }
 
 export type MultiImageItem = {
     type: 'multi-image',
-    title: string;
+    translationId: string;
     name: string;
 }
 
 export type RatingItem = {
     type: 'rating',
-    title: string;
+    translationId: string;
     name: string;
 }
 
 export type RatingImageItem = {
     type: 'rating-image',
-    title: string;
+    translationId: string;
     name: string;
 }
 
 export type ImagesItem = {
     type: 'images',
-    title: string;
+    translationId: string;
     name: string;
 }
 
@@ -124,21 +124,14 @@ export type Item = MultiItem
     | TextItem
     | DateItem
     | NumberItem
-    | PageItem
     | MultiImageItem
     | RatingItem
     | RatingImageItem
     | ImagesItem
     | PageItem;
 
-export type Page = {
-    name: string;
-    title: string;
-    conditions?: Condition[];
-    questions: Item[];
-};
 export type Survey = {
     name: string;
-    title: string;
-    pages: Page[];
+    translationId: string;
+    items: Item[];
 };

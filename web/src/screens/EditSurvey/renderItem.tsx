@@ -13,7 +13,7 @@ export const renderItem = (item: any) => {
             >
                 <label htmlFor={item.name}>
                     <h2>
-                        {item.title}
+                        {item.translationId}
                     </h2>
                 </label>
                 <input
@@ -36,7 +36,7 @@ export const renderItem = (item: any) => {
             >
                 <label htmlFor={item.name}>
                     <h2>
-                        {item.title}
+                        {item.translationId}
                     </h2>
                 </label>
                 <input
@@ -53,7 +53,7 @@ export const renderItem = (item: any) => {
             >
                 <label htmlFor={item.name}>
                     <h2>
-                        {item.title}
+                        {item.translationId}
                     </h2>
                 </label>
             </div>;
@@ -64,7 +64,7 @@ export const renderItem = (item: any) => {
             >
                 <label htmlFor={item.name}>
                     <h2>
-                        {item.title}
+                        {item.translationId}
                     </h2>
                 </label>
                 <select
@@ -89,7 +89,7 @@ export const renderItem = (item: any) => {
                                             value={option.name}
                                             key={`${option.name}_${i}`}
                                         >
-                                            {option.title}
+                                            {option.translationId}
                                         </option>;
                                 }
                             }

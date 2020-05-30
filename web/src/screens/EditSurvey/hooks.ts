@@ -1,7 +1,7 @@
 import { SURVEY } from './types';
 import { TItemFormat } from './ItemFormat';
 import { useLocalStorage } from '../../utils/helpers';
-import { Item, Survey } from '../../types';
+import { Item } from '../../types';
 
 export type SurveyStore = {
     list: any;
@@ -12,29 +12,12 @@ export type SurveyStore = {
     updateItem: any;
 }
 
-
-const mapSurveyToSurveyList = (survey: Survey): Item[] => {
-    const surveyListBase: Item[] = [];
-
-    for (const page of survey.pages) {
-        surveyListBase.push({
-            type: 'page',
-            name: page.name,
-            title: page.title,
-            conditions: page.conditions,
-        });
-        surveyListBase.push(...page.questions);
-    }
-    return surveyListBase;
-};
-
 export const useSurvey = (surveyId: string | undefined): SurveyStore => {
     const surveyListStore: any = useLocalStorage(
         '24p_survey',
-        mapSurveyToSurveyList(SURVEY),
+        SURVEY,
     );
     const [list, setList] = surveyListStore;
-
 
     const duplicateItem = (index: number) => {
         const listClone = list.slice();

@@ -40,7 +40,7 @@ const ItemComponent = (props: ItemComponentProps) => {
   const updateName = (name: string) =>
     updateItem(Object.assign({}, item, { name }));
   const onChangeType = (type: Item["type"]) =>
-    updateItem({ type, name: item.name, title: item.title });
+    updateItem({ type, name: item.name, translationId: item.translationId });
 
   return (
     <>
