@@ -1,4 +1,5 @@
 import {Survey } from '../../types';
+import { useLocalStorage } from '@utils/helpers';
 
 export const SURVEY: Survey = {
     name: 'survey1',
@@ -7,76 +8,63 @@ export const SURVEY: Survey = {
         {
             type: 'page',
             name: 'page1',
-            translationId: 'page1',
+            translationId: '1',
             conditions: [],
         },
         {
             type: 'number',
             name: 'question1',
-            translationId: 'question title',
+            translationId: '2',
             minValue: 0,
             maxValue: 10,
         },
         {
             type: 'text',
             name: 'question2',
-            translationId: 'question title2',
+            translationId: '3',
             minCharacters: 0,
             maxCharacters: 10,
         },
         {
             type: 'page',
             name: 'page2',
-            translationId: 'page2',
+            translationId: '4',
             conditions: [],
         },
         {
             type: 'number',
             name: 'question21',
-            translationId: 'question title222',
+            translationId: '5',
             minValue: 0,
             maxValue: 10,
         },
         {
             type: 'number',
             name: 'question22',
-            translationId: 'question title22',
+            translationId: '6',
             minValue: 0,
             maxValue: 10,
         },
         {
             type: 'page',
             name: 'page3',
-            translationId: 'page3',
+            translationId: '7',
             conditions: [],
         },
         {
             type: 'number',
             name: 'question31',
-            translationId: 'question title222',
+            translationId: '8',
             minValue: 0,
             maxValue: 10,
         },
         {
             type: 'number',
             name: 'question32',
-            translationId: 'question title22',
+            translationId: '9',
             minValue: 0,
             maxValue: 10,
         },
     ],
 };
-
-export const translations = [
-    {
-        key: '00001',
-        en: 'Who am I?',
-        de: 'Wer bin ich?',
-    },
-    {
-        key: '00002',
-        en: 'what am I doing?',
-        de: 'Was mache ich?',
-    },
-];
 

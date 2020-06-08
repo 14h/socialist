@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "npm-run-all -p prettier-watch stylelint-watch start-js",
+    "start": "yarn run start-js",
     "prettier-watch": "onchange '**/*.tsx' '**/*.less' -- prettier --write {{changed}}",
     "stylelint-watch": "onchange '**/*.less' -- stylelint --fix {{changed}}",
     "stylelint-check": "stylelint-config-prettier-check",
@@ -30,6 +30,7 @@
     "axios": "^0.18.0",
     "history": "^4.9.0",
     "i18next": "^15.0.6",
+    "quill-image-resize-module": "^3.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-i18next": "^10.3.1",

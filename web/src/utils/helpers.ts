@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { translations } from '../screens/EditSurvey/types';
 
 export const sum = (
     a: number,

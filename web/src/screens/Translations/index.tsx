@@ -5,9 +5,9 @@ import './styles.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { useLocalStorage } from '@utils/helpers';
+import { useTranslations } from '../EditSurvey/hooks';
 
-type Translation = {
+export type Translation = {
     [key: string]: string;
 };
 
@@ -81,33 +81,17 @@ const TranslationTable = ({
 };
 
 const Translations = () => {
-    const [translations, setTranslations] = useLocalStorage<Translation[]>(
-        'SURVEY_TRANSLATIONS',
-        DEFAULT_TRANSLATIONS,
-    );
+    const translationsStore = useTranslations();
     const [langFrom, setLangFrom] = useState<Lang>('en');
     const [langTo, setLangTo] = useState<Lang>('de');
 
     const handleAdd = () => {
-        setTranslations((t: Translation[]) => [
+        translationsStore.setTranslation(
             {
-                key: '123444',
-                en: '',
-                de: '',
-            },
-            ...t,
-        ]);
-    };
-
-    const handleSave = (translation: Translation) => {
-        const newData = [...translations];
-        const index = newData.findIndex((i: any) => translation.key === i.key);
-        const item = newData[index];
-        newData.splice(index, 1, {
-            ...item,
-            ...translation,
-        });
-        setTranslations(newData);
+                key: translationsStore.translations.length.toString(),
+                en: ''
+            }
+        )
     };
 
     return (
@@ -146,8 +130,8 @@ const Translations = () => {
                 </Button>
             </div>
             <TranslationTable
-                translations={translations}
-                handleSave={handleSave}
+                translations={translationsStore.translations}
+                handleSave={translationsStore.setTranslation}
                 langFrom={langFrom}
                 langTo={langTo}
             />

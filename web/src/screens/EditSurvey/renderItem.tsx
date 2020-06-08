@@ -1,20 +1,26 @@
 import React from 'react';
 import { ImageOption, TextOption } from '../../types';
 
-export const renderItem = (item: any) => {
+export const renderItem = (item: any, translation: any) => {
 
     switch (item.type) {
+        case'page':
+            return <div
+                className='item-preview'
+                dangerouslySetInnerHTML={{__html: translation}}
+            />
         case 'number':
             const min = item?.minValue ?? undefined;
             const max = item?.maxValue ?? undefined;
             return <div
                 key={item.name}
-                className='item'
+                className='item-preview'
             >
                 <label htmlFor={item.name}>
-                    <h2>
-                        {item.translationId}
-                    </h2>
+                    <div
+                        className='item-preview'
+                        dangerouslySetInnerHTML={{__html: translation}}
+                    />
                 </label>
                 <input
                     type='number'
@@ -32,12 +38,13 @@ export const renderItem = (item: any) => {
             const maxCharacters = item?.maxCharacters ?? undefined;
             return <div
                 key={item.name}
-                className='item'
+                className='item-preview'
             >
                 <label htmlFor={item.name}>
-                    <h2>
-                        {item.translationId}
-                    </h2>
+                    <div
+                        className='item-preview'
+                        dangerouslySetInnerHTML={{__html: translation}}
+                    />
                 </label>
                 <input
                     type='text'
@@ -49,23 +56,25 @@ export const renderItem = (item: any) => {
         case 'date':
             return <div
                 key={item.name}
-                className='item'
+                className='item-preview'
             >
                 <label htmlFor={item.name}>
-                    <h2>
-                        {item.translationId}
-                    </h2>
+                    <div
+                        className='item-preview'
+                        dangerouslySetInnerHTML={{__html: translation}}
+                    />
                 </label>
             </div>;
         case 'multi':
             return <div
                 key={item.name}
-                className='item'
+                className='item-preview'
             >
                 <label htmlFor={item.name}>
-                    <h2>
-                        {item.translationId}
-                    </h2>
+                    <div
+                        className='item-preview'
+                        dangerouslySetInnerHTML={{__html: translation}}
+                    />
                 </label>
                 <select
                     name={item.name}
