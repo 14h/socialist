@@ -1,5 +1,4 @@
 import * as t from 'io-ts';
-import { either } from 'fp-ts/lib/Either';
 
 const optional = <T>(type: t.Type<T>) => t.union([type, t.undefined]);
 
@@ -99,7 +98,6 @@ export const surveySectionCondition =
         t.tuple([t.string, surveySectionConditionComparision, t.string]),
         t.tuple([t.string, sectionConditionExistential]),
     ]);
-
 
 export const surveySection = t.type({
     name: t.string,

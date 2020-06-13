@@ -185,15 +185,6 @@ export const get_resolvers = () => {
                     id: await ctx.deps.survey.get_org_id(source.id),
                 };
             },
-            async rights(
-                source: IdSrc,
-                _: any,
-                ctx: RootCtx,
-            ) {
-                return resolvers.Survey.viewerRights(
-                    source, _, ctx,
-                );
-            },
             async viewerRights(
                 source: IdSrc,
                 _: any,
@@ -257,15 +248,6 @@ export const get_resolvers = () => {
                 ctx: RootCtx,
             ) {
                 return ctx.deps.org.get_meta(source.id);
-            },
-            rights(
-                source: IdSrc,
-                _: any,
-                ctx: RootCtx,
-            ) {
-                return resolvers.Org.viewerRights(
-                    source, _, ctx,
-                );
             },
             async viewerRights(
                 source: IdSrc,

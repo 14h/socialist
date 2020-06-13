@@ -267,9 +267,6 @@ type Survey {
     """The organization this survey belongs to."""
     org: Org!
 
-    """Rights of the current user on this survey. If permissions are less than readonly, the survey will be invisible."""
-    rights: Rights @auth @deprecated(reason: "Use `viewerRights` instead.")
-
     """Rights of the current user on this organization. If permissions are less than readonly, the organization will be invisible."""
     viewerRights: Rights @auth
 
