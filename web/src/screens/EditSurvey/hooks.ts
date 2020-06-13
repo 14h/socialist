@@ -1,5 +1,4 @@
 import { SURVEY } from './types';
-import { TItemFormat } from './ItemFormat';
 import { useLocalStorage } from '../../utils/helpers';
 import { Item, Survey } from '../../types';
 import { Translation } from '../Translations';
@@ -93,7 +92,7 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
     };
     const insertNewItem = (
         index: number,
-        type: TItemFormat,
+        type: Item['type'],
     ) => {
         const listClone = survey.items.slice();
         listClone.splice(index, 0, {

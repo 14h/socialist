@@ -6,16 +6,6 @@ import { Item } from '../../types';
 
 const { Title } = Typography;
 
-export type TItemFormat =
-    'page'
-    | 'text'
-    | 'multi'
-    | 'multi-image'
-    | 'rating'
-    | 'rating-image'
-    | 'images'
-    | 'date'
-
 const radioStyle = {
     display: 'block',
     height: '30px',

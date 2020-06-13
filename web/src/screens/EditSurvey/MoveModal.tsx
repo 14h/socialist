@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Modal } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
 import './styles.css';
-import { SurveyStore } from './hooks';
 import { Item } from '../../types';
+import { surveyCtx } from './index';
 
-export const MoveModal = ({ surveyStore }: { surveyStore: SurveyStore }) => {
+export const MoveModal = () => {
+    const { surveyStore } = useContext(surveyCtx)
     const [showModal, setShowModal] = useState(false);
 
     return (
