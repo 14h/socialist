@@ -1,13 +1,9 @@
 import React from 'react';
-import './styles.css';
-import { MoveModal } from './MoveModal';
+import '../styles.css';
 import { Button } from 'antd';
-import { ThemeModal } from './ThemeModal';
 
 export const SurveyActions = () => (
     <div className="survey-actions">
-        <MoveModal/>
-        <ThemeModal />
         <Button onClick={console.log}>
             Share
         </Button>

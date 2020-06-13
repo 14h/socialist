@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageOption, TextOption } from '../../types';
+import { ImageOption, TextOption } from '../../../types';
 
 export const renderItem = (item: any, translation: any) => {
 
@@ -98,7 +98,7 @@ export const renderItem = (item: any, translation: any) => {
                                             value={option.name}
                                             key={`${option.name}_${i}`}
                                         >
-                                            {option.translationId}
+                                            {option.title}
                                         </option>;
                                 }
                             }

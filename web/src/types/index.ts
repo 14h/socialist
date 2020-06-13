@@ -1,4 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
+import { SurveyStore, TranslationsStore } from '@utils/hooks';
+
+export type SurveyCtx = {
+    surveyStore: SurveyStore;
+    translationsStore: TranslationsStore;
+}
 
 export type TUserStateMeta = Shallow<{
     email: string;
@@ -50,7 +56,7 @@ export type Condition = [
 export type NumberItem = {
     type: 'number';
     name: string;
-    translationId: string;
+    title: string;
     minValue?: number;
     maxValue?: number;
 };
@@ -58,13 +64,13 @@ export type NumberItem = {
 export type DateItem = {
     type: 'date';
     name: string;
-    translationId: string;
+    title: string;
 };
 
 export type TextItem = {
     type: 'text';
     name: string;
-    translationId: string;
+    title: string;
     maxCharacters?: number;
     minCharacters?: number;
 }
@@ -78,45 +84,29 @@ export type ImageOption = {
 export type TextOption = {
     type: 'text';
     name: string;
-    translationId: string;
+    title: string;
 }
 
 export type MultiItem = {
     type: 'multi',
     name: string;
-    translationId: string;
+    title: string;
     maxOptions?: number;
     minOptions?: number;
     options?: ReadonlyArray<ImageOption | TextOption>
 }
-export type PageItem = {
-    type: 'page',
-    translationId: string;
-    name: string;
-    conditions?: Condition[];
-}
 
-export type MultiImageItem = {
-    type: 'multi-image',
-    translationId: string;
-    name: string;
-}
 
 export type RatingItem = {
     type: 'rating',
-    translationId: string;
+    title: string;
     name: string;
 }
 
-export type RatingImageItem = {
-    type: 'rating-image',
-    translationId: string;
-    name: string;
-}
 
 export type ImagesItem = {
     type: 'images',
-    translationId: string;
+    title: string;
     name: string;
 }
 
@@ -124,14 +114,19 @@ export type Item = MultiItem
     | TextItem
     | DateItem
     | NumberItem
-    | MultiImageItem
     | RatingItem
-    | RatingImageItem
-    | ImagesItem
-    | PageItem;
+    | ImagesItem;
+
+
+export type Page = {
+    name: string;
+    conditions?: Condition[];
+    items: Item[]
+}
 
 export type Survey = {
     name: string;
-    translationId: string;
-    items: Item[];
+    title: string;
+    pages: Page[];
 };
+

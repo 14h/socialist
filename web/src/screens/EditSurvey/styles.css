@@ -149,3 +149,6 @@
 .add-new-item-table > * {
     width: 48%;
 }
+.ant-tabs-nav-container {
+    padding: 0 16px;
+}

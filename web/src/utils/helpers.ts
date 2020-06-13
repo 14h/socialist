@@ -1,18 +1,5 @@
 import { useState } from 'react';
 
-export const sum = (
-    a: number,
-    b: number,
-): number => a + b;
-
-export const useSocialistContext = <S>(initialValue: S) => {
-    const [value, setValue] = useState<any>(initialValue);
-    return {
-        value,
-        setValue,
-    };
-};
-
 export function useLocalStorage<T>(
     key: string,
     initialValue: T,

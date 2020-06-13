@@ -1,16 +1,10 @@
 import React from 'react';
 import { InputNumber } from 'antd';
-import './styles.css';
-import { Item } from '../../types';
+import '../styles.css';
+import { Item } from '../../../types';
 
 
 export const ItemOptions = ({ item, updateItem }: { item: Item; updateItem: (item: Item) => void; }) => {
-    if (item.type === 'page') {
-        return (
-            <div/>
-        );
-    }
-
     if (item.type === 'text') {
         const updateMinChars = (minCharacters: number | undefined) =>
             updateItem(Object.assign({}, item, { minCharacters }));

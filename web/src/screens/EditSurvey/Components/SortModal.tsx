@@ -1,36 +1,40 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
-import './styles.css';
-import { Item } from '../../types';
-import { surveyCtx } from './index';
+import '../styles.css';
+import { Item } from '../../../types';
 
-export const MoveModal = () => {
-    const { surveyStore } = useContext(surveyCtx)
+type TProps = {
+    items: Item[];
+    updateItems: (newItems: Item[]) => any;
+}
+export const SortModal = (
+    props: TProps
+) => {
+    const {items, updateItems} = props;
     const [showModal, setShowModal] = useState(false);
 
     return (
         <>
-            <Button onClick={() => setShowModal(true)}>Sort questions</Button>
+            <Button onClick={() => setShowModal(true)}>Sort items</Button>
 
             <Modal
-                title="Sort questions"
+                title="Sort items"
                 visible={showModal}
                 onCancel={() => setShowModal(false)}
                 footer={null}
             >
                 <ReactSortable
-                    list={surveyStore.items}
-                    setList={surveyStore.setItems}
+                    list={items as any[]}
+                    setList={updateItems as any}
                     className="sider-list"
                 >
-                    {surveyStore.items.map((
+                    {items.map((
                         item: Item,
                         index: number,
                     ) => (
                         <div
-                            className={`sider-item ${item.type === 'page' &&
-                            'sider-item-page'}`}
+                            className="sider-item"
                             key={`surveyListItem-${index}`}
                         >
                             <div className="survey-item-option">{item.name}</div>

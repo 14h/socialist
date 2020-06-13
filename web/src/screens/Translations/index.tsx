@@ -5,7 +5,7 @@ import './styles.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { useTranslations } from '../EditSurvey/hooks';
+import { useTranslations } from '@utils/hooks';
 
 export type Translation = {
     [key: string]: string;
@@ -13,23 +13,6 @@ export type Translation = {
 
 export type Lang = 'en' | 'de' | 'ar' | 'it' | 'fi';
 const AVAILABLE_LANGS: Lang[] = ['en', 'de', 'ar', 'it', 'fi'];
-export const DEFAULT_TRANSLATIONS: Translation[] = [
-    {
-        key: '11234',
-        en: 'Who am I?',
-        de: 'Wer bin ich?',
-    },
-    {
-        key: '11235',
-        en: 'what am I doing?',
-    },
-    {
-        key: '11236',
-        en: 'English',
-        de: 'German',
-        ar: 'arabic',
-    },
-];
 
 const TranslationTable = ({
     translations,

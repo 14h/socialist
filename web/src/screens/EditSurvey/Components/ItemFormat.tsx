@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import './styles.css';
+import '../styles.css';
 import { Button, Modal, Radio, Typography } from 'antd';
 import { WarningOutlined } from '@ant-design/icons';
-import { Item } from '../../types';
+import { Item } from '../../../types';
 
 const { Title } = Typography;
 
@@ -14,13 +14,6 @@ const radioStyle = {
 
 const ItemDescription = ({ selectedQuestion }: { selectedQuestion: Item['type'] | null }) => {
     switch (selectedQuestion) {
-        case 'page':
-            return (
-                <div>
-                    <Title level={3}>Page</Title>
-                    <span>Beginning of a block, this doesn't have an answer, just text and images</span>
-                </div>
-            );
         case 'text':
             return (
                 <div>
@@ -35,25 +28,11 @@ const ItemDescription = ({ selectedQuestion }: { selectedQuestion: Item['type'] 
                     <span>Users can select one or more options.</span>
                 </div>
             );
-        case 'multi-image':
-            return (
-                <div>
-                    <Title level={3}>Multiple answers with image</Title>
-                    <span>Users can select one or more options under an image.</span>
-                </div>
-            );
         case 'rating':
             return (
                 <div>
                     <Title level={3}>Rating scale</Title>
                     <span>Users can answer with a 5 star rating scale (e.g. "Not interested" to "Very interested").</span>
-                </div>
-            );
-        case 'rating-image':
-            return (
-                <div>
-                    <Title level={3}>Rating scale with image</Title>
-                    <span>Users can answer with a 5 star rating scale under an image.</span>
                 </div>
             );
         case 'images':
