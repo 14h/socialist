@@ -85,23 +85,14 @@ export const SelectFormatModal = ({
                         onChange={(e) => setSelectedQuestion(e.target.value)}
                         value={selectedQuestion}
                     >
-                        <Radio style={radioStyle} value='page'>
-                            Page
-                        </Radio>
                         <Radio style={radioStyle} value='text'>
                             Text answer
                         </Radio>
                         <Radio style={radioStyle} value='multi'>
                             Multiple answers
                         </Radio>
-                        <Radio style={radioStyle} value='multi-image'>
-                            Multiple answers with an image
-                        </Radio>
                         <Radio style={radioStyle} value='rating'>
                             Rating scale
-                        </Radio>
-                        <Radio style={radioStyle} value='rating-image'>
-                            Rating scale with image
                         </Radio>
                         <Radio style={radioStyle} value='images'>
                             Side-by-side images

@@ -120,6 +120,9 @@
 .item-preview {
     width: 60%;
 }
+.item-preview > * {
+    max-width: 100%;
+}
 
 
 /* AddItem */

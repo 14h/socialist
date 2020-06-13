@@ -1,27 +1,13 @@
 import React from 'react';
-import { ImageOption, TextOption } from '../../../types';
+import { ImageOption, Item, TextOption } from '../../../types';
 
-export const renderItem = (item: any, translation: any) => {
+export const renderItem = (item: Item) => {
 
     switch (item.type) {
-        case'page':
-            return <div
-                className='item-preview'
-                dangerouslySetInnerHTML={{__html: translation}}
-            />
         case 'number':
             const min = item?.minValue ?? undefined;
             const max = item?.maxValue ?? undefined;
-            return <div
-                key={item.name}
-                className='item-preview'
-            >
-                <label htmlFor={item.name}>
-                    <div
-                        className='item-preview'
-                        dangerouslySetInnerHTML={{__html: translation}}
-                    />
-                </label>
+            return (
                 <input
                     type='number'
                     id={item.name}
@@ -29,59 +15,28 @@ export const renderItem = (item: any, translation: any) => {
                     min={min}
                     max={max}
                 />
-                <div className="requirements">
-                    Must be a between {min} and {max}.
-                </div>
-            </div>;
+            );
         case 'text':
             const minCharacters = item?.minCharacters ?? undefined;
             const maxCharacters = item?.maxCharacters ?? undefined;
-            return <div
-                key={item.name}
-                className='item-preview'
-            >
-                <label htmlFor={item.name}>
-                    <div
-                        className='item-preview'
-                        dangerouslySetInnerHTML={{__html: translation}}
-                    />
-                </label>
+            return (
                 <input
                     type='text'
                     name={item.name}
                     minLength={minCharacters}
                     maxLength={maxCharacters}
                 />
-            </div>;
+            );
         case 'date':
-            return <div
-                key={item.name}
-                className='item-preview'
-            >
-                <label htmlFor={item.name}>
-                    <div
-                        className='item-preview'
-                        dangerouslySetInnerHTML={{__html: translation}}
-                    />
-                </label>
-            </div>;
+            return null;
         case 'multi':
-            return <div
-                key={item.name}
-                className='item-preview'
-            >
-                <label htmlFor={item.name}>
-                    <div
-                        className='item-preview'
-                        dangerouslySetInnerHTML={{__html: translation}}
-                    />
-                </label>
+            return (
                 <select
                     name={item.name}
                     onChange={console.log}
                 >
                     {
-                        item.options.map(
+                        item?.options?.map(
                             (option: ImageOption | TextOption, i: number) => {
                                 switch(option.type) {
                                     case 'image':
@@ -105,7 +60,7 @@ export const renderItem = (item: any, translation: any) => {
                         )
                     }
                 </select>
-            </div>;
+            );
         default:
             return null;
     }

@@ -2,11 +2,12 @@ import { SurveyStore, TranslationsStore } from '@utils/hooks';
 import { Item } from '../../../types';
 import { ItemFormat } from './ItemFormat';
 import { Button, Popconfirm, Tabs, Typography } from 'antd';
-import ReactQuill from 'react-quill';
 import { ItemOptions } from './ItemOptions';
 import { renderItem } from './renderItem';
 import React from 'react';
 import { CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { TranslationEditor } from './TranslationEditor';
+import ReactQuill from 'react-quill';
 const { Text } = Typography;
 
 type ItemComponentProps = {
@@ -82,15 +83,9 @@ export const ItemComponent = (props: ItemComponentProps) => {
                     </div>
                     <Tabs>
                         <Tabs.TabPane tab="Content" key="content">
-                            <ReactQuill
-                                theme="snow"
+                            <TranslationEditor
                                 value={translation}
                                 onChange={setTranslation}
-                                // modules={{
-                                //     ImageResize: {
-                                //         modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
-                                //     }
-                                // }}
                             />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Options" key="options">
@@ -103,7 +98,20 @@ export const ItemComponent = (props: ItemComponentProps) => {
                         </Tabs.TabPane>
                     </Tabs>
                 </div>
-                {renderItem(item, translation)}
+                <div
+                    key={item.name}
+                    className='item-preview'
+                >
+                    <label htmlFor={item.name}>
+                        <ReactQuill
+                            value={translation}
+                            readOnly={true}
+                            theme={"bubble"}
+                        />
+                    </label>
+                    {renderItem(item)}
+                </div>
+
             </div>
             <ItemFormat callback={addItem} className="add-new-item">
                 <Button>Add item</Button>
