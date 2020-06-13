@@ -188,6 +188,9 @@ type SurveyRelatedEntities {
 """A translation reference."""
 type TranslationRef {
     id: ID!,
+    # Language inferred on the query root level
+    lang: String
+    data: String
 }
 
 type SurveyQuestionMultiReplyOptionText {

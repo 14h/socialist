@@ -5,6 +5,8 @@ import { OrgEnvelope } from './organization';
 import { RootAuditor } from '../core/rootAuditor';
 import { validation_assert, assert_valid_fqdn } from '../util/helpers';
 
+import * from '../../schema/survey-schema-iots';
+
 export interface SureyData {
     name: string;
 }
