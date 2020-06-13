@@ -90,6 +90,14 @@ export const get_resolvers = () => {
             },
         },
 
+        SurveyQuestionMultiReplyOption: {
+            __resolveType: () => {},
+        },
+
+        SurveyQuestion: {
+            __resolveType: () => {},
+        },
+
         SurveyRelatedEntities: {
             async users(
                 source: LazyRelatedEntitySrc,

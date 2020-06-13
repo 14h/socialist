@@ -236,13 +236,10 @@ type SurveyQuestionFreeformNumber {
     description: TranslationRef!
 }
 
-union SurveyQuestionFreeform =
+union SurveyQuestion =
     SurveyQuestionFreeformText
     | SurveyQuestionFreeformDate
     | SurveyQuestionFreeformNumber
-
-union SurveyQuestion =
-    SurveyQuestionFreeform
     | SurveyQuestionMulti
 
 """A survey section."""
@@ -281,6 +278,8 @@ type Survey {
 
     """Flags of this survey."""
     flags: [String]!
+
+    sections: [SurveySection]!
 }
 
 """The response of a search query, limited to the types of results as specified by the user. If the requester authorization is not privileged these search results will be limited to the directly related entities of the user."""
