@@ -185,6 +185,74 @@ type SurveyRelatedEntities {
     users: [User]! @auth
 }
 
+"""A translation reference."""
+type TranslationRef {
+    id: ID!,
+}
+
+type SurveyQuestionMultiReplyOptionText {
+    type: String! # "text"
+    name: String!
+    title: TranslationRef!
+}
+
+type SurveyQuestionMultiReplyOptionImage {
+    type: String! # "image"
+    name: String!
+    url: String!
+}
+
+union SurveyQuestionMultiReplyOption =
+    SurveyQuestionMultiReplyOptionText
+    | SurveyQuestionMultiReplyOptionImage
+
+type SurveyQuestionMulti {
+    type: String! # "multi"
+    name: String!
+    description: TranslationRef!
+    options: [SurveyQuestionMultiReplyOption]
+    randomize: Boolean  # optional
+    maxOptions: Boolean # optional
+}
+
+type SurveyQuestionFreeformText {
+    type: String! # "freeform-text"
+    name: String!
+    description: TranslationRef!
+    maxCharacters: Int # optional
+}
+
+type SurveyQuestionFreeformDate {
+    type: String! # "freeform-date"
+    name: String!
+    description: TranslationRef!
+    notBefore: Int # optional
+    notAfter: Int  # optional
+}
+
+type SurveyQuestionFreeformNumber {
+    type: String! # "freeform-number"
+    name: String!
+    description: TranslationRef!
+}
+
+union SurveyQuestionFreeform =
+    SurveyQuestionFreeformText
+    | SurveyQuestionFreeformDate
+    | SurveyQuestionFreeformNumber
+
+union SurveyQuestion =
+    SurveyQuestionFreeform
+    | SurveyQuestionMulti
+
+"""A survey section."""
+type SurveySection {
+    name: String!
+    description: TranslationRef!
+    questions: [SurveyQuestion]!
+    condition: [String]
+}
+
 """A survey."""
 type Survey {
     """A scope-local GUID identifying this survey."""

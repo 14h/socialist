@@ -15,7 +15,7 @@ import { subscribe_lockdown, subscribe_signing_root_key, validate_registered_use
 import { AuthDirective } from './gql/directives';
 import { RootCtx } from './types';
 
-const __PORT__ = process.env.PORT || 3065;
+const __PORT__ = process.env.PORT || 1516;
 
 (async () => {
     await subscribe_signing_root_key();
