@@ -85,7 +85,10 @@ export const ItemComponent = (props: ItemComponentProps) => {
                         <Tabs.TabPane tab="Content" key="content">
                             <TranslationEditor
                                 value={translation}
+                                name={item.name}
                                 onChange={setTranslation}
+                                updateName={updateName}
+                                translations={translationsStore.translations}
                             />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Options" key="options">

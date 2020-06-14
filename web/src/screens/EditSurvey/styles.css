@@ -155,3 +155,18 @@
 .ant-tabs-nav-container {
     padding: 0 16px;
 }
+
+.translation-editor {
+    background: #000;
+}
+
+
+
+/* RENDER ITEM*/
+.item-preview input {
+    width: 100%;
+    height: 30px;
+    background: #333;
+    color: #FFF;
+    font-size: 18px;
+}
