@@ -1,10 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { SurveyStore, TranslationsStore } from '@utils/hooks';
-
-export type SurveyCtx = {
-    surveyStore: SurveyStore;
-    translationsStore: TranslationsStore;
-}
+import { Translation } from '../screens/Translations';
 
 export type TUserStateMeta = Shallow<{
     email: string;
@@ -28,6 +23,7 @@ export type TCoreStateAuth = Shallow<{
 export type TCoreState = {
     auth: TCoreStateAuth;
     user: TUserState | null;
+    translations: Map<string, Translation>;
 };
 
 export type TUseStateEnvelope<T> = {
@@ -56,7 +52,7 @@ export type Condition = [
 export type NumberItem = {
     type: 'number';
     name: string;
-    title: string;
+    description: TranslationRef;
     minValue?: number;
     maxValue?: number;
 };
@@ -64,13 +60,13 @@ export type NumberItem = {
 export type DateItem = {
     type: 'date';
     name: string;
-    title: string;
+    description: TranslationRef;
 };
 
 export type TextItem = {
     type: 'text';
     name: string;
-    title: string;
+    description: TranslationRef;
     maxCharacters?: number;
     minCharacters?: number;
 }
@@ -84,13 +80,13 @@ export type ImageOption = {
 export type TextOption = {
     type: 'text';
     name: string;
-    title: string;
+    description: TranslationRef;
 }
 
 export type MultiItem = {
     type: 'multi',
     name: string;
-    title: string;
+    description: TranslationRef;
     maxOptions?: number;
     minOptions?: number;
     options?: ReadonlyArray<ImageOption | TextOption>
@@ -99,14 +95,14 @@ export type MultiItem = {
 
 export type RatingItem = {
     type: 'rating',
-    title: string;
+    description: TranslationRef;
     name: string;
 }
 
 
 export type ImagesItem = {
     type: 'images',
-    title: string;
+    description: TranslationRef;
     name: string;
 }
 
@@ -117,16 +113,19 @@ export type Item = MultiItem
     | RatingItem
     | ImagesItem;
 
+export type TranslationRef = string | null;
 
-export type Page = {
+
+export type Section = {
     name: string;
+    description: TranslationRef
+    items: Item[];
     conditions?: Condition[];
-    items: Item[]
 }
 
 export type Survey = {
     name: string;
-    title: string;
-    pages: Page[];
+    description: TranslationRef;
+    sections: Section[];
 };
 

@@ -1,33 +1,80 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Layout, Tabs, Typography } from 'antd';
-import { Item, Page} from '../../types';
+import { Item, Section} from '../../types';
 import { useParams } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import { SurveyActions } from './Components/SurveyActions';
 import { ItemFormat } from './Components/ItemFormat';
-import { useSurvey, useTranslations } from '@utils/hooks';
-import { PageActions } from './Components/PageActions';
-import { ItemComponent } from './Components/ItemComponent';
+import { useSurvey } from '@utils/hooks';
+import { SectionActions } from './Components/SectionActions';
+import { SectionItem } from './Components/SectionItem';
 
 import './styles.css';
+import { CoreCtx } from '../../index';
 
 const { Title } = Typography;
+
+const AddNewSectionButton = () => {
+    const { survey_id } = useParams();
+    const surveyStore = useSurvey(survey_id);
+
+    return (
+        <Button
+            onClick={surveyStore.insertNewSection}
+            style={{marginRight: '8px'}}
+        >
+            Add new page
+        </Button>
+    );
+}
+
+
+
 
 const EditSurvey = () => {
     const { survey_id } = useParams();
     const surveyStore = useSurvey(survey_id);
-    const translationsStore = useTranslations();
+    const currentLang = 'en';
 
-    const [pageKey, setPageKey] = useState(surveyStore.value.pages[0].name);
+    const sections = surveyStore.value?.sections ?? [];
 
-    const removePage = (key: any, action: any) => {
-        const pageIndex = surveyStore.value.pages.findIndex((p: Page) => p.name === key);
-        if (pageIndex < 0) {
+    const [sectionKey, setSectionKey] = useState(sections?.[0]?.name);
+
+    const [translations, setTranslations] = useContext(CoreCtx).translations;
+
+    const removePage = (key: any) => {
+        const sectionIndex = sections.findIndex((s: Section) => s.name === key);
+        if (sectionIndex < 0) {
             console.warn('Page not found');
             return;
         }
-        surveyStore.deletePage(pageIndex);
+
+        surveyStore.deleteSection(sectionIndex);
     }
+
+    const insertNewItem = (type: Item['type'], sectionIndex: number, itemIndex: number) => {
+        const newTranslationKey = translations.size.toString();
+        const newTranslation = {
+            [currentLang]: ''
+        }
+
+        const cloneMap = new Map(translations)
+        cloneMap.set(
+            newTranslationKey,
+            newTranslation,
+        );
+
+        setTranslations(
+            cloneMap
+        );
+
+        const newItem: Item = {
+            type,
+            description: newTranslationKey,
+            name: newTranslationKey,
+        };
+        surveyStore.insertItem(newItem, sectionIndex, itemIndex)
+    };
 
     return (
         <div className="survey-wrapper">
@@ -36,50 +83,41 @@ const EditSurvey = () => {
                 <SurveyActions />
             </Title>
             <Layout>
-            <Tabs
-                type="editable-card"
-                onChange={setPageKey}
-                activeKey={pageKey}
-                onEdit={removePage}
-                hideAdd={true}
-                tabBarExtraContent={
-                    <Button
-                        onClick={surveyStore.insertNewPage}
-                        style={{marginRight: '8px'}}
-                    >
-                        Add new page
-                    </Button>
-                }
-                size="large"
-            >
-                {surveyStore.value.pages.map((page: Page, pageIndex: number) => (
-                    <Tabs.TabPane tab={page.name} key={page.name} closable={true}>
-                        <PageActions
-                            page={page}
-                            updatePage={surveyStore.updatePage}
-                        />
-                        <br/>
-                        <ItemFormat
-                            callback={
-                                (type: Item['type']) => surveyStore.insertNewItem(pageIndex, 0, type)
-                            }
-                            className="add-new-item"
-                        >
-                            <Button>Add item</Button>
-                        </ItemFormat>
-                        {page.items.map((item: Item, itemIndex: number) => (
-                            <ItemComponent
-                                key={`EditSurveyListItem-${itemIndex}`}
-                                item={item}
-                                itemIndex={itemIndex}
-                                pageIndex={pageIndex}
-                                translationsStore={translationsStore}
-                                surveyStore={surveyStore}
+                <Tabs
+                    type="editable-card"
+                    onChange={setSectionKey}
+                    activeKey={sectionKey}
+                    onEdit={removePage}
+                    hideAdd={true}
+                    tabBarExtraContent={ <AddNewSectionButton /> }
+                    size="large"
+                >
+                    {sections.map((section: Section, sectionIndex: number) => (
+                        <Tabs.TabPane tab={section.name} key={section.name} closable={true} >
+                            <SectionActions
+                                section={section}
+                                updateSection={surveyStore.updateSection}
                             />
-                        ))}
-                    </Tabs.TabPane>
-                ))}
-            </Tabs>
+                            <br/>
+                            <ItemFormat
+                                callback={(type: Item['type']) => insertNewItem(type, sectionIndex, 0)}
+                                className="add-new-item"
+                            >
+                                <Button>Add item</Button>
+                            </ItemFormat>
+                            {section.items.map((item: Item, itemIndex: number) => (
+                                <SectionItem
+                                    key={`EditSurveyListItem-${itemIndex}`}
+                                    item={item}
+                                    itemIndex={itemIndex}
+                                    pageIndex={sectionIndex}
+                                    surveyStore={surveyStore}
+                                    insertNewItemCallback={(type: Item['type']) => insertNewItem(type, sectionIndex, itemIndex)}
+                                />
+                            ))}
+                        </Tabs.TabPane>
+                    ))}
+                </Tabs>
             </Layout>
         </div>
     );

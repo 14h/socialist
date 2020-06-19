@@ -1,93 +1,40 @@
 import { useLocalStorage } from './helpers';
-import { Item, Page, Survey } from '../types';
+import { Item, Section, Survey } from '../types';
 import { Translation } from '../screens/Translations';
+import { useEffect, useState } from 'react';
 
 export type SurveyStore = {
     value: Survey;
     setValue: (s: Survey) => any;
-    updatePage: (p: Page) => any;
-    insertNewPage: () => any;
-    deletePage: (pageIndex: number) => any;
-    insertNewItem: (pageIndex: number, itemIndex: number, type: Item['type']) => any;
+    updateSection: (s: Section) => any;
+    insertNewSection: () => any;
+    deleteSection: (pageIndex: number) => any;
+    insertItem: (i: Item, sectionIndex: number, itemIndex: number) => any;
     updateItem: (pageIndex: number, itemIndex: number, item: Item) => any;
     duplicateItem: (pageIndex: number, itemIndex: number) => any;
     deleteItem: (pageIndex: number, itemIndex: number) => any;
 }
 
-export type TranslationsStore = {
-    translations: Translation[];
-    setTranslation: (t: Translation) => void;
-    getTranslation: (key: string) => string;
-}
-
-export const useTranslations = (): TranslationsStore => {
-    const [translations, setTranslations]: any = useLocalStorage(
-        '24p_translations',
-        [
-            {
-                key: '1',
-                en: 'Who am I?',
-                de: 'Wer bin ich?',
-            },
-            {
-                key: '2',
-                en: 'what am I doing?',
-                de: 'Was mache ich?',
-            },
-        ]
-    );
-
-    const getTranslation = (key: string): string => {
-        return translations.find((t: any) => t.key === key)?.['en'] || ''
-    }
-
-    const setTranslation = (t: Translation) => {
-
-        const translationIndex = translations.findIndex((tItem: any) => tItem.key === t.key);
-        const newT = {
-            ...translations?.[translationIndex],
-            ...t,
-        };
-
-        const newTranslations = translations.slice();
-
-        if (translationIndex === -1) {
-            // translation doesn't exist
-            newTranslations.push(newT);
-        } else {
-            newTranslations.splice(translationIndex, 1, newT);
-        }
-
-
-        setTranslations(newTranslations)
-    }
-
-    return {
-        translations,
-        setTranslation,
-        getTranslation,
-    }
-}
-
 const SURVEY: Survey = {
     name: 'survey1',
-    title: 'survey_title',
-    pages: [
+    description: 'survey_title',
+    sections: [
         {
             name: 'page1',
+            description: 'page1_description',
             conditions: [],
             items: [
                 {
                     type: 'number',
                     name: 'question1',
-                    title: '2',
+                    description: '2',
                     minValue: 0,
                     maxValue: 10,
                 },
                 {
                     type: 'text',
                     name: 'question2',
-                    title: '3',
+                    description: '3',
                     minCharacters: 0,
                     maxCharacters: 10,
                 },
@@ -95,19 +42,20 @@ const SURVEY: Survey = {
         },
         {
             name: 'page2',
+            description: 'page2_description',
             conditions: [],
             items: [
                 {
                     type: 'number',
                     name: 'question21',
-                    title: '5',
+                    description: '5',
                     minValue: 0,
                     maxValue: 10,
                 },
                 {
                     type: 'number',
                     name: 'question22',
-                    title: '6',
+                    description: '6',
                     minValue: 0,
                     maxValue: 10,
                 },
@@ -118,8 +66,7 @@ const SURVEY: Survey = {
 
 
 export const useSurvey = (surveyId: string | undefined): SurveyStore => {
-    const [value, setValue] = useLocalStorage<Survey>(
-        '24p_survey',
+    const [value, setValue] = useState<Survey>(
         SURVEY,
     );
 
@@ -127,17 +74,17 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
         pageIndex: number,
         itemIndex: number,
     ) => {
-        const pagesClone = value.pages.slice();
-        const itemToClone = pagesClone[pageIndex].items[itemIndex];
+        const sectionsClone = value.sections.slice();
+        const itemToClone = sectionsClone[pageIndex].items[itemIndex];
         const newItem = Object.assign(
             {},
             itemToClone,
             {
-                name: `${itemToClone.name}_${pagesClone[pageIndex].items.length}`
+                name: `${itemToClone.name}_${sectionsClone[pageIndex].items.length}`
             }
         )
 
-        pagesClone[pageIndex].items.splice(
+        sectionsClone[pageIndex].items.splice(
             itemIndex + 1,
             0,
             newItem,
@@ -145,24 +92,24 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
 
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
         setValue(newValue);
     };
-    const insertNewItem = (
-        pageIndex: number,
+    const insertItem = (
+        item: Item,
+        sectionIndex: number,
         itemIndex: number,
-        type: Item['type'],
     ) => {
-        const pagesClone = value.pages.slice();
-        pagesClone[pageIndex].items.splice(itemIndex, 0, {
-            name: `new_item-${pagesClone[pageIndex].items.length}`,
-            title: 'New Item, please change name and title',
-            type,
-        });
+        const sectionsClone = value.sections.slice();
+        sectionsClone[sectionIndex].items.splice(
+            itemIndex,
+            0,
+            item,
+        );
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
         setValue(newValue);
     };
@@ -171,11 +118,11 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
         pageIndex: number,
         itemIndex: number,
     ) => {
-        const pagesClone = value.pages.slice();
-        pagesClone[pageIndex].items.splice(itemIndex, 1);
+        const sectionsClone = value.sections.slice();
+        sectionsClone[pageIndex].items.splice(itemIndex, 1);
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
         setValue(newValue);
     };
@@ -185,49 +132,50 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
         itemIndex: number,
         item: Item,
     ) => {
-        const pagesClone = value.pages.slice();
-        pagesClone[pageIndex].items[itemIndex] = item;
+        const sectionsClone = value.sections.slice();
+        sectionsClone[pageIndex].items[itemIndex] = item;
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
         setValue(newValue);
     }
 
-    const updatePage = (newPage: Page) => {
-        const pagesClone = value.pages.slice();
-        const pageIndex = pagesClone.findIndex((p: Page) => p.name === newPage.name)
-        pagesClone[pageIndex] = newPage;
+    const updateSection = (newPage: Section) => {
+        const sectionsClone = value.sections.slice();
+        const pageIndex = sectionsClone.findIndex((p: Section) => p.name === newPage.name)
+        sectionsClone[pageIndex] = newPage;
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
         setValue(newValue);
     };
 
-    const insertNewPage = () => {
-        const pagesClone = value.pages.slice();
+    const insertNewSection = () => {
+        const sectionsClone = value.sections.slice();
 
-        pagesClone.push({
-            name: `newPage_${pagesClone.length}`,
+        sectionsClone.push({
+            name: `newPage_${sectionsClone.length}`,
+            description: null,
             items: [],
             conditions: []
         });
 
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
 
         setValue(newValue);
     }
 
-    const deletePage = (pageIndex: number) => {
-        const pagesClone = value.pages.slice();
-        pagesClone.splice(pageIndex, 1);
+    const deleteSection = (pageIndex: number) => {
+        const sectionsClone = value.sections.slice();
+        sectionsClone.splice(pageIndex, 1);
         const newValue = {
             ...value,
-            pages: pagesClone,
+            sections: sectionsClone,
         }
         setValue(newValue);
     }
@@ -236,11 +184,11 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
     return {
         value,
         setValue,
-        updatePage,
-        insertNewPage,
-        deletePage,
+        updateSection,
+        insertNewSection,
+        deleteSection,
         duplicateItem,
-        insertNewItem,
+        insertItem,
         deleteItem,
         updateItem,
     }

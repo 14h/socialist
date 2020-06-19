@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import '../styles.css';
-import { Page } from '../../../types';
+import { Section } from '../../../types';
 
 type TProps = {
-    page: Page;
-    setPage: (p: Page) => any;
+    page: Section;
+    setPage: (p: Section) => any;
 }
 export const LogicModal = (
     props: TProps

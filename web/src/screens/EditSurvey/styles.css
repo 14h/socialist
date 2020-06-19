@@ -170,3 +170,13 @@
     color: #FFF;
     font-size: 18px;
 }
+
+.t-option {
+    width: 100%;
+    margin-top: 8px;
+    border: 1px dashed #333;
+}
+.t-option.selected {
+    border-color: #EEE;
+}
+

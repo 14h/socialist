@@ -26,7 +26,7 @@ export function useLocalStorage<T>(
             // Allow value to be a function so we have same API as useState
             const valueToStore = value instanceof Function ? value(storedValue) : value;
             // Save state
-            setStoredValue(valueToStore);
+            setStoredValue(JSON.stringify(valueToStore));
             // Save to local storage
             window.localStorage.setItem(key, JSON.stringify(valueToStore));
         } catch (error) {

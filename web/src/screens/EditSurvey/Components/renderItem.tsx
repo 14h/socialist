@@ -53,7 +53,7 @@ export const renderItem = (item: Item) => {
                                             value={option.name}
                                             key={`${option.name}_${i}`}
                                         >
-                                            {option.title}
+                                            {option.description}
                                         </option>;
                                 }
                             }

@@ -1,44 +1,44 @@
-import { SurveyStore, TranslationsStore } from '@utils/hooks';
-import { Item } from '../../../types';
+import { SurveyStore } from '@utils/hooks';
+import { Item, TranslationRef } from '../../../types';
 import { ItemFormat } from './ItemFormat';
 import { Button, Popconfirm, Tabs, Typography } from 'antd';
 import { ItemOptions } from './ItemOptions';
 import { renderItem } from './renderItem';
-import React from 'react';
+import React, { useContext } from 'react';
 import { CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { TranslationEditor } from './TranslationEditor';
 import ReactQuill from 'react-quill';
+import { CoreCtx } from '../../../index';
 const { Text } = Typography;
 
 type ItemComponentProps = {
-    item: any;
+    item: Item;
     itemIndex: number;
     pageIndex: number;
-    translationsStore: TranslationsStore;
     surveyStore: SurveyStore;
+    insertNewItemCallback: (type: Item["type"]) => any;
 };
-export const ItemComponent = (props: ItemComponentProps) => {
+export const SectionItem = (props: ItemComponentProps) => {
     const {
         item,
         itemIndex,
         pageIndex,
-        translationsStore,
         surveyStore,
+        insertNewItemCallback,
     } = props;
+    const [translations] = useContext(CoreCtx).translations;
 
     const currentLang = 'en';
 
-    const translation = translationsStore.getTranslation(item?.name);
-    const setTranslation = (content: string) => translationsStore.setTranslation({
-        key: item.name,
-        en: content
-    });
-    const addItem = (type: Item['type']) => surveyStore.insertNewItem(pageIndex, itemIndex + 1, type)
+    const translation = item?.description ? translations.get(item?.description) : {};
+    const content = translation?.[currentLang];
+
     const deleteItem = () => surveyStore.deleteItem(pageIndex, itemIndex);
     const duplicateItem = () => surveyStore.duplicateItem(pageIndex, itemIndex);
     const updateItem = (newItem: Item) => surveyStore.updateItem(pageIndex, itemIndex, newItem);
     const updateName = (name: string) => updateItem(Object.assign({}, item, { name }));
-    const onChangeType = (type: Item['type']) => updateItem({ type, name: item.name, title: item.title });
+    const updateDescription = (description: TranslationRef) => updateItem(Object.assign({}, item, { description }));
+    const onChangeType = (type: Item['type']) => updateItem({ type, name: item.name, description: item.description });
 
     if (!item) {
         return null;
@@ -84,11 +84,8 @@ export const ItemComponent = (props: ItemComponentProps) => {
                     <Tabs>
                         <Tabs.TabPane tab="Content" key="content">
                             <TranslationEditor
-                                value={translation}
-                                name={item.name}
-                                onChange={setTranslation}
-                                updateName={updateName}
-                                translations={translationsStore.translations}
+                                description={item.description}
+                                updateDescription={updateDescription}
                             />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Options" key="options">
@@ -107,7 +104,7 @@ export const ItemComponent = (props: ItemComponentProps) => {
                 >
                     <label htmlFor={item.name}>
                         <ReactQuill
-                            value={translation}
+                            value={content || ''}
                             readOnly={true}
                             theme={"bubble"}
                         />
@@ -116,7 +113,7 @@ export const ItemComponent = (props: ItemComponentProps) => {
                 </div>
 
             </div>
-            <ItemFormat callback={addItem} className="add-new-item">
+            <ItemFormat callback={insertNewItemCallback} className="add-new-item">
                 <Button>Add item</Button>
             </ItemFormat>
         </>

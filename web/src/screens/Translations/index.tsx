@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { Button, Layout, Select } from 'antd';
 
 import './styles.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { useTranslations } from '@utils/hooks';
+import { CoreCtx } from '../../index';
 
 export type Translation = {
     [key: string]: string;
@@ -14,68 +14,82 @@ export type Translation = {
 export type Lang = 'en' | 'de' | 'ar' | 'it' | 'fi';
 const AVAILABLE_LANGS: Lang[] = ['en', 'de', 'ar', 'it', 'fi'];
 
-const TranslationTable = ({
-    translations,
-    handleSave,
-    langFrom,
-    langTo,
-}: {
-    translations: Translation[];
-    handleSave: (translation: Translation) => void;
+type TranslationTableProps = {
     langFrom: Lang;
     langTo: Lang;
-}) => {
+};
+const TranslationTable = (props: TranslationTableProps) => {
+    const {langFrom, langTo} = props;
+    const [translations, setTranslations] = useContext(CoreCtx).translations;
+
+    const handleSave = (lang: Lang, key: string, translation: Translation) => (newContent: string) => {
+        const newTranslation = Object.assign(
+            {},
+            translation,
+            {
+                [lang]: newContent,
+            }
+        );
+        const cloneMap = new Map(translations)
+        cloneMap.set(
+            key,
+            newTranslation,
+        );
+
+        setTranslations(
+            cloneMap
+        )
+    }
+
     return (
         <div className="translation-table">
-            {translations.map((
-                translation: Translation,
-                index: number,
-            ) => (
-                <div className="translation-row" key={`translation-${index}`}>
-                    <div className="translation-column">
-                        <ReactQuill
-                            theme="snow"
-                            value={translation[langFrom] || ''}
-                            onChange={(content: string) => {
-                                handleSave({
-                                    ...translation,
-                                    [langFrom]: content,
-                                });
-                            }}
-                        />
+            {
+                Array.from(translations).map(([key, translation]) => (
+                    <div className="translation-row" key={`translation-${key}`}>
+                        <div className="translation-column">
+                            <ReactQuill
+                                theme="snow"
+                                value={translation[langFrom] || ''}
+                                onChange={handleSave(langFrom, key, translation)}
+                            />
+                        </div>
+                        <ArrowRightOutlined/>
+                        <div className="translation-column">
+                            <ReactQuill
+                                theme="snow"
+                                value={translation[langTo] || ''}
+                                onChange={handleSave(langTo, key, translation)}
+                            />
+                        </div>
                     </div>
-                    <ArrowRightOutlined/>
-                    <div className="translation-column">
-                        <ReactQuill
-                            theme="snow"
-                            value={translation[langTo] || ''}
-                            onChange={(content: string) => {
-                                handleSave({
-                                    ...translation,
-                                    [langTo]: content,
-                                });
-                            }}
-                        />
-                    </div>
-                </div>
-            ))}
+                ))
+            }
         </div>
     );
 };
 
 const Translations = () => {
-    const translationsStore = useTranslations();
+    const [translations, setTranslations] = useContext(CoreCtx).translations;
     const [langFrom, setLangFrom] = useState<Lang>('en');
     const [langTo, setLangTo] = useState<Lang>('de');
+    const currentLang = 'en';
 
     const handleAdd = () => {
-        translationsStore.setTranslation(
-            {
-                key: translationsStore.translations.length.toString(),
-                en: ''
-            }
+        const newTranslation = {
+            [currentLang]: ''
+        }
+
+        const cloneMap = new Map(translations)
+        cloneMap.set(
+            translations.size.toString(),
+            newTranslation,
+        );
+
+        setTranslations(
+            cloneMap
         )
     };
+
 
     return (
         <Layout className="container-layout">
@@ -113,8 +127,6 @@ const Translations = () => {
                 </Button>
             </div>
             <TranslationTable
-                translations={translationsStore.translations}
-                handleSave={translationsStore.setTranslation}
                 langFrom={langFrom}
                 langTo={langTo}
             />

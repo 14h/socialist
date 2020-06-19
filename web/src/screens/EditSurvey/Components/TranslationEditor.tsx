@@ -1,78 +1,147 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import ReactQuill, {Quill} from 'react-quill';
 // @ts-ignore
-import ImageResize from 'quill-image-resize-module-react';
-import { Select } from 'antd';
+// import ImageResize from 'quill-image-resize-module-react';
+import { Button, Input, Modal } from 'antd';
+import { CoreCtx } from '../../../index';
 import { Translation } from '../../Translations';
+import { TranslationRef } from '../../../types';
 
 
-Quill.register('modules/imageResize', ImageResize);
+// Quill.register('modules/imageResize', ImageResize);
+
 
 
 type TProps = {
-    placeholder?: string;
-    value: string;
-    onChange: any;
-    updateName: (newName: string) => any;
-    name: string;
-    translations: Translation[]
+    updateDescription: (newName: string) => any;
+    description: TranslationRef;
 };
 
 export const TranslationEditor = (props: TProps) => {
     const {
-        value,
-        onChange,
-        updateName,
-        name,
-        translations,
+        updateDescription,
+        description,
     } = props;
+
+    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translation = description ? translations.get(description) : {};
+    const currentLang = 'en';
+    const content = translation?.[currentLang];
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedTranslationKey, setSelectedTranslationKey] = useState<Translation["key"] | null>(description);
+    const [searchValue, setSearchValue] = useState('');
+
+    const [filteredTranslations, setFilteredTranslations] = useState<[string, Translation][]>(Array.from(translations))
+
+
+
+    const onChangeTranslation = (text: string) => {
+        const newTranslationKey = description || translations.size.toString();
+
+        if (!description) {
+            updateDescription(newTranslationKey);
+        }
+        const newTranslation = Object.assign(
+            {},
+            translation,
+            {
+                [currentLang]: text,
+            }
+        );
+        const cloneMap = new Map(translations);
+        cloneMap.set(
+            newTranslationKey,
+            newTranslation,
+        );
+
+        setTranslations(
+            cloneMap
+        );
+    }
+
+    const onChangeSearch = (e: any) => {
+        const newSearchValue = e.target.value;
+
+        setSearchValue(newSearchValue);
+
+
+        setFilteredTranslations(
+            Array.from(translations).filter(
+                ([, t]) => t[currentLang].includes(newSearchValue)
+            )
+        );
+    }
+
+    const onSelectTranslation = () => {
+        if (selectedTranslationKey) {
+            updateDescription(selectedTranslationKey)
+        }
+    }
+
+
 
     return (
         <div className="translation-editor">
-            <Select
-                showSearch
-                style={{ width: 200, margin: '0 auto', display: 'flex' }}
-                placeholder="Select a translation"
-                // optionFilterProp="children"
-                onChange={updateName}
-                // filterOption={(input: string, option: any) =>
-                //     option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                // }
-                value={name}
+
+            <Button
+                type="link"
+                onClick={() => setShowModal(true)}
             >
+                change Translation
+            </Button>
+            <Modal
+                title="Change Translation"
+                visible={showModal}
+                width={768}
+                onOk={onSelectTranslation}
+                onCancel={() => setShowModal(false)}
+                okText="Select"
+                afterClose={
+                    () => setSelectedTranslationKey(description)
+                }
+                destroyOnClose={true}
+            >
+                <Input
+                    value={searchValue}
+                    onChange={onChangeSearch}
+                    placeholder="Filter translations"
+                />
                 {
-                    translations.filter(t => t.key).filter(t => t['en']).map((t: Translation, index: number) => (
-                        <Select.Option
-                            key={`t_${index}`}
-                            value={t.key}
+                    filteredTranslations.map(([key, t]) => (
+                        <div
+                            className={selectedTranslationKey === key ? 't-option selected' : 't-option'}
+                            key={key}
+                            onClick={() => setSelectedTranslationKey(key)}
                         >
-                            {t.key}
-                        </Select.Option>
+                            <ReactQuill
+                                value={t[currentLang] || ''}
+                                readOnly={true}
+                                theme={"bubble"}
+                            />
+                        </div>
+
                     ))
                 }
-            </Select>
+
+            </Modal>
+
+
+            <br />
             <ReactQuill
-                value={value}
-                onChange={onChange}
-                placeholder={props.placeholder}
+                value={content || ''}
+                onChange={onChangeTranslation}
                 modules={
                     {
-                        imageResize: {
-                            parchment: Quill.import('parchment')
-                        },
                         toolbar: [
 
-
                             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-                            ['blockquote', 'code-block'],
+                            ['blockquote'],
 
-                            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                            [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }],               // custom button values
                             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-                            [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
                             [{ 'direction': 'rtl' }],                         // text direction
 
-                            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
                             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
                             [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
@@ -80,8 +149,10 @@ export const TranslationEditor = (props: TProps) => {
                             [{ 'align': [] }],
 
                             ['clean'],                                         // remove formatting button
-                            ['image']
+                            ['image'],
+                            ['translation']
                         ],
+
                     }
                 }
                 formats={
@@ -102,7 +173,6 @@ export const TranslationEditor = (props: TProps) => {
                         "color"
                     ]
                 }
-                theme={"snow"} // pass false to use minimal theme
             />
         </div>
     )
