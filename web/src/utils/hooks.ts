@@ -1,13 +1,11 @@
-import { useLocalStorage } from './helpers';
 import { Item, Section, Survey } from '../types';
-import { Translation } from '../screens/Translations';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export type SurveyStore = {
     value: Survey;
     setValue: (s: Survey) => any;
     updateSection: (s: Section) => any;
-    insertNewSection: () => any;
+    insertSection: (s: Section) => any;
     deleteSection: (pageIndex: number) => any;
     insertItem: (i: Item, sectionIndex: number, itemIndex: number) => any;
     updateItem: (pageIndex: number, itemIndex: number, item: Item) => any;
@@ -152,20 +150,16 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
         setValue(newValue);
     };
 
-    const insertNewSection = () => {
+    const insertSection = (section: Section) => {
         const sectionsClone = value.sections.slice();
 
-        sectionsClone.push({
-            name: `newPage_${sectionsClone.length}`,
-            description: null,
-            items: [],
-            conditions: []
-        });
+        sectionsClone.push(section);
 
         const newValue = {
             ...value,
             sections: sectionsClone,
         }
+        console.log(newValue)
 
         setValue(newValue);
     }
@@ -185,7 +179,7 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
         value,
         setValue,
         updateSection,
-        insertNewSection,
+        insertSection,
         deleteSection,
         duplicateItem,
         insertItem,

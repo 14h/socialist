@@ -16,11 +16,39 @@ const { Title } = Typography;
 
 const AddNewSectionButton = () => {
     const { survey_id } = useParams();
+    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const currentLang = 'en';
     const surveyStore = useSurvey(survey_id);
+
+    const handleOnClick = () => {
+        const newTranslationKey = translations.size.toString();
+        const newTranslation = {
+            [currentLang]: ''
+        }
+
+        const cloneMap = new Map(translations)
+        cloneMap.set(
+            newTranslationKey,
+            newTranslation,
+        );
+
+        setTranslations(
+            cloneMap
+        );
+
+        const newSection = {
+            name: `newPage_${surveyStore.value.sections.length}`,
+            description: newTranslationKey,
+            items: [],
+            conditions: []
+        };
+
+        surveyStore.insertSection(newSection)
+    }
 
     return (
         <Button
-            onClick={surveyStore.insertNewSection}
+            onClick={handleOnClick}
             style={{marginRight: '8px'}}
         >
             Add new page
