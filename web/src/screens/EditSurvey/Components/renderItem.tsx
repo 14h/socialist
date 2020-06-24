@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageOption, Item, TextOption } from '../../../types';
+import { Item, MultiItemOption } from '../../../types';
 
 export const renderItem = (item: Item) => {
 
@@ -30,33 +30,21 @@ export const renderItem = (item: Item) => {
         case 'date':
             return null;
         case 'multi':
+            console.log(item)
             return (
                 <select
                     name={item.name}
                     onChange={console.log}
                 >
                     {
-                        item?.options?.map(
-                            (option: ImageOption | TextOption, i: number) => {
-                                switch(option.type) {
-                                    case 'image':
-                                        return <option
-                                            value={option.name}
-                                            key={`${option.name}_${i}`}
-                                            style={{
-                                                backgroundImage: option.url
-                                            }}
-                                        >
-                                        </option>;
-                                    case 'text':
-                                        return <option
-                                            value={option.name}
-                                            key={`${option.name}_${i}`}
-                                        >
-                                            {option.description}
-                                        </option>;
-                                }
-                            }
+                        (item?.options ?? [])?.map(
+                            (option: MultiItemOption, i: number) =>
+                                <option
+                                    value={option.name}
+                                    key={`${option.name}_${i}`}
+                                >
+                                    {option.description}
+                                </option>
                         )
                     }
                 </select>

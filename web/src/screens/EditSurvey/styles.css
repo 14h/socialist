@@ -160,8 +160,6 @@
     background: #000;
 }
 
-
-
 /* RENDER ITEM*/
 .item-preview input {
     width: 100%;
@@ -179,4 +177,6 @@
 .t-option.selected {
     border-color: #EEE;
 }
-
+.ql-editor {
+    min-height: 100px;
+}

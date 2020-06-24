@@ -1,81 +1,89 @@
-import React from 'react';
-import { InputNumber } from 'antd';
+import React, { useContext } from 'react';
 import '../styles.css';
-import { Item } from '../../../types';
+import { Item, MultiItemOption } from '../../../types';
+import { Button } from 'antd';
+import { TranslationEditor } from './TranslationEditor';
+import { CoreCtx } from '../../../index';
 
+type TProps = {
+    item: Item;
+    updateItem: (item: Item) => void;
+};
 
-export const ItemOptions = ({ item, updateItem }: { item: Item; updateItem: (item: Item) => void; }) => {
-    if (item.type === 'text') {
-        const updateMinChars = (minCharacters: number | undefined) =>
-            updateItem(Object.assign({}, item, { minCharacters }));
-        const updateMaxChars = (maxCharacters: number | undefined) =>
-            updateItem(Object.assign({}, item, { maxCharacters }));
-        return (
-            <div className='item-block'>
-                <span>Question options:</span>
-                <div className='option-item'>
-                    <span>Min Characters:  </span>
-                    <InputNumber defaultValue={item?.minCharacters} onChange={updateMinChars}/>
-                </div>
-                <div className='option-item'>
-                    <span>Max Characters: </span>
-                    <InputNumber defaultValue={item?.minCharacters} onChange={updateMaxChars}/>
-                </div>
+export const ItemOptions = (props: TProps) => {
+    const { item, updateItem } = props;
+    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const currentLang = 'en';
 
-            </div>
-        );
+    if (item.type !== 'multi') {
+        return null;
     }
 
-    if (item.type === 'number') {
-        const updateMinValue = (minValue: number | undefined) =>
-            updateItem(Object.assign({}, item, { minValue }));
-        const updateMaxValue = (maxValue: number | undefined) =>
-            updateItem(Object.assign({}, item, { maxValue }));
+    const handleOnClick = () => {
+        const newTranslationKey = translations.size.toString();
+        const newTranslation = {
+            [currentLang]: ''
+        }
 
-        return (
-            <div className='item-block'>
-                <span>Question options:</span>
-                <div className='option-item'>
-                    <span>Min Value:  </span>
-                    <InputNumber defaultValue={item?.minValue} onChange={updateMinValue}/>
-                </div>
-                <div className='option-item'>
-                    <span>Max Value: </span>
-                    <InputNumber defaultValue={item?.maxValue} onChange={updateMaxValue}/>
-                </div>
-
-            </div>
+        const cloneMap = new Map(translations)
+        cloneMap.set(
+            newTranslationKey,
+            newTranslation,
         );
+
+        setTranslations(
+            cloneMap
+        );
+
+        const newOption: MultiItemOption = {
+            name: newTranslationKey,
+            description: newTranslationKey,
+        };
+
+        const itemOptions = [
+            ...(item?.options ?? []),
+            newOption
+        ];
+
+        const newItem = Object.assign(
+            {},
+            item,
+            {
+                options: itemOptions,
+            }
+        );
+
+        updateItem(newItem);
     }
 
     if (item.type === 'multi') {
-        const updateMinOptions = (minOptions: number | undefined) =>
-            updateItem(Object.assign({}, item, { minOptions }));
-        const updateMaxOptions = (maxOptions: number | undefined) =>
-            updateItem(Object.assign({}, item, { maxOptions }));
-
         return (
+            <div>
+                <Button
+                    onClick={handleOnClick}
+                    style={{ float: 'right' }}
+                >
+                    Add option
+                </Button>
+                <div>
+                    {
+                        (item?.options ?? []).map((option: MultiItemOption) => {
 
-            <div className='item-block'>
-                <span>Question options:</span>
-                <div className='option-item'>
-                    <span>Min Options:  </span>
-                    <InputNumber defaultValue={item?.minOptions} onChange={updateMinOptions}/>
+                            return (
+                                <div>
+                                    <TranslationEditor
+                                        description={option?.description}
+                                        updateDescription={console.log}
+                                    />
+                                </div>
+                            );
+                        })
+                    }
                 </div>
-                <div className='option-item'>
-                    <span>Max Options: </span>
-                    <InputNumber defaultValue={item?.maxOptions} onChange={updateMaxOptions}/>
-                </div>
-
             </div>
         );
     }
 
-    if (item.type === 'date') {
-        return (
-            <div/>
-        );
-    }
 
     return (
         <div/>

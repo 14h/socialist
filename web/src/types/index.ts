@@ -71,14 +71,8 @@ export type TextItem = {
     minCharacters?: number;
 }
 
-export type ImageOption = {
-    type: 'image';
-    name: string;
-    url: string;
-}
 
-export type TextOption = {
-    type: 'text';
+export type MultiItemOption = {
     name: string;
     description: TranslationRef;
 }
@@ -89,7 +83,7 @@ export type MultiItem = {
     description: TranslationRef;
     maxOptions?: number;
     minOptions?: number;
-    options?: ReadonlyArray<ImageOption | TextOption>
+    options?: ReadonlyArray<MultiItemOption>
 }
 
 

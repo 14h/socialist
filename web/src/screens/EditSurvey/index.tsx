@@ -57,8 +57,6 @@ const AddNewSectionButton = () => {
 }
 
 
-
-
 const EditSurvey = () => {
     const { survey_id } = useParams();
     const surveyStore = useSurvey(survey_id);
