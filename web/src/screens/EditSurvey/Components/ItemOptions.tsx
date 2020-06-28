@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import '../styles.css';
-import { Item, MultiItemOption } from '../../../types';
+import { Item, MultiItemOption, TranslationRef } from '../../../types';
 import { Button } from 'antd';
 import { TranslationEditor } from './TranslationEditor';
 import { CoreCtx } from '../../../index';
@@ -56,28 +56,71 @@ export const ItemOptions = (props: TProps) => {
         updateItem(newItem);
     }
 
+    const updateOptionDescription = (translationRef: string, index: number) => {
+        const newOption: MultiItemOption = {
+            name: translationRef,
+            description: translationRef
+        }
+
+        const newOptions = (item?.options ?? []).slice();
+        newOptions.splice(
+            index,
+            1,
+            newOption
+        );
+
+        const newItem = Object.assign(
+            {},
+            item,
+            {
+                options: newOptions,
+            }
+        );
+
+        updateItem(newItem);
+
+    };
+
+    const onDeleteOption = (index: number) => {
+        const newOptions = (item?.options ?? []).slice();
+        newOptions.splice(
+            index,
+            1,
+        );
+
+        const newItem = Object.assign(
+            {},
+            item,
+            {
+                options: newOptions,
+            }
+        );
+
+        updateItem(newItem);
+    }
+
     if (item.type === 'multi') {
         return (
-            <div>
+            <div className='item-option-wrapper'>
                 <Button
                     onClick={handleOnClick}
-                    style={{ float: 'right' }}
+                    className='item-option-add-button'
                 >
                     Add option
                 </Button>
                 <div>
                     {
-                        (item?.options ?? []).map((option: MultiItemOption) => {
-
-                            return (
-                                <div>
-                                    <TranslationEditor
-                                        description={option?.description}
-                                        updateDescription={console.log}
-                                    />
-                                </div>
-                            );
-                        })
+                        (item?.options ?? []).map((option: MultiItemOption, index: number) =>
+                            <div className='item-option'>
+                                <TranslationEditor
+                                    description={option?.description}
+                                    updateDescription={(t) => updateOptionDescription(t, index)}
+                                    onDelete={() => onDeleteOption(index)}
+                                    showDelete={true}
+                                    key={index}
+                                />
+                            </div>
+                        )
                     }
                 </div>
             </div>

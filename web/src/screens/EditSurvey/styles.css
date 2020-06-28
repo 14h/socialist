@@ -180,3 +180,15 @@
 .ql-editor {
     min-height: 100px;
 }
+
+
+.item-option-wrapper {
+    text-align: center;
+}
+.item-option {
+    border: 1px dashed #333;
+    margin-top: 16px;
+
+}
+.item-option-add-button {
+}

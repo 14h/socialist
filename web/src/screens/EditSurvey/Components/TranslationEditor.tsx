@@ -15,12 +15,16 @@ import { TranslationRef } from '../../../types';
 type TProps = {
     updateDescription: (newName: string) => any;
     description: TranslationRef;
+    onDelete?: () => any;
+    showDelete?: boolean;
 };
 
 export const TranslationEditor = (props: TProps) => {
     const {
         updateDescription,
         description,
+        onDelete,
+        showDelete,
     } = props;
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
@@ -84,12 +88,24 @@ export const TranslationEditor = (props: TProps) => {
     return (
         <div className="translation-editor">
 
-            <Button
-                type="link"
-                onClick={() => setShowModal(true)}
-            >
-                change Translation
-            </Button>
+            <Button.Group>
+                <Button
+                    type="link"
+                    onClick={() => setShowModal(true)}
+                >
+                    Select from Translations
+                </Button>
+                {
+                    showDelete && <Button
+                        type="danger"
+                        onClick={onDelete}
+
+                    >
+                        Delete
+                    </Button>
+                }
+
+            </Button.Group>
             <Modal
                 title="Change Translation"
                 visible={showModal}

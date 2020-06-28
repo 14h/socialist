@@ -23,11 +23,10 @@ const SURVEY: Survey = {
             conditions: [],
             items: [
                 {
-                    type: 'number',
+                    type: 'multi',
                     name: 'question1',
                     description: '2',
-                    minValue: 0,
-                    maxValue: 10,
+                    options: [],
                 },
                 {
                     type: 'text',
