@@ -4,18 +4,18 @@ import '../styles.css';
 import { Section } from '../../../types';
 
 type TProps = {
-    page: Section;
-    setPage: (p: Section) => any;
+    section: Section;
+    setSection: (p: Section) => any;
 }
 export const LogicModal = (
     props: TProps
 ) => {
-    const {page, setPage} = props;
+    const {section, setSection} = props;
     const [showModal, setShowModal] = useState(false);
 
     return (
         <>
-            <Button onClick={() => setShowModal(true)}>Change logic</Button>
+            <Button onClick={() => setShowModal(true)}>Change section logic</Button>
 
             <Modal
                 title="Page logic"

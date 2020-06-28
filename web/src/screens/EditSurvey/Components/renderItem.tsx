@@ -30,7 +30,6 @@ export const renderItem = (item: Item) => {
         case 'date':
             return null;
         case 'multi':
-            console.log(item)
             return (
                 <select
                     name={item.name}

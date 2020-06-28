@@ -1,18 +1,17 @@
 import React, { useContext, useState } from 'react';
-import { Button, Layout, Tabs, Typography } from 'antd';
+import { Button, Layout, Tabs } from 'antd';
 import { Item, Section} from '../../types';
 import { useParams } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import { SurveyActions } from './Components/SurveyActions';
 import { ItemFormat } from './Components/ItemFormat';
 import { useSurvey } from '@utils/hooks';
-import { SectionActions } from './Components/SectionActions';
 import { SectionItem } from './Components/SectionItem';
 
 import './styles.css';
 import { CoreCtx } from '../../index';
+import { ItemEdit } from './Components/ItemEdit';
 
-const { Title } = Typography;
 
 const AddNewSectionButton = () => {
     const { survey_id } = useParams();
@@ -68,6 +67,8 @@ const EditSurvey = () => {
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
 
+    const [selectedItemIndex, setSelectedItemIndex] = useState(0);
+
     const removePage = (key: any) => {
         const sectionIndex = sections.findIndex((s: Section) => s.name === key);
         if (sectionIndex < 0) {
@@ -104,10 +105,10 @@ const EditSurvey = () => {
 
     return (
         <div className="survey-wrapper">
-            <Title className="survey-title">
+            <div className="survey-title">
                 {survey_id}
                 <SurveyActions />
-            </Title>
+            </div>
             <Layout>
                 <Tabs
                     type="editable-card"
@@ -120,27 +121,52 @@ const EditSurvey = () => {
                 >
                     {sections.map((section: Section, sectionIndex: number) => (
                         <Tabs.TabPane tab={section.name} key={section.name} closable={true} >
-                            <SectionActions
-                                section={section}
-                                updateSection={surveyStore.updateSection}
-                            />
-                            <br/>
-                            <ItemFormat
-                                callback={(type: Item['type']) => insertNewItem(type, sectionIndex, 0)}
-                                className="add-new-item"
+                            <div
+                                className='section-tab'
                             >
-                                <Button>Add item</Button>
-                            </ItemFormat>
-                            {section.items.map((item: Item, itemIndex: number) => (
-                                <SectionItem
-                                    key={`EditSurveyListItem-${itemIndex}`}
-                                    item={item}
-                                    itemIndex={itemIndex}
-                                    pageIndex={sectionIndex}
+                                <div
+                                    style={{
+                                        width: '70%',
+                                        overflowY: 'scroll',
+                                        height: '80vh',
+                                        padding: '16px',
+                                    }}
+                                >
+                                    <ItemFormat
+                                        callback={(type: Item['type']) => insertNewItem(type, sectionIndex, 0)}
+                                        className="add-new-item"
+                                    >
+                                        <Button>Add item</Button>
+                                    </ItemFormat>
+                                    {section.items.map((item: Item, itemIndex: number) => (
+                                        <>
+                                            <div
+                                                onClick={() => setSelectedItemIndex(itemIndex)}
+                                            >
+                                                <SectionItem
+                                                    key={`EditSurveyListItem-${itemIndex}`}
+                                                    item={item}
+
+                                                />
+                                            </div>
+
+                                            <ItemFormat
+                                                callback={(type: Item['type']) => insertNewItem(type, sectionIndex, itemIndex)}
+                                                className="add-new-item"
+                                            >
+                                                <Button>Add item</Button>
+                                            </ItemFormat>
+                                        </>
+                                    ))}
+                                </div>
+                                <ItemEdit
+                                    section={section}
+                                    itemIndex={selectedItemIndex}
+                                    sectionIndex={sectionIndex}
                                     surveyStore={surveyStore}
-                                    insertNewItemCallback={(type: Item['type']) => insertNewItem(type, sectionIndex, itemIndex)}
                                 />
-                            ))}
+                            </div>
+
                         </Tabs.TabPane>
                     ))}
                 </Tabs>

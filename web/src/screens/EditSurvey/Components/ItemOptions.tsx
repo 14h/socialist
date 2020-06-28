@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import '../styles.css';
-import { Item, MultiItemOption, TranslationRef } from '../../../types';
+import { Item, MultiItemOption } from '../../../types';
 import { Button } from 'antd';
 import { TranslationEditor } from './TranslationEditor';
 import { CoreCtx } from '../../../index';
@@ -116,7 +116,6 @@ export const ItemOptions = (props: TProps) => {
                                     description={option?.description}
                                     updateDescription={(t) => updateOptionDescription(t, index)}
                                     onDelete={() => onDeleteOption(index)}
-                                    showDelete={true}
                                     key={index}
                                 />
                             </div>

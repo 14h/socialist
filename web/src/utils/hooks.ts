@@ -6,11 +6,12 @@ export type SurveyStore = {
     setValue: (s: Survey) => any;
     updateSection: (s: Section) => any;
     insertSection: (s: Section) => any;
-    deleteSection: (pageIndex: number) => any;
+    deleteSection: (sectionIndex: number) => any;
     insertItem: (i: Item, sectionIndex: number, itemIndex: number) => any;
-    updateItem: (pageIndex: number, itemIndex: number, item: Item) => any;
-    duplicateItem: (pageIndex: number, itemIndex: number) => any;
-    deleteItem: (pageIndex: number, itemIndex: number) => any;
+    updateItem: (sectionIndex: number, itemIndex: number, item: Item) => any;
+    duplicateItem: (sectionIndex: number, itemIndex: number) => any;
+    deleteItem: (sectionIndex: number, itemIndex: number) => any;
+    getItem: (sectionIndex: number, itemIndex: number) => Item;
 }
 
 const SURVEY: Survey = {
@@ -68,20 +69,20 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
     );
 
     const duplicateItem = (
-        pageIndex: number,
+        sectionIndex: number,
         itemIndex: number,
     ) => {
         const sectionsClone = value.sections.slice();
-        const itemToClone = sectionsClone[pageIndex].items[itemIndex];
+        const itemToClone = sectionsClone[sectionIndex].items[itemIndex];
         const newItem = Object.assign(
             {},
             itemToClone,
             {
-                name: `${itemToClone.name}_${sectionsClone[pageIndex].items.length}`
+                name: `${itemToClone.name}_${sectionsClone[sectionIndex].items.length}`
             }
         )
 
-        sectionsClone[pageIndex].items.splice(
+        sectionsClone[sectionIndex].items.splice(
             itemIndex + 1,
             0,
             newItem,
@@ -112,11 +113,11 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
     };
 
     const deleteItem = (
-        pageIndex: number,
+        sectionIndex: number,
         itemIndex: number,
     ) => {
         const sectionsClone = value.sections.slice();
-        sectionsClone[pageIndex].items.splice(itemIndex, 1);
+        sectionsClone[sectionIndex].items.splice(itemIndex, 1);
         const newValue = {
             ...value,
             sections: sectionsClone,
@@ -125,12 +126,12 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
     };
 
     const updateItem = (
-        pageIndex: number,
+        sectionIndex: number,
         itemIndex: number,
         item: Item,
     ) => {
         const sectionsClone = value.sections.slice();
-        sectionsClone[pageIndex].items[itemIndex] = item;
+        sectionsClone[sectionIndex].items[itemIndex] = item;
         const newValue = {
             ...value,
             sections: sectionsClone,
@@ -140,8 +141,8 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
 
     const updateSection = (newPage: Section) => {
         const sectionsClone = value.sections.slice();
-        const pageIndex = sectionsClone.findIndex((p: Section) => p.name === newPage.name)
-        sectionsClone[pageIndex] = newPage;
+        const sectionIndex = sectionsClone.findIndex((p: Section) => p.name === newPage.name)
+        sectionsClone[sectionIndex] = newPage;
         const newValue = {
             ...value,
             sections: sectionsClone,
@@ -158,20 +159,22 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
             ...value,
             sections: sectionsClone,
         }
-        console.log(newValue)
 
         setValue(newValue);
     }
 
-    const deleteSection = (pageIndex: number) => {
+    const deleteSection = (sectionIndex: number) => {
         const sectionsClone = value.sections.slice();
-        sectionsClone.splice(pageIndex, 1);
+        sectionsClone.splice(sectionIndex, 1);
         const newValue = {
             ...value,
             sections: sectionsClone,
         }
         setValue(newValue);
     }
+
+    const getItem = (sectionIndex: number, itemIndex: number) =>
+        value?.sections?.[sectionIndex]?.items?.[itemIndex];
 
 
     return {
@@ -184,5 +187,6 @@ export const useSurvey = (surveyId: string | undefined): SurveyStore => {
         insertItem,
         deleteItem,
         updateItem,
+        getItem,
     }
 }

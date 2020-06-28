@@ -16,7 +16,7 @@ export const SortModal = (
 
     return (
         <>
-            <Button onClick={() => setShowModal(true)}>Sort items</Button>
+            <Button onClick={() => setShowModal(true)}>Sort section items</Button>
 
             <Modal
                 title="Sort items"

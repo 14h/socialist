@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles.css';
 import { SortModal } from './SortModal';
 import { Item, Section } from '../../../types';
 import { LogicModal } from './LogicModal';
@@ -18,8 +17,8 @@ export const SectionActions = (props: TProps) => {
                 updateItems={ (items: Item[]) => updateSection({...section, items})}
             />
             <LogicModal
-                page={section}
-                setPage={updateSection}
+                section={section}
+                setSection={updateSection}
             />
         </div>
     );

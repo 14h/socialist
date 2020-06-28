@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import ReactQuill, {Quill} from 'react-quill';
+import ReactQuill from 'react-quill';
 // @ts-ignore
 // import ImageResize from 'quill-image-resize-module-react';
 import { Button, Input, Modal } from 'antd';
@@ -15,8 +15,7 @@ import { TranslationRef } from '../../../types';
 type TProps = {
     updateDescription: (newName: string) => any;
     description: TranslationRef;
-    onDelete?: () => any;
-    showDelete?: boolean;
+    onDelete: () => any;
 };
 
 export const TranslationEditor = (props: TProps) => {
@@ -24,7 +23,6 @@ export const TranslationEditor = (props: TProps) => {
         updateDescription,
         description,
         onDelete,
-        showDelete,
     } = props;
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
@@ -91,19 +89,26 @@ export const TranslationEditor = (props: TProps) => {
             <Button.Group>
                 <Button
                     type="link"
+                    className='t-editor-action-button'
+                    onClick={() => setShowModal(true)}
+                >
+                    new Translation
+                </Button>
+                <Button
+                    type="link"
+                    className='t-editor-action-button'
                     onClick={() => setShowModal(true)}
                 >
                     Select from Translations
                 </Button>
-                {
-                    showDelete && <Button
-                        type="danger"
-                        onClick={onDelete}
+                <Button
+                    type="link"
+                    className='t-editor-delete-button'
+                    onClick={onDelete}
 
-                    >
-                        Delete
-                    </Button>
-                }
+                >
+                    Delete
+                </Button>
 
             </Button.Group>
             <Modal
@@ -154,40 +159,21 @@ export const TranslationEditor = (props: TProps) => {
                             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
                             ['blockquote'],
 
-                            [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }],               // custom button values
+                            // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }],               // custom button values
                             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                             [{ 'direction': 'rtl' }],                         // text direction
 
                             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
                             [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-                            [{ 'font': [] }],
+                            // [{ 'font': [] }],
                             [{ 'align': [] }],
 
                             ['clean'],                                         // remove formatting button
                             ['image'],
-                            ['translation']
                         ],
 
                     }
-                }
-                formats={
-                    [
-                        "header",
-                        "font",
-                        "size",
-                        "bold",
-                        "italic",
-                        "underline",
-                        "strike",
-                        "blockquote",
-                        "list",
-                        "bullet",
-                        "indent",
-                        "link",
-                        "image",
-                        "color"
-                    ]
                 }
             />
         </div>
