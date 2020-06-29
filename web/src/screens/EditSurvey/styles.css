@@ -154,8 +154,9 @@
     padding: 0 16px;
 }
 
-.translation-editor {
+.t-editor {
     text-align: center;
+    margin: 16px 0;
 }
 
 /* RENDER ITEM*/
@@ -175,7 +176,7 @@
 .t-option.selected {
     border-color: #EEE;
 }
-.translation-editor .ql-editor {
+.t-editor .ql-editor {
     min-height: 200px;
     background: #000;
 }
@@ -207,4 +208,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
+}
+.section-tab > div {
+    overflow-y: scroll;
+    height: 80vh;
 }

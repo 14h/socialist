@@ -127,8 +127,6 @@ const EditSurvey = () => {
                                 <div
                                     style={{
                                         width: '70%',
-                                        overflowY: 'scroll',
-                                        height: '80vh',
                                         padding: '16px',
                                     }}
                                 >

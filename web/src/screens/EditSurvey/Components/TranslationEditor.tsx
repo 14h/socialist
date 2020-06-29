@@ -84,7 +84,7 @@ export const TranslationEditor = (props: TProps) => {
 
 
     return (
-        <div className="translation-editor">
+        <div className="t-editor">
 
             <Button.Group>
                 <Button

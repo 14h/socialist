@@ -7,8 +7,8 @@ import { ItemSettings } from './ItemSettings';
 import React from 'react';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons/lib';
 import { Item, Section, TranslationRef } from '../../../types';
-import { SectionActions } from './SectionActions';
-const { Text } = Typography;
+import { ReactSortable } from 'react-sortablejs';
+
 
 type TProps = {
     section: Section;
@@ -29,29 +29,23 @@ export const ItemEdit = (props: TProps) => {
     const item = surveyStore.getItem(sectionIndex, itemIndex);
     const deleteItem = () => surveyStore.deleteItem(sectionIndex, itemIndex);
     const updateItem = (newItem: Item) => surveyStore.updateItem(sectionIndex, itemIndex, newItem);
-    const updateName = (name: string) => updateItem(Object.assign({}, item, { name }));
+
     const updateDescription = (description: TranslationRef) => updateItem(Object.assign({}, item, { description }));
-    const onChangeType = (type: Item['type']) => updateItem({ type, name: item.name, description: item.description });
 
     return (
         <div className="item-edit">
-            
-            <SectionActions
-                section={section}
-                updateSection={surveyStore.updateSection}
-            />
-            <div className="item-header">
-                <Text editable={{ onChange: updateName }}>{item.name}</Text>
+            <Tabs>
+                <Tabs.TabPane tab="Edit item" key="item">
+                    <TranslationEditor
+                        description={item.description}
+                        updateDescription={updateDescription}
+                        onDelete={deleteItem}
+                    />
 
-                <div className="item-actions">
-                    <ItemFormat callback={onChangeType} className="edit-format">
-                        <Button
-                            type="link"
-                        >
-                            {item.type}
-                            <EditOutlined/>
-                        </Button>
-                    </ItemFormat>
+                    <ItemSettings
+                        item={item}
+                        updateItem={updateItem}
+                    />
 
                     <Popconfirm
                         title="Are you sure?"
@@ -65,29 +59,36 @@ export const ItemEdit = (props: TProps) => {
                             Delete<DeleteOutlined/>
                         </Button>
                     </Popconfirm>
-                </div>
-            </div>
-            <Tabs>
-                <Tabs.TabPane tab="Content" key="content">
-                    <TranslationEditor
-                        description={item.description}
-                        updateDescription={updateDescription}
-                        onDelete={deleteItem}
-                    />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Options" key="options">
+                <Tabs.TabPane tab="Item Options" key="options">
                     <ItemOptions
                         item={item}
                         updateItem={updateItem}
                     />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Settings" key="settings">
-                    <ItemSettings
-                        item={item}
-                        updateItem={updateItem}
-                    />
+                <Tabs.TabPane tab="Section logic" key="logic">
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="Sort section items" key="sort">
+                    <ReactSortable
+                        list={section.items as any[]}
+                        setList={((items: Item[]) => surveyStore.updateSection({...section, items})) as any}
+                        className="sider-list"
+                    >
+                        {section.items.map((
+                            i: Item,
+                            index: number,
+                        ) => (
+                            <div
+                                className="sider-item"
+                                key={`surveyListItem-${index}`}
+                            >
+                                <div className="survey-item-option">{i.name}</div>
+                            </div>
+                        ))}
+                    </ReactSortable>
                 </Tabs.TabPane>
             </Tabs>
+
         </div>
     )
 }
