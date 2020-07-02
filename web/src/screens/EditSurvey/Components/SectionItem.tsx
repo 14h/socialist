@@ -1,42 +1,55 @@
-import { Item } from '../../../types';
-import { renderItem } from './renderItem';
+import { Item, TranslationRef } from '../../../types';
 import React, { useContext } from 'react';
-import ReactQuill from 'react-quill';
 import { CoreCtx } from '../../../index';
+import { TranslationEditor } from './TranslationEditor';
+import { ItemOptions } from './ItemOptions';
+import { SurveyStore } from '@utils/hooks';
 
 type TProps = {
     item: Item;
+    selected: boolean;
+    surveyStore: SurveyStore;
+    sectionIndex: number;
+    itemIndex: number;
 };
 
 export const SectionItem = (props: TProps) => {
     const {
         item,
+        selected,
+        surveyStore,
+        sectionIndex,
+        itemIndex,
     } = props;
     const [translations] = useContext(CoreCtx).translations;
 
     const currentLang = 'en';
+    const updateItem = (newItem: Item) => surveyStore.updateItem(sectionIndex, itemIndex, newItem);
 
-    const translation = item?.description ? translations.get(item?.description) : {};
-    const content = translation?.[currentLang];
+    const updateDescription = (description: TranslationRef) => updateItem(Object.assign({}, item, { description }));
+
 
     if (!item) {
         return null;
     }
 
     return (
-        <div className="item-wrapper">
+        <div className={`item-wrapper ${selected && 'item-wrapper-selected'}`}>
             <div
                 key={item.name}
                 className='item-preview'
             >
                 <label htmlFor={item.name}>
-                    <ReactQuill
-                        value={content || ''}
-                        readOnly={true}
-                        theme={"bubble"}
+                    <TranslationEditor
+                        description={item?.description}
+                        updateDescription={console.log}
+                        onDelete={console.log}
                     />
                 </label>
-                {renderItem(item)}
+                <ItemOptions
+                    item={item}
+                    updateItem={updateItem}
+                />
             </div>
 
         </div>

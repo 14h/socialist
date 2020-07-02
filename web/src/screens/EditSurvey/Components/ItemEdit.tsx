@@ -1,14 +1,11 @@
-import { ItemFormat } from './ItemFormat';
 import { SurveyStore } from '@utils/hooks';
-import { Button, Popconfirm, Tabs, Typography } from 'antd';
-import { TranslationEditor } from './TranslationEditor';
+import { Button, Popconfirm, Tabs } from 'antd';
 import { ItemOptions } from './ItemOptions';
 import { ItemSettings } from './ItemSettings';
 import React from 'react';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons/lib';
+import { DeleteOutlined } from '@ant-design/icons/lib';
 import { Item, Section, TranslationRef } from '../../../types';
 import { ReactSortable } from 'react-sortablejs';
-
 
 type TProps = {
     section: Section;
@@ -16,7 +13,6 @@ type TProps = {
     sectionIndex: number;
     surveyStore: SurveyStore;
 };
-
 
 export const ItemEdit = (props: TProps) => {
     const {
@@ -36,12 +32,6 @@ export const ItemEdit = (props: TProps) => {
         <div className="item-edit">
             <Tabs>
                 <Tabs.TabPane tab="Edit item" key="item">
-                    <TranslationEditor
-                        description={item.description}
-                        updateDescription={updateDescription}
-                        onDelete={deleteItem}
-                    />
-
                     <ItemSettings
                         item={item}
                         updateItem={updateItem}
@@ -59,12 +49,6 @@ export const ItemEdit = (props: TProps) => {
                             Delete<DeleteOutlined/>
                         </Button>
                     </Popconfirm>
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="Item Options" key="options">
-                    <ItemOptions
-                        item={item}
-                        updateItem={updateItem}
-                    />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Section logic" key="logic">
                 </Tabs.TabPane>

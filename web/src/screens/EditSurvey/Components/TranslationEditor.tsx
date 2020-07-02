@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 // @ts-ignore
 // import ImageResize from 'quill-image-resize-module-react';
@@ -6,6 +6,7 @@ import { Button, Input, Modal } from 'antd';
 import { CoreCtx } from '../../../index';
 import { Translation } from '../../Translations';
 import { TranslationRef } from '../../../types';
+import { useOnClickOutside } from '@utils/hooks';
 
 
 // Quill.register('modules/imageResize', ImageResize);
@@ -13,8 +14,8 @@ import { TranslationRef } from '../../../types';
 
 
 type TProps = {
-    updateDescription: (newName: string) => any;
     description: TranslationRef;
+    updateDescription: (newName: string) => any;
     onDelete: () => any;
 };
 
@@ -36,7 +37,24 @@ export const TranslationEditor = (props: TProps) => {
 
     const [filteredTranslations, setFilteredTranslations] = useState<[string, Translation][]>(Array.from(translations))
 
+    const [editMode, setEditMode] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+    useOnClickOutside(ref, () => setEditMode(false));
 
+    if(!editMode) {
+        return (
+            <div
+                className='t-editor'
+                onClick={() => setEditMode(true)}
+            >
+                <ReactQuill
+                    value={content || ''}
+                    readOnly={true}
+                    theme={"bubble"}
+                />
+            </div>
+        )
+    }
 
     const onChangeTranslation = (text: string) => {
         const newTranslationKey = description || translations.size.toString();
@@ -84,22 +102,24 @@ export const TranslationEditor = (props: TProps) => {
 
 
     return (
-        <div className="t-editor">
-
+        <div
+            className='t-editor'
+            ref={ref}
+        >
             <Button.Group>
                 <Button
-                    type="link"
+                    type='link'
                     className='t-editor-action-button'
                     onClick={() => setShowModal(true)}
                 >
-                    new Translation
+                    New Translation
                 </Button>
                 <Button
                     type="link"
                     className='t-editor-action-button'
                     onClick={() => setShowModal(true)}
                 >
-                    Select from Translations
+                    Select Translation
                 </Button>
                 <Button
                     type="link"

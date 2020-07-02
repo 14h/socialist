@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import '../styles.css';
 import { Item, MultiItemOption } from '../../../types';
 import { Button } from 'antd';
@@ -99,35 +99,26 @@ export const ItemOptions = (props: TProps) => {
         updateItem(newItem);
     }
 
-    if (item.type === 'multi') {
-        return (
-            <div className='item-option-wrapper'>
-                <Button
-                    onClick={handleOnClick}
-                    className='item-option-add-button'
-                >
-                    Add option
-                </Button>
-                <div>
-                    {
-                        (item?.options ?? []).map((option: MultiItemOption, index: number) =>
-                            <div className='item-option'>
-                                <TranslationEditor
-                                    description={option?.description}
-                                    updateDescription={(t) => updateOptionDescription(t, index)}
-                                    onDelete={() => onDeleteOption(index)}
-                                    key={index}
-                                />
-                            </div>
-                        )
-                    }
-                </div>
-            </div>
-        );
-    }
-
-
     return (
-        <div/>
+        <div className='item-option-wrapper'>
+            <Button
+                onClick={handleOnClick}
+                className='item-option-add-button'
+            >
+                Add option
+            </Button>
+            <div>
+                {
+                    (item?.options ?? []).map((option: MultiItemOption, index: number) =>
+                        <TranslationEditor
+                            description={option?.description}
+                            updateDescription={(t) => updateOptionDescription(t, index)}
+                            onDelete={() => onDeleteOption(index)}
+                            key={index}
+                        />
+                    )
+                }
+            </div>
+        </div>
     );
 };
