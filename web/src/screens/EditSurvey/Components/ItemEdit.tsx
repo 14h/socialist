@@ -26,8 +26,6 @@ export const ItemEdit = (props: TProps) => {
     const deleteItem = () => surveyStore.deleteItem(sectionIndex, itemIndex);
     const updateItem = (newItem: Item) => surveyStore.updateItem(sectionIndex, itemIndex, newItem);
 
-    const updateDescription = (description: TranslationRef) => updateItem(Object.assign({}, item, { description }));
-
     return (
         <div className="item-edit">
             <Tabs>

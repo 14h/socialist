@@ -121,12 +121,6 @@ const EditSurvey = () => {
                     {sections.map((section: Section, sectionIndex: number) => (
                         <Tabs.TabPane tab={section.name} key={section.name} closable={true} >
                             <div className='section-tab'>
-                                {/*<ItemFormat*/}
-                                {/*    callback={(type: Item['type']) => insertNewItem(type, sectionIndex, 0)}*/}
-                                {/*    className="add-new-item"*/}
-                                {/*>*/}
-                                {/*    <Button>Add item</Button>*/}
-                                {/*</ItemFormat>*/}
                                 <AddItem
                                     callback={(type: Item['type']) => insertNewItem(type, sectionIndex, 0)}
                                 />
@@ -148,12 +142,6 @@ const EditSurvey = () => {
                                         <AddItem
                                             callback={(type: Item['type']) => insertNewItem(type, sectionIndex, itemIndex)}
                                         />
-                                        {/*<ItemFormat*/}
-                                        {/*    callback={(type: Item['type']) => insertNewItem(type, sectionIndex, itemIndex)}*/}
-                                        {/*    className="add-new-item"*/}
-                                        {/*>*/}
-                                        {/*    <Button>Add item</Button>*/}
-                                        {/*</ItemFormat>*/}
                                     </>
                                 ))}
                             </div>
