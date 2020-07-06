@@ -1,35 +1,29 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext } from 'react';
 import ReactQuill from 'react-quill';
 // @ts-ignore
 // import ImageResize from 'quill-image-resize-module-react';
 import { CoreCtx } from '../../../index';
 import { TranslationRef } from '../../../types';
-import { useOnClickOutside } from '@utils/hooks';
-
 
 // Quill.register('modules/imageResize', ImageResize);
-
-
 
 type TProps = {
     description: TranslationRef;
     updateDescription: (newName: string) => any;
+    editMode: boolean;
 };
 
 export const TranslationEditor = (props: TProps) => {
     const {
         updateDescription,
         description,
+        editMode,
     } = props;
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translation = description ? translations.get(description) : {};
     const currentLang = 'en';
     const content = translation?.[currentLang];
-
-    const [editMode, setEditMode] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-    useOnClickOutside(ref, () => setEditMode(false));
 
     const onChangeTranslation = (text: string) => {
         const newTranslationKey = description || translations.size.toString();
@@ -59,7 +53,6 @@ export const TranslationEditor = (props: TProps) => {
         return (
             <div
                 className='t-editor'
-                onClick={() => setEditMode(true)}
             >
                 <ReactQuill
                     value={content || ''}
@@ -73,7 +66,6 @@ export const TranslationEditor = (props: TProps) => {
     return (
         <div
             className='t-editor'
-            ref={ref}
         >
             <ReactQuill
                 value={content || ''}

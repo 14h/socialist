@@ -133,7 +133,7 @@ const EditSurvey = () => {
                                                 key={`EditSurveyListItem-${itemIndex}`}
                                                 item={item}
                                                 surveyStore={surveyStore}
-                                                selected={selectedItemIndex === itemIndex}
+                                                editMode={selectedItemIndex === itemIndex}
                                                 sectionIndex={sectionIndex}
                                                 itemIndex={itemIndex}
                                             />

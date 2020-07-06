@@ -1,6 +1,5 @@
-import { Item, TranslationRef } from '../../../types';
-import React, { useContext } from 'react';
-import { CoreCtx } from '../../../index';
+import { Item } from '../../../types';
+import React from 'react';
 import { TranslationEditor } from './TranslationEditor';
 import { ItemOptions } from './ItemOptions';
 import { SurveyStore } from '@utils/hooks';
@@ -9,7 +8,7 @@ import { DeleteOutlined } from '@ant-design/icons/lib';
 
 type TProps = {
     item: Item;
-    selected: boolean;
+    editMode: boolean;
     surveyStore: SurveyStore;
     sectionIndex: number;
     itemIndex: number;
@@ -18,7 +17,7 @@ type TProps = {
 export const SectionItem = (props: TProps) => {
     const {
         item,
-        selected,
+        editMode,
         surveyStore,
         sectionIndex,
         itemIndex,
@@ -31,7 +30,7 @@ export const SectionItem = (props: TProps) => {
     }
 
     return (
-        <div className={`item-wrapper ${selected && 'item-wrapper-selected'}`}>
+        <div className={`item-wrapper ${editMode && 'item-wrapper-selected'}`}>
             <div className='section-item-actions'>
                 <Popconfirm
                     title="Are you sure?"
@@ -49,10 +48,12 @@ export const SectionItem = (props: TProps) => {
             <TranslationEditor
                 description={item?.description}
                 updateDescription={console.log}
+                editMode={editMode}
             />
             <ItemOptions
                 item={item}
                 updateItem={updateItem}
+                editMode={editMode}
             />
 
         </div>

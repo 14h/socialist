@@ -8,10 +8,11 @@ import { CoreCtx } from '../../../index';
 type TProps = {
     item: Item;
     updateItem: (item: Item) => void;
+    editMode: boolean;
 };
 
 export const ItemOptions = (props: TProps) => {
-    const { item, updateItem } = props;
+    const { item, updateItem, editMode } = props;
     const [translations, setTranslations] = useContext(CoreCtx).translations;
     const currentLang = 'en';
 
@@ -113,6 +114,7 @@ export const ItemOptions = (props: TProps) => {
                         <TranslationEditor
                             description={option?.description}
                             updateDescription={(t) => updateOptionDescription(t, index)}
+                            editMode={editMode}
                             key={index}
                         />
                     )
