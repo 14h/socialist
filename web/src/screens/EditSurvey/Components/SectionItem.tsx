@@ -45,11 +45,14 @@ export const SectionItem = (props: TProps) => {
                     </Button>
                 </Popconfirm>
             </div>
+            <h3>Question: </h3>
             <TranslationEditor
                 description={item?.description}
                 updateDescription={console.log}
                 editMode={editMode}
+                autoFocus={true}
             />
+            <h3>Options: </h3>
             <ItemOptions
                 item={item}
                 updateItem={updateItem}

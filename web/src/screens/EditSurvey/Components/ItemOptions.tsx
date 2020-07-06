@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import '../styles.css';
 import { Item, MultiItemOption } from '../../../types';
 import { Button } from 'antd';
@@ -102,12 +102,6 @@ export const ItemOptions = (props: TProps) => {
 
     return (
         <div className='item-option-wrapper'>
-            <Button
-                onClick={handleOnClick}
-                className='item-option-add-button'
-            >
-                Add option
-            </Button>
             <div>
                 {
                     (item?.options ?? []).map((option: MultiItemOption, index: number) =>
@@ -115,11 +109,18 @@ export const ItemOptions = (props: TProps) => {
                             description={option?.description}
                             updateDescription={(t) => updateOptionDescription(t, index)}
                             editMode={editMode}
+                            autoFocus={false}
                             key={index}
                         />
                     )
                 }
             </div>
+            <Button
+                onClick={handleOnClick}
+                className='item-option-add-button'
+            >
+                Add option
+            </Button>
         </div>
     );
 };

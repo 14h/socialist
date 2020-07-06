@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 // @ts-ignore
 // import ImageResize from 'quill-image-resize-module-react';
@@ -11,6 +11,7 @@ type TProps = {
     description: TranslationRef;
     updateDescription: (newName: string) => any;
     editMode: boolean;
+    autoFocus: boolean;
 };
 
 export const TranslationEditor = (props: TProps) => {
@@ -18,12 +19,25 @@ export const TranslationEditor = (props: TProps) => {
         updateDescription,
         description,
         editMode,
+        autoFocus,
     } = props;
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translation = description ? translations.get(description) : {};
     const currentLang = 'en';
     const content = translation?.[currentLang];
+
+    const tRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if(autoFocus && tRef?.current) {
+            tRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+        }
+    }, [editMode]);
+
 
     const onChangeTranslation = (text: string) => {
         const newTranslationKey = description || translations.size.toString();
@@ -66,6 +80,7 @@ export const TranslationEditor = (props: TProps) => {
     return (
         <div
             className='t-editor'
+            ref={tRef}
         >
             <ReactQuill
                 value={content || ''}
