@@ -2,9 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 // @ts-ignore
 // import ImageResize from 'quill-image-resize-module-react';
-import { Button, Input, Modal } from 'antd';
 import { CoreCtx } from '../../../index';
-import { Translation } from '../../Translations';
 import { TranslationRef } from '../../../types';
 import { useOnClickOutside } from '@utils/hooks';
 
@@ -16,26 +14,18 @@ import { useOnClickOutside } from '@utils/hooks';
 type TProps = {
     description: TranslationRef;
     updateDescription: (newName: string) => any;
-    onDelete: () => any;
 };
 
 export const TranslationEditor = (props: TProps) => {
     const {
         updateDescription,
         description,
-        onDelete,
     } = props;
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translation = description ? translations.get(description) : {};
     const currentLang = 'en';
     const content = translation?.[currentLang];
-
-    const [showModal, setShowModal] = useState(false);
-    const [selectedTranslationKey, setSelectedTranslationKey] = useState<Translation["key"] | null>(description);
-    const [searchValue, setSearchValue] = useState('');
-
-    const [filteredTranslations, setFilteredTranslations] = useState<[string, Translation][]>(Array.from(translations))
 
     const [editMode, setEditMode] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -65,93 +55,12 @@ export const TranslationEditor = (props: TProps) => {
         );
     }
 
-    const onChangeSearch = (e: any) => {
-        const newSearchValue = e.target.value;
-
-        setSearchValue(newSearchValue);
-
-
-        setFilteredTranslations(
-            Array.from(translations).filter(
-                ([, t]) => t[currentLang].includes(newSearchValue)
-            )
-        );
-    }
-
-    const onSelectTranslation = () => {
-        if (selectedTranslationKey) {
-            updateDescription(selectedTranslationKey)
-        }
-    }
-
-
-
     if(!editMode) {
         return (
             <div
                 className='t-editor'
                 onClick={() => setEditMode(true)}
             >
-                <Button.Group>
-                    <Button
-                        type='link'
-                        className='t-editor-action-button'
-                        onClick={() => setShowModal(true)}
-                    >
-                        New Translation
-                    </Button>
-                    <Button
-                        type="link"
-                        className='t-editor-action-button'
-                        onClick={() => setShowModal(true)}
-                    >
-                        Select Translation
-                    </Button>
-                    <Button
-                        type="link"
-                        className='t-editor-delete-button'
-                        onClick={onDelete}
-
-                    >
-                        Delete
-                    </Button>
-
-                </Button.Group>
-                <Modal
-                    title="Change Translation"
-                    visible={showModal}
-                    width={768}
-                    onOk={onSelectTranslation}
-                    onCancel={() => setShowModal(false)}
-                    okText="Select"
-                    afterClose={
-                        () => setSelectedTranslationKey(description)
-                    }
-                    destroyOnClose={true}
-                >
-                    <Input
-                        value={searchValue}
-                        onChange={onChangeSearch}
-                        placeholder="Filter translations"
-                    />
-                    {
-                        filteredTranslations.map(([key, t]) => (
-                            <div
-                                className={selectedTranslationKey === key ? 't-option selected' : 't-option'}
-                                key={key}
-                                onClick={() => setSelectedTranslationKey(key)}
-                            >
-                                <ReactQuill
-                                    value={t[currentLang] || ''}
-                                    readOnly={true}
-                                    theme={"bubble"}
-                                />
-                            </div>
-
-                        ))
-                    }
-
-                </Modal>
                 <ReactQuill
                     value={content || ''}
                     readOnly={true}
@@ -161,76 +70,11 @@ export const TranslationEditor = (props: TProps) => {
         )
     }
 
-
-
     return (
         <div
             className='t-editor'
             ref={ref}
         >
-            <Button.Group>
-                <Button
-                    type='link'
-                    className='t-editor-action-button'
-                    onClick={() => setShowModal(true)}
-                >
-                    New Translation
-                </Button>
-                <Button
-                    type="link"
-                    className='t-editor-action-button'
-                    onClick={() => setShowModal(true)}
-                >
-                    Select Translation
-                </Button>
-                <Button
-                    type="link"
-                    className='t-editor-delete-button'
-                    onClick={onDelete}
-
-                >
-                    Delete
-                </Button>
-
-            </Button.Group>
-            <Modal
-                title="Change Translation"
-                visible={showModal}
-                width={768}
-                onOk={onSelectTranslation}
-                onCancel={() => setShowModal(false)}
-                okText="Select"
-                afterClose={
-                    () => setSelectedTranslationKey(description)
-                }
-                destroyOnClose={true}
-            >
-                <Input
-                    value={searchValue}
-                    onChange={onChangeSearch}
-                    placeholder="Filter translations"
-                />
-                {
-                    filteredTranslations.map(([key, t]) => (
-                        <div
-                            className={selectedTranslationKey === key ? 't-option selected' : 't-option'}
-                            key={key}
-                            onClick={() => setSelectedTranslationKey(key)}
-                        >
-                            <ReactQuill
-                                value={t[currentLang] || ''}
-                                readOnly={true}
-                                theme={"bubble"}
-                            />
-                        </div>
-
-                    ))
-                }
-
-            </Modal>
-
-
-            <br />
             <ReactQuill
                 value={content || ''}
                 onChange={onChangeTranslation}

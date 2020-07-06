@@ -113,7 +113,6 @@ export const ItemOptions = (props: TProps) => {
                         <TranslationEditor
                             description={option?.description}
                             updateDescription={(t) => updateOptionDescription(t, index)}
-                            onDelete={() => onDeleteOption(index)}
                             key={index}
                         />
                     )

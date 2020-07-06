@@ -49,7 +49,6 @@ export const SectionItem = (props: TProps) => {
             <TranslationEditor
                 description={item?.description}
                 updateDescription={console.log}
-                onDelete={console.log}
             />
             <ItemOptions
                 item={item}
