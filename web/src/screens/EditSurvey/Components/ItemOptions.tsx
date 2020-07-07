@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import '../styles.css';
 import { Item, MultiItemOption } from '../../../types';
-import { Button } from 'antd';
+import { Button, List } from 'antd';
 import { TranslationEditor } from './TranslationEditor';
 import { CoreCtx } from '../../../index';
+import { DeleteOutlined } from '@ant-design/icons/lib';
 
 type TProps = {
     item: Item;
@@ -102,25 +103,39 @@ export const ItemOptions = (props: TProps) => {
 
     return (
         <div className='item-option-wrapper'>
-            <div>
-                {
-                    (item?.options ?? []).map((option: MultiItemOption, index: number) =>
+            <List
+                header={<div>Options</div>}
+                locale={{emptyText: 'No options found!'}}
+                footer={
+                    <Button
+                        onClick={handleOnClick}
+                        className='item-option-add-button'
+                    >
+                        Add option
+                    </Button>
+                }
+                bordered
+                dataSource={(item?.options ?? []) as any}
+                size="small"
+                renderItem={(option: MultiItemOption, index: number) => (
+                    <List.Item
+                        extra={
+                            <a
+                                key="list-delete"
+                                onClick={() => onDeleteOption(index)}
+                            >
+                                <DeleteOutlined style={{ fontSize: '24px', color: '#a61d24', marginLeft: '24px' }} />
+                            </a>}
+                    >
                         <TranslationEditor
                             description={option?.description}
                             updateDescription={(t) => updateOptionDescription(t, index)}
                             editMode={editMode}
-                            autoFocus={false}
-                            key={index}
                         />
-                    )
-                }
-            </div>
-            <Button
-                onClick={handleOnClick}
-                className='item-option-add-button'
-            >
-                Add option
-            </Button>
+                    </List.Item>
+                )}
+            />
+
         </div>
     );
 };

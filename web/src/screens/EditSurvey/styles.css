@@ -65,12 +65,12 @@
 }
 
 .item-wrapper {
-    padding: 8px 24px 16px 24px;
+    padding: 24px 24px 16px 24px;
     border-radius: 8px;
     border: #111 2px solid;
     border-right: #111 8px solid;
     transition: all 0.2s ease-in-out;
-    background: #222;
+    background: #444;
     width: 100%;
 }
 .item-wrapper:hover {
@@ -131,8 +131,7 @@
 
 .t-editor {
     text-align: center;
-    margin: 16px 0;
-    background: #222;
+    background: #333;
     width: 100%;
     border: 1px solid #333;
 }
@@ -145,6 +144,7 @@
 }
 
 .item-option-wrapper {
+    margin: 16px 0;
     text-align: center;
 }
 .item-option-add-button {

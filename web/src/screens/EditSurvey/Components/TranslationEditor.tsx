@@ -11,7 +11,6 @@ type TProps = {
     description: TranslationRef;
     updateDescription: (newName: string) => any;
     editMode: boolean;
-    autoFocus: boolean;
 };
 
 export const TranslationEditor = (props: TProps) => {
@@ -19,7 +18,6 @@ export const TranslationEditor = (props: TProps) => {
         updateDescription,
         description,
         editMode,
-        autoFocus,
     } = props;
 
     const [translations, setTranslations] = useContext(CoreCtx).translations;
@@ -30,7 +28,7 @@ export const TranslationEditor = (props: TProps) => {
     const tRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if(autoFocus && tRef?.current) {
+        if(editMode && tRef?.current) {
             tRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center',

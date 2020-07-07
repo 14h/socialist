@@ -68,6 +68,7 @@ const EditSurvey = () => {
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
+
     const removePage = (key: any) => {
         const sectionIndex = sections.findIndex((s: Section) => s.name === key);
         if (sectionIndex < 0) {
@@ -122,7 +123,12 @@ const EditSurvey = () => {
                         <Tabs.TabPane tab={section.name} key={section.name} closable={true} >
                             <div className='section-tab'>
                                 <AddItem
-                                    callback={(type: Item['type']) => insertNewItem(type, sectionIndex, 0)}
+                                    callback={
+                                        (type: Item['type']) => {
+                                            insertNewItem(type, sectionIndex, 0)
+                                            setSelectedItemIndex(0)
+                                        }
+                                    }
                                 />
                                 {section.items.map((item: Item, itemIndex: number) => (
                                     <>
@@ -140,7 +146,12 @@ const EditSurvey = () => {
                                         </div>
 
                                         <AddItem
-                                            callback={(type: Item['type']) => insertNewItem(type, sectionIndex, itemIndex)}
+                                            callback={
+                                                (type: Item['type']) => {
+                                                    insertNewItem(type, sectionIndex, itemIndex + 1)
+                                                    setSelectedItemIndex(itemIndex + 1)
+                                                }
+                                            }
                                         />
                                     </>
                                 ))}
