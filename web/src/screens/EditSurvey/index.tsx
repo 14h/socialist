@@ -134,6 +134,9 @@ const EditSurvey = () => {
                                     <>
                                         <div
                                             onClick={() => setSelectedItemIndex(itemIndex)}
+                                            style={{
+                                                position: 'relative',
+                                            }}
                                         >
                                             <SectionItem
                                                 key={`EditSurveyListItem-${itemIndex}`}

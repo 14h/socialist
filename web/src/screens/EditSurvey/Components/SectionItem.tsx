@@ -30,6 +30,7 @@ export const SectionItem = (props: TProps) => {
     }
 
     return (
+
         <div className={`item-wrapper ${editMode && 'item-wrapper-selected'}`}>
             <TranslationEditor
                 description={item?.description}
@@ -43,14 +44,14 @@ export const SectionItem = (props: TProps) => {
                 editMode={editMode}
             />
 
-            <div className='section-item-actions'>
+            <div className='item-actions'>
                 <Popconfirm
                     title="Are you sure?"
                     onConfirm={console.log}
                     okText="Delete"
                     cancelText="Cancel"
                 >
-                    <DeleteOutlined style={{ fontSize: '24px', color: '#a61d24', marginLeft: '24px' }} />
+                    <DeleteOutlined style={{ fontSize: '24px', color: '#a61d24'}} />
                 </Popconfirm>
             </div>
 

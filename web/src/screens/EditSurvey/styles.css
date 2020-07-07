@@ -66,22 +66,39 @@
 
 .item-wrapper {
     padding: 24px 24px 16px 24px;
-    border-radius: 8px;
-    border: #111 2px solid;
-    border-right: #111 8px solid;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
     transition: all 0.2s ease-in-out;
     background: #444;
     width: 100%;
 }
-.item-wrapper:hover {
-    border-right: #177ddc77 8px solid;
+
+.item-actions {
+    position: absolute;
+    width: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    top: 0;
+    right: -36px;
+    z-index: 999;
+    height: 100%;
+    /*background: #177ddc;*/
+    padding: 16px 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
-.item-wrapper-selected:hover {
-    border-right: #177ddc 8px solid;
+.item-wrapper:hover .item-actions{
+    background: #177ddc77;
 }
-.item-wrapper-selected {
-    border-right: #177ddc 8px solid;
+.item-wrapper-selected:hover .item-actions {
+    background: #177ddc;
 }
+.item-wrapper-selected .item-actions {
+    background: #177ddc;
+}
+
 
 .item-preview > * {
     max-width: 100%;
@@ -165,7 +182,7 @@
     height: 80vh;
 }
 .section-tab > div {
-    width: 100%;
+    width: 95%;
 }
 
 .add-item {
@@ -198,10 +215,4 @@
     color: #BBB!important;
 }
 
-.section-item-actions {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-}
+
