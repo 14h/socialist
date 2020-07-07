@@ -1,10 +1,9 @@
 import { SurveyStore } from '@utils/hooks';
 import { Button, Popconfirm, Tabs } from 'antd';
-import { ItemOptions } from './ItemOptions';
 import { ItemSettings } from './ItemSettings';
 import React from 'react';
 import { DeleteOutlined } from '@ant-design/icons/lib';
-import { Item, Section, TranslationRef } from '../../../types';
+import { Item, Section } from '../../../types';
 import { ReactSortable } from 'react-sortablejs';
 
 type TProps = {

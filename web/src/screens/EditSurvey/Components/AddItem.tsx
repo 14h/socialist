@@ -1,6 +1,5 @@
 import React from 'react';
 import '../styles.css';
-import { WarningOutlined } from '@ant-design/icons';
 import { Item } from '../../../types';
 
 

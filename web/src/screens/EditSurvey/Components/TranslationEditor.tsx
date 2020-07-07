@@ -1,11 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
-// @ts-ignore
-// import ImageResize from 'quill-image-resize-module-react';
 import { CoreCtx } from '../../../index';
 import { TranslationRef } from '../../../types';
-
-// Quill.register('modules/imageResize', ImageResize);
 
 type TProps = {
     description: TranslationRef;

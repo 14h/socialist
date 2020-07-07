@@ -3,7 +3,7 @@ import React from 'react';
 import { TranslationEditor } from './TranslationEditor';
 import { ItemOptions } from './ItemOptions';
 import { SurveyStore } from '@utils/hooks';
-import { Button, Popconfirm } from 'antd';
+import { Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons/lib';
 
 type TProps = {

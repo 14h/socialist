@@ -4,7 +4,6 @@ import { Item, Section} from '../../types';
 import { useParams } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import { SurveyActions } from './Components/SurveyActions';
-import { ItemFormat } from './Components/ItemFormat';
 import { useSurvey } from '@utils/hooks';
 import { SectionItem } from './Components/SectionItem';
 
