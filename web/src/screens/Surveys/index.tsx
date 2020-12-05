@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import {CoreCtx} from "../../index";
 import {createSurvey} from "../../services/surveyService";
-import {createOrganization} from "../../services/orgService";
 
 const { Content } = Layout;
+
+const GDS_ORG_ID = 'b668b413-08c3-46bd-9d71-88feb2b1ac4d';
 
 const deleteSurvey = async (id: string) => {
     const hide = message.loading(`Deleting ${id}..`, 0);
@@ -36,7 +37,7 @@ const handleCreateSurvey = async (
 ) => {
     const hide = message.loading('Creating survey..', 0);
     try {
-        const newSurveyId = await createSurvey(title, userToken, 'b668b413-08c3-46bd-9d71-88feb2b1ac4d');
+        const newSurveyId = await createSurvey(title, userToken, GDS_ORG_ID);
         hide();
         message.success(`${title} got successfully created!`);
         history.push(`/surveys/${newSurveyId}`);
