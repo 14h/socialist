@@ -4,23 +4,9 @@ import './styles.css';
 import { Redirect } from 'react-router';
 import { Button, Form, Input, message } from 'antd';
 import { CoreCtx } from '../../index';
+import {loginApi, meApi} from "../../services/userService";
 
 type Props = {};
-
-const attemptLogin = async (
-    email: string,
-    password: string,
-) => {
-    // throw new Error('Login Error')
-
-    return {
-        id: '19h',
-        username: '19h',
-        email: 'kenan@sig.dev',
-        firstname: 'Kenan',
-        lastname: 'Sulayman',
-    };
-};
 
 
 export const Login: React.FC<Props> = () => {
@@ -38,7 +24,17 @@ export const Login: React.FC<Props> = () => {
         }
 
         try {
-            const user = await attemptLogin(email, password);
+            const userResponse = await loginApi(email, password);
+
+            if (!userResponse?.userToken) {
+                throw new Error('Login failed')
+            }
+
+            const user = await meApi(userResponse?.userToken);
+
+            if (!user) {
+                throw new Error('me endpoint didn\'t work ');
+            }
 
             setUser(user);
 

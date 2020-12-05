@@ -1,5 +1,4 @@
-import { GraphQLClient } from 'graphql-request';
-import config from 'config';
+import { GraphQLClient  } from 'graphql-request';
 
 export const buildGraphQLClient = (
     url: string,
@@ -36,5 +35,5 @@ export const buildGraphQLClient = (
         authorizedRequest,
     };
 };
-
-export const apiGraphQLClient = buildGraphQLClient((config as any).API_URL, {});
+// TODO: get API_URL from config
+export const apiGraphQLClient = buildGraphQLClient('http://localhost:1516/', {});

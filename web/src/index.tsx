@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { LayoutHeader } from '@layout/header';
+import { LayoutSider } from '@layout/header';
 import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
 import { Translation } from './screens/Translations';
+
+const { Sider } = Layout;
 
 const Home = React.lazy(() => import('./screens/home/Home'));
 const Surveys = React.lazy(() => import('./screens/Surveys/index'));
@@ -91,7 +93,10 @@ export const App = () => {
 
     return (
         <Layout>
-            <LayoutHeader/>
+            <Sider>
+                <LayoutSider/>
+            </Sider>
+
             <Switch>
                 <Suspense fallback={<div/>}>{publicRoutes}</Suspense>
             </Switch>

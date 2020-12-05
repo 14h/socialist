@@ -11,9 +11,9 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
 
     const renderOptions = () => {
         if (item.type === 'text') {
-            const updateMinChars = (minCharacters: number | undefined) =>
+            const updateMinChars = (minCharacters: string | number | undefined) =>
                 updateItem(Object.assign({}, item, { minCharacters }));
-            const updateMaxChars = (maxCharacters: number | undefined) =>
+            const updateMaxChars = (maxCharacters: string | number | undefined) =>
                 updateItem(Object.assign({}, item, { maxCharacters }));
             return (
                 <>
@@ -30,9 +30,9 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
         }
 
         if (item.type === 'number') {
-            const updateMinValue = (minValue: number | undefined) =>
+            const updateMinValue = (minValue: string | number | undefined) =>
                 updateItem(Object.assign({}, item, { minValue }));
-            const updateMaxValue = (maxValue: number | undefined) =>
+            const updateMaxValue = (maxValue: string | number | undefined) =>
                 updateItem(Object.assign({}, item, { maxValue }));
 
             return (
@@ -51,9 +51,9 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
         }
 
         if (item.type === 'multi') {
-            const updateMinOptions = (minOptions: number | undefined) =>
+            const updateMinOptions = (minOptions: string | number | undefined) =>
                 updateItem(Object.assign({}, item, { minOptions }));
-            const updateMaxOptions = (maxOptions: number | undefined) =>
+            const updateMaxOptions = (maxOptions: string | number | undefined) =>
                 updateItem(Object.assign({}, item, { maxOptions }));
 
             return (

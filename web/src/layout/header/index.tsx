@@ -1,33 +1,34 @@
 import React, { useContext } from 'react';
-import { Button, Dropdown, Layout, Menu } from 'antd';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Layout, Menu, message } from 'antd';
+import { LogoutOutlined, UserOutlined, UpOutlined } from '@ant-design/icons';
 import './styles.css';
 import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
-
-const { Header } = Layout;
 
 const UserOptionsMenu = () => {
     const [user, setUser] = useContext(CoreCtx).user;
 
     return (
-        <>
-            <Button onClick={() => null}>
-                {user?.email}
-            </Button>
-            <Button onClick={() => setUser(null)}>
-                <LogoutOutlined/> LOGOUT
-            </Button>
-        </>
+        <Menu>
+            <Menu.Item
+                onClick={() => setUser(null)}
+                key="logout"
+                icon={<LogoutOutlined />}
+            >
+                Logout
+            </Menu.Item>
+        </Menu>
     );
-};
+}
 
-export const LayoutHeader = () => {
+export const LayoutSider = () => {
     const selectedMenuItem = window.location.pathname.split('/')[1];
+    const [user, setUser] = useContext(CoreCtx).user;
+
 
     return (
-        <Header className="header">
-            <Link to="/" className="logo left">
+        <div className="sider">
+            <Link to="/surveys" className="logo">
                 <img
                     src={
                         'https://www.globaldrugsurvey.com/wp-content/themes/globaldrugsurvey/assets/img/logomark.svg'
@@ -35,15 +36,10 @@ export const LayoutHeader = () => {
                     alt="GDS"
                 />
             </Link>
-            <Dropdown className="user-options" overlay={<UserOptionsMenu/>}>
-                <Button className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                    <UserOutlined className="user-outlined-icon"/>
-                </Button>
-            </Dropdown>
             <Menu
-                className="header-menu"
+                className="sider-menu"
                 theme="dark"
-                mode="horizontal"
+                mode="vertical"
                 defaultSelectedKeys={[selectedMenuItem]}
             >
                 <Menu.Item key="surveys">
@@ -58,6 +54,17 @@ export const LayoutHeader = () => {
                     <Link to="/people">People</Link>
                 </Menu.Item>
             </Menu>
-        </Header>
+
+            <div className='sider-details'>
+                <Dropdown overlay={<UserOptionsMenu/>}>
+                    <Button
+                        onClick={e => e.preventDefault()}
+                        className='sider-details-button'
+                    >
+                        {user?.email ?? ''} <UpOutlined />
+                    </Button>
+                </Dropdown>
+            </div>
+        </div>
     );
 };

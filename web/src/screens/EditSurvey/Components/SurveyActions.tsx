@@ -13,7 +13,7 @@ export const SurveyActions = () => (
         <Button onClick={console.log}>
             Export
         </Button>
-        <Button type="danger" onClick={console.log}>
+        <Button type="ghost" onClick={console.log}>
             Close
         </Button>
         <Button type="primary" onClick={console.log}>
