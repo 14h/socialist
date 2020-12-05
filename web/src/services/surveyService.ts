@@ -1,87 +1,46 @@
-import { TUserRights, User, UserAndRelated } from '../types/models/User';
 import { apiGraphQLClient } from "@utils/graphQlClient";
-import { safeLocalStorage } from "@utils/safeLocalStorage";
 
-const API_GET_USERTOKEN_MUTATION =
-    'mutation($creds:UserCredInput!){createLoginChip(creds:$creds){userToken}}';
-
-const API_REVOKEUSERTOKEN_MUTATION =
-    'mutation($token:String!){revokeUserToken(userToken:$token)}';
-
-const API_DOMAINRIGHTS_QUERY =
-    'query getUserDomainRights($domain:String!){domain(domainName:$domain){rights{roles,perms}}}';
-
-const API_USER_AND_RELATED_QUERY = `
-    query getUserAndRelated{
-        user{
-            id,
-            meta{
-                email,
-                firstname,
-                lastname
-            }
-            rights{
-                perms
-            }
-            related{
-                orgs{
-                    meta {
-                        name
-                    }
-                }
-                surveys{
-                    id
-                }
-            }
+const SO7_CREATE_SURVEY_MUTATION = `
+    mutation($surveyName: String!, $orgName: String, $orgId: ID){
+        createSurvey(surveyName: $surveyName, orgName: $orgName, orgId: $orgId){
+            id
         }
     }
 `;
 
-const API_USER_TOKEN = 'vtxut';
 
-
-
-type UserRightsForDomainResponse = Readonly<{
-    domain?: {
-        rights?: {
-            roles?: ReadonlyArray<string>;
-            perms?: ReadonlyArray<string>;
-        };
+type CreateSurveyResponse = Readonly<{
+    createSurvey?: {
+        id?: string;
     };
 }>;
 
-export async function getUserRightsForDomain(
-    domain: string,
+export async function createSurvey(
+    surveyName: string,
     userToken: string,
-): Promise<TUserRights> {
-    if (!domain) {
-        throw new Error('Cannot possibly fetch rights of a domain without a valid domain.');
-    }
-
+    orgId?: string,
+): Promise<string | null> {
     const variables = {
-        domain,
+        surveyName,
+        orgId
     };
 
-    if (!userToken) {
-        return {
-            roles: [],
-            perms: [],
-        } as TUserRights;
-    }
-
     try {
-        const responseData = await apiGraphQLClient.authorizedRequest<any, UserRightsForDomainResponse>(
+        const responseData = await apiGraphQLClient.authorizedRequest<any, CreateSurveyResponse>(
             userToken,
-            API_DOMAINRIGHTS_QUERY,
+            SO7_CREATE_SURVEY_MUTATION,
             variables,
         );
 
-        const rights = responseData?.domain?.rights ?? {};
+        console.log(responseData);
+        const id = responseData?.createSurvey?.id ?? null;
 
-        return {
-            roles: rights?.roles?.slice(),
-            perms: rights?.perms?.slice(),
-        } as TUserRights;
+        if (!id) {
+            throw new Error('Survey couldn\'t be created');
+        }
+
+        return id;
+
     } catch (error) {
         throw new Error(error);
     }

@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import './styles.css';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
+import {CoreCtx} from "../../index";
+import {createSurvey} from "../../services/surveyService";
+import {createOrganization} from "../../services/orgService";
 
 const { Content } = Layout;
 
@@ -25,18 +28,15 @@ const deleteSurvey = async (id: string) => {
     }
 };
 
-const createSurvey = async (
+const handleCreateSurvey = async (
     title: string,
+    userToken: string,
+    orgName: string,
     history: any,
 ) => {
     const hide = message.loading('Creating survey..', 0);
     try {
-        const newSurveyId = await new Promise((
-            resolve,
-            _reject,
-        ) => {
-            setTimeout(() => resolve('survey_1'), 3000);
-        });
+        const newSurveyId = await createSurvey(title, userToken, 'b668b413-08c3-46bd-9d71-88feb2b1ac4d');
         hide();
         message.success(`${title} got successfully created!`);
         history.push(`/surveys/${newSurveyId}`);
@@ -172,6 +172,16 @@ const columns = [
 const Surveys = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const history = useHistory();
+    const [user] = useContext(CoreCtx).user;
+    const [userToken] = useContext(CoreCtx).userToken;
+
+    if (!userToken || !user) {
+        return null;
+    }
+
+    const orgName = '';
+    console.log(user);
+
 
     return (
         <Layout className="container-layout">
@@ -194,11 +204,18 @@ const Surveys = () => {
                     <Form
                         name="basic"
                         initialValues={{ remember: true }}
-                        onFinish={(values: any) => createSurvey(values.title, history)}
+                        onFinish={
+                            (values: any) => handleCreateSurvey(
+                                values.name,
+                                userToken,
+                                orgName,
+                                history
+                            )
+                        }
                         onFinishFailed={console.log}
                     >
                         <Form.Item
-                            name="title"
+                            name="name"
                             rules={[
                                 {
                                     required: true,

@@ -72,6 +72,10 @@ export class AuthDirective extends SchemaDirectiveVisitor {
                         directive.name.value === 'auth',
                     );
 
+            // TODO: FIX THIS MESS
+
+            return actualResolver(...args);
+
             const needsPrivileged = authMeta.privileged;
             const needsSpecialPermissions = authMeta.requiredPermissions.length !== 0;
 

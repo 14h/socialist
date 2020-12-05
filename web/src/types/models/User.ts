@@ -7,6 +7,7 @@ export type User = Readonly<{
     configuration: any;
     permissions: ReadonlyArray<string>;
     organization?: ReadonlyArray<string>;
+    surveys?: ReadonlyArray<string>;
     rights?: TUserRights;
     flags?: ReadonlyArray<string>;
 }>;

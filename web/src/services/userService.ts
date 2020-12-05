@@ -2,16 +2,13 @@ import { TUserRights, User, UserAndRelated } from '../types/models/User';
 import { apiGraphQLClient } from "@utils/graphQlClient";
 import { safeLocalStorage } from "@utils/safeLocalStorage";
 
-const API_GET_USERTOKEN_MUTATION =
+const SO7_GET_USERTOKEN_MUTATION =
     'mutation($creds:UserCredInput!){createLoginChip(creds:$creds){userToken}}';
 
-const API_REVOKEUSERTOKEN_MUTATION =
+const SO7_REVOKEUSERTOKEN_MUTATION =
     'mutation($token:String!){revokeUserToken(userToken:$token)}';
 
-const API_DOMAINRIGHTS_QUERY =
-    'query getUserDomainRights($domain:String!){domain(domainName:$domain){rights{roles,perms}}}';
-
-const API_USER_AND_RELATED_QUERY = `
+const SO7_USER_AND_RELATED_QUERY = `
     query getUserAndRelated{
         user{
             id,
@@ -37,20 +34,10 @@ const API_USER_AND_RELATED_QUERY = `
     }
 `;
 
-const API_USER_TOKEN = 'vtxut';
-
-export function getApiUserToken() {
-    return safeLocalStorage.getItem(API_USER_TOKEN) || null;
-}
-
-export function setApiUserToken(userToken: string) {
-    safeLocalStorage.setItem(API_USER_TOKEN, userToken);
-
-    return userToken;
-}
+export const SO7_USER_TOKEN = 'SO7_USER_TOKEN';
 
 export function clearUserToken() {
-    safeLocalStorage.removeItem(API_USER_TOKEN);
+    safeLocalStorage.removeItem(SO7_USER_TOKEN);
 }
 
 type CreateLoginChipResponse = Readonly<{
@@ -73,7 +60,7 @@ export async function login_so7(
 
     try {
         const responseData = await apiGraphQLClient.unauthorizedRequest<any, CreateLoginChipResponse>(
-            API_GET_USERTOKEN_MUTATION,
+            SO7_GET_USERTOKEN_MUTATION,
             variables,
         );
 
@@ -93,7 +80,7 @@ export async function login_so7(
 export async function logoutApi(userToken: string): Promise<void> {
     await apiGraphQLClient.authorizedRequest<any, boolean>(
         userToken,
-        API_REVOKEUSERTOKEN_MUTATION,
+        SO7_REVOKEUSERTOKEN_MUTATION,
         {
             token: userToken,
         },
@@ -106,10 +93,9 @@ export async function meApi(userToken: string): Promise<User> {
     try {
         const responseData = await apiGraphQLClient.authorizedRequest<any, UserAndRelated | null>(
             userToken,
-            API_USER_AND_RELATED_QUERY,
+            SO7_USER_AND_RELATED_QUERY,
             {},
         );
-        console.log(responseData)
 
         if (responseData === null) {
             throw new Error('Api returned empty data. Did the exception handling miss something?');
@@ -117,8 +103,8 @@ export async function meApi(userToken: string): Promise<User> {
 
         const apiFlags = responseData?.user?.flags ?? [];
 
-        const apiOrgs = responseData?.user?.related?.orgs ?? [];
-
+        const so7Orgs = responseData?.user?.related?.orgs ?? [];
+        const so7Surveys = responseData?.user?.related?.surveys ?? [];
 
         return {
             id: responseData.user.id,
@@ -128,59 +114,15 @@ export async function meApi(userToken: string): Promise<User> {
 
             configuration: responseData.user.config,
             permissions: responseData.user.rights.perms,
-            organization: apiOrgs.map(org => org.meta.name),
             rights: responseData.user.rights,
             flags: apiFlags,
+
+            organization: so7Orgs.map(org => org.meta.name),
+            surveys: so7Surveys.map(survey => survey.id),
         };
     } catch (err) {
         clearUserToken();
 
         throw err;
-    }
-}
-
-type UserRightsForDomainResponse = Readonly<{
-    domain?: {
-        rights?: {
-            roles?: ReadonlyArray<string>;
-            perms?: ReadonlyArray<string>;
-        };
-    };
-}>;
-
-export async function getUserRightsForDomain(
-    domain: string,
-    userToken: string,
-): Promise<TUserRights> {
-    if (!domain) {
-        throw new Error('Cannot possibly fetch rights of a domain without a valid domain.');
-    }
-
-    const variables = {
-        domain,
-    };
-
-    if (!userToken) {
-        return {
-            roles: [],
-            perms: [],
-        } as TUserRights;
-    }
-
-    try {
-        const responseData = await apiGraphQLClient.authorizedRequest<any, UserRightsForDomainResponse>(
-            userToken,
-            API_DOMAINRIGHTS_QUERY,
-            variables,
-        );
-
-        const rights = responseData?.domain?.rights ?? {};
-
-        return {
-            roles: rights?.roles?.slice(),
-            perms: rights?.perms?.slice(),
-        } as TUserRights;
-    } catch (error) {
-        throw new Error(error);
     }
 }

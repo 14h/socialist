@@ -9,6 +9,7 @@ import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
 import { Translation } from './screens/Translations';
 import {useLocalStorage} from "@utils/helpers";
+import {SO7_USER_TOKEN} from "./services/userService";
 
 const { Sider } = Layout;
 
@@ -20,7 +21,7 @@ const Translations = React.lazy(() => import('./screens/Translations/index'));
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 
 export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
-    const userToken = useLocalStorage('SO7_USER_TOKEN', null);
+    const userToken = useLocalStorage(SO7_USER_TOKEN, null);
     const user = useState(null);
 
     const initialTranslations = new Map<string, Translation>();

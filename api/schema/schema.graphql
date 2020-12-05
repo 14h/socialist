@@ -65,6 +65,14 @@ input UserEntry {
     userId: ID
 }
 
+"""Identifies a survey by either name or id. Used as part of SurveyMultiQuery."""
+input SurveyEntry {
+    """Survey name"""
+    surveyName: String
+    """Survey GUID."""
+    SurveyId: ID
+}
+
 """User rights on the specific resource."""
 type Rights {
     roles: [String]!
@@ -345,6 +353,11 @@ type Query {
     user_multi(
         users: [UserEntry]!
     ): [User] @auth
+
+    """Query for a batch of surveys based on their surveyName or id."""
+    survey_multi(
+        surveys: [SurveyEntry]!
+    ): [Survey] @auth
 
     """Fulltext search for any kind of entity."""
     search(

@@ -83,6 +83,7 @@ export type UserMultiQuery = { users: UserQuery[] };
 
 export type OrgQuery = Partial<{ orgName: string, orgId: string }>;
 export type SurveyQuery = Partial<{ surveyName: string, surveyId: string }>;
+export type SurveyMultiQuery = { surveys: SurveyQuery[] };
 
 export type ResourceQuery = Partial<{ resId: string, resName: string }>;
 

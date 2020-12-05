@@ -20,9 +20,10 @@ import {
     ResourceType,
     RoleSrc,
     RootCtx,
-    UserCredInput, UserMultiQuery,
+    UserCredInput,
+    UserMultiQuery,
     UserQuery,
-    UserRelatedEntitySrc,
+    UserRelatedEntitySrc, SurveyMultiQuery,
 } from '../types';
 import { validate_registered_user_token } from '../core/token';
 
@@ -452,6 +453,41 @@ export const get_resolvers = () => {
 
                         return {
                             id: userRefId,
+                        };
+                    }),
+                );
+            },
+            survey_multi(
+                _source: {},
+                args: SurveyMultiQuery,
+                ctx: RootCtx,
+            ) {
+                if (args.surveys.length === 0) {
+                    return [];
+                }
+
+                {
+                    for (const surveyQuery of args.surveys) {
+                        validation_assert(
+                            surveyQuery.surveyName || surveyQuery.surveyId,
+                            `Every survey entry must include either surveyName or surveyId.`,
+                        );
+                    }
+                }
+
+                return Promise.all(
+                    args.surveys.map(async surveyQuery => {
+
+                        const surveyRefId = await resolve_res_params(
+                            ResourceType.SURVEY,
+                            surveyQuery,
+                            ctx.deps,
+                        );
+
+                        ctx.userRefId = surveyRefId;
+
+                        return {
+                            id: surveyRefId,
                         };
                     }),
                 );
