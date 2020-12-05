@@ -15,8 +15,7 @@ const API_USER_AND_RELATED_QUERY =
     'query getUserAndRelated{user{id,meta{email,firstname,lastname}'
     + 'rights{perms}'
     + 'related{'
-    + 'domains{meta{name}}'
-    + 'orgs{meta{name}domains{meta{name}}}}'
+    + 'orgs{meta{name}}}'
     + 'id,flags}}';
 
 const API_USER_TOKEN = 'vtxut';
@@ -104,18 +103,6 @@ export async function meApi(userToken: string): Promise<User> {
 
         const apiOrgs = responseData?.user?.related?.orgs ?? [];
 
-        const apiDomains = responseData?.user?.related?.domains ?? [];
-        const apiOrgDomains = apiOrgs
-            .map(org =>
-                (org?.domains ?? [])
-                    .map(domain => domain?.meta?.name));
-
-        const resolvedDomains = Array.from(new Set(
-            [
-                ...apiDomains.map(domain => domain.meta.name),
-                ...apiOrgDomains.flat(),
-            ],
-        )).filter(Boolean);
 
         return {
             id: responseData.user.id,
@@ -126,7 +113,6 @@ export async function meApi(userToken: string): Promise<User> {
             configuration: responseData.user.config,
             permissions: responseData.user.rights.perms,
             organization: apiOrgs.map(org => org.meta.name),
-            domains: resolvedDomains,
             rights: responseData.user.rights,
             flags: apiFlags,
         };

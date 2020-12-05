@@ -7,7 +7,6 @@ export type User = Readonly<{
     configuration: any;
     permissions: ReadonlyArray<string>;
     organization?: ReadonlyArray<string>;
-    domains?: ReadonlyArray<string>;
     rights?: TUserRights;
     flags?: ReadonlyArray<string>;
 }>;
@@ -23,10 +22,6 @@ export type RelatedEntity = {
     meta: {
         name: string;
     }
-};
-
-export type RelatedOrgWithDomains = {
-    domains: RelatedEntity[],
 };
 
 export type UserAndRelated = {
@@ -46,8 +41,7 @@ export type UserAndRelated = {
         rights: TUserRights;
 
         related: {
-            domains: RelatedEntity[];
-            orgs: (RelatedEntity & RelatedOrgWithDomains)[];
+            orgs: (RelatedEntity)[];
         };
 
         flags: ReadonlyArray<string>;
