@@ -14,12 +14,14 @@ import { logger } from './util/logger';
 import { subscribe_lockdown, subscribe_signing_root_key, validate_registered_user_token } from './core/token';
 import { AuthDirective } from './gql/directives';
 import { RootCtx } from './types';
+import {ensure_init_user} from './util/init_user';
 
 const __PORT__ = process.env.PORT || 1516;
 
 (async () => {
     await subscribe_signing_root_key();
     await subscribe_lockdown();
+    await ensure_init_user();
 
     // tslint:disable-next-line:no-var-requires
     const express = require('express') as Express;
