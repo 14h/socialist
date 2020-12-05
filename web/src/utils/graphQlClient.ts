@@ -1,10 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
-import { Headers } from 'graphql-request/dist/src/types';
 import config from 'config';
 
 export const buildGraphQLClient = (
     url: string,
-    headers: Headers,
+    headers: any,
 ) => {
     const unauthorizedClient = new GraphQLClient(url, {
         headers,
@@ -38,4 +37,4 @@ export const buildGraphQLClient = (
     };
 };
 
-export const apiGraphQLClient = buildGraphQLClient(config().API_URL, {});
+export const apiGraphQLClient = buildGraphQLClient((config as any).API_URL, {});
