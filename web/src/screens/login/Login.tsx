@@ -2,12 +2,12 @@ import React, {useContext, useEffect} from 'react';
 
 import './styles.css';
 import { Redirect } from 'react-router';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Spin } from 'antd';
 import { CoreCtx } from '../../index';
-import {login_so7, meApi} from "../../services/userService";
+import { login_so7, meApi } from '../../services/userService';
+import { LoadingOutlined } from '@ant-design/icons';
 
 type Props = {};
-
 
 export const Login: React.FC<Props> = () => {
     const [user, setUser] = useContext(CoreCtx).user;
@@ -77,6 +77,21 @@ export const Login: React.FC<Props> = () => {
         console.log('Failed:', errorInfo);
     };
 
+    if (userToken) {
+        // trying with the stored userToken
+
+        return (
+            <div className='loading-spinner'>
+
+                <Spin
+                    indicator={
+                        <LoadingOutlined style={{ fontSize: 24 }} spin={ true } />
+                    }
+                />
+            </div>
+        )
+    }
+
     return (
         <div className="login-form">
             <Form
@@ -106,7 +121,7 @@ export const Login: React.FC<Props> = () => {
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        LOGIN
                     </Button>
                 </Form.Item>
             </Form>
