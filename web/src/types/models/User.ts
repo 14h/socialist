@@ -42,6 +42,7 @@ export type UserAndRelated = {
 
         related: {
             orgs: (RelatedEntity)[];
+            surveys: {id: string}[]
         };
 
         flags: ReadonlyArray<string>;

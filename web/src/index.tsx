@@ -8,6 +8,7 @@ import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
 import { Translation } from './screens/Translations';
+import {useLocalStorage} from "@utils/helpers";
 
 const { Sider } = Layout;
 
@@ -19,14 +20,8 @@ const Translations = React.lazy(() => import('./screens/Translations/index'));
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 
 export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
-    const auth = useState({ userToken: 'foo' });
-    const user = useState({
-        id: '19h',
-        username: '19h',
-        email: 'kenan@sig.dev',
-        firstname: 'Kenan',
-        lastname: 'Sulayman',
-    });
+    const userToken = useLocalStorage('SO7_USER_TOKEN', null);
+    const user = useState(null);
 
     const initialTranslations = new Map<string, Translation>();
     initialTranslations
@@ -36,36 +31,12 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
             en: "English translation",
             de: "German translation"
         }
-    ).set(
-        "1",
-        {
-            en: "English translation 1",
-            de: "German translation 1"
-        }
-    ).set(
-        "2",
-        {
-            en: "English translation 2",
-            de: "German translation 2"
-        }
-    ).set(
-        "3",
-        {
-            en: "English translation 3",
-            de: "German translation 3"
-        }
-    ).set(
-        "4",
-        {
-            en: "English translation 4",
-            de: "German translation 4"
-        }
     );
 
     const translations = useState<Map<string, Translation>>(initialTranslations);
 
     const store: any = {
-        auth,
+        userToken,
         user,
         translations,
     };

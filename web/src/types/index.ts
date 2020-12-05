@@ -2,12 +2,8 @@ import { Dispatch, SetStateAction } from 'react';
 import { Translation } from '../screens/Translations';
 import {User} from "./models/User";
 
-export type TCoreStateAuth = Shallow<{
-    userToken: string;
-}>;
-
 export type TCoreState = {
-    auth: TCoreStateAuth;
+    userToken: string | null;
     user: User | null;
     translations: Map<string, Translation>;
 };

@@ -11,12 +11,31 @@ const API_REVOKEUSERTOKEN_MUTATION =
 const API_DOMAINRIGHTS_QUERY =
     'query getUserDomainRights($domain:String!){domain(domainName:$domain){rights{roles,perms}}}';
 
-const API_USER_AND_RELATED_QUERY =
-    'query getUserAndRelated{user{id,meta{email,firstname,lastname}'
-    + 'rights{perms}'
-    + 'related{'
-    + 'orgs{meta{name}}}'
-    + 'id,flags}}';
+const API_USER_AND_RELATED_QUERY = `
+    query getUserAndRelated{
+        user{
+            id,
+            meta{
+                email,
+                firstname,
+                lastname
+            }
+            rights{
+                perms
+            }
+            related{
+                orgs{
+                    meta {
+                        name
+                    }
+                }
+                surveys{
+                    id
+                }
+            }
+        }
+    }
+`;
 
 const API_USER_TOKEN = 'vtxut';
 
@@ -40,12 +59,10 @@ type CreateLoginChipResponse = Readonly<{
     };
 }>;
 
-export async function loginApi(
+export async function login_so7(
     email: string,
     password: string,
-): Promise<{
-    userToken?: string;
-}> {
+): Promise<string | null> {
 
     const variables = {
         creds: {
@@ -66,9 +83,7 @@ export async function loginApi(
             throw new Error('User was not authorized');
         }
 
-        return {
-            userToken,
-        };
+        return userToken ?? null;
 
     } catch (error) {
         throw new Error('login strategy failed');
@@ -94,6 +109,7 @@ export async function meApi(userToken: string): Promise<User> {
             API_USER_AND_RELATED_QUERY,
             {},
         );
+        console.log(responseData)
 
         if (responseData === null) {
             throw new Error('Api returned empty data. Did the exception handling miss something?');

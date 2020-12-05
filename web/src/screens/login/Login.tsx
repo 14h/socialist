@@ -1,16 +1,39 @@
-import React, { useContext } from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import './styles.css';
 import { Redirect } from 'react-router';
 import { Button, Form, Input, message } from 'antd';
 import { CoreCtx } from '../../index';
-import {loginApi, meApi} from "../../services/userService";
+import {login_so7, meApi} from "../../services/userService";
 
 type Props = {};
 
 
 export const Login: React.FC<Props> = () => {
     const [user, setUser] = useContext(CoreCtx).user;
+    const [userToken, setUserToken] = useContext(CoreCtx).userToken;
+
+    useEffect(() => {
+        // try using saved auth on first render
+        if (!userToken) {
+            return;
+        }
+
+        try {
+            (async () => {
+                const user = await meApi(userToken);
+
+                if (!user) {
+                    throw new Error('me endpoint didn\'t work ');
+                }
+
+                setUser(user);
+            })();
+        } catch (error) {
+            console.log(error);
+            setUserToken(null);
+        }
+    }, []);
 
     if (user !== null) {
         return <Redirect to="/"/>;
@@ -24,19 +47,20 @@ export const Login: React.FC<Props> = () => {
         }
 
         try {
-            const userResponse = await loginApi(email, password);
+            const newToken = await login_so7(email, password);
 
-            if (!userResponse?.userToken) {
+            if (!newToken) {
                 throw new Error('Login failed')
             }
 
-            const user = await meApi(userResponse?.userToken);
+            const user = await meApi(newToken);
 
             if (!user) {
                 throw new Error('me endpoint didn\'t work ');
             }
 
             setUser(user);
+            setUserToken(newToken);
 
         } catch (error) {
 
