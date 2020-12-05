@@ -62,8 +62,6 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
 
     const translations = useState<Map<string, Translation>>(initialTranslations);
 
-
-
     const store: any = {
         auth,
         user,
@@ -72,6 +70,17 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
 
     return <CoreCtx.Provider value={store}>{props.children}</CoreCtx.Provider>;
 };
+
+const publicPaths = [
+    { exact: true, path: '/', component: Home },
+    { exact: true, path: '/surveys', component: Surveys },
+    { exact: true, path: '/surveys/:survey_id', component: EditSurvey },
+    { exact: true, path: '/translations', component: Translations },
+];
+
+const publicRoutes = publicPaths.map(({ path, ...props }) => (
+    <Route key={path} path={path} {...props} />
+));
 
 export const App = () => {
     const [user] = useContext(CoreCtx).user;
@@ -90,16 +99,6 @@ export const App = () => {
     );
 };
 
-const publicPaths = [
-    { exact: true, path: '/', component: Home },
-    { exact: true, path: '/surveys', component: Surveys },
-    { exact: true, path: '/surveys/:survey_id', component: EditSurvey },
-    { exact: true, path: '/translations', component: Translations },
-];
-
-const publicRoutes = publicPaths.map(({ path, ...props }) => (
-    <Route key={path} path={path} {...props} />
-));
 
 ReactDOM.render(
     <BrowserRouter>
