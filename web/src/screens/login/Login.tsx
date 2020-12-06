@@ -4,7 +4,7 @@ import './styles.css';
 import { Redirect } from 'react-router';
 import { Button, Form, Input, message, Spin } from 'antd';
 import { CoreCtx } from '../../index';
-import {createUser, login_so7, meApi} from '../../services/userService';
+import {createUser, login_so7, meApi, setUserMeta} from '../../services/userService';
 import { LoadingOutlined } from '@ant-design/icons';
 
 type Props = {};
@@ -19,7 +19,18 @@ export const SignUp: React.FC<Props> = () => {
         try {
             const newUser = await createUser(email, password);
             console.log(newUser);
+            const newToken = await login_so7(email, password);
+            if (!newToken) {
+                throw new Error('failed to login with new account!');
+            }
+            const user = await meApi(newToken);
 
+            await setUserMeta(
+                user.id,
+                email,
+                firstname,
+                lastname
+            );
 
         } catch (error) {
             console.error(error)

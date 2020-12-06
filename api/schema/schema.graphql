@@ -433,7 +433,7 @@ type Mutation {
     ## Organization
 
     """Create an organization using a name. [privileged]"""
-    createOrganization(orgName: String!): Org @auth(privileged: true)
+    createOrganization(orgName: String!): Org
 
     """Delete an organization using its name or GUID. [privileged]"""
     deleteOrganization(orgName: String, orgId: ID): Boolean @auth(privileged: true)

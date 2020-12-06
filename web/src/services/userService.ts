@@ -14,6 +14,12 @@ const SO7_CREATE_USER_MUTATION = `
     }
 `;
 
+const SO7_SET_USER_META_MUTATION = `
+    mutation($email: String, $userId: ID, $meta: UserMetaUpdate!){
+        setUserMeta(email: $email, userId: $userId, meta: $meta)
+    }
+`;
+
 const SO7_USER_AND_RELATED_QUERY = `
     query getUserAndRelated{
         user{
@@ -54,6 +60,10 @@ type CreateLoginChipResponse = Readonly<{
 
 type CreateUserResponse = Readonly<{
     createUser?: User;
+}>;
+
+type SetUserMetaResponse = Readonly<{
+    setUserMeta?: boolean;
 }>;
 
 export async function login_so7(
@@ -113,6 +123,43 @@ export async function createUser(
         }
 
         return user ?? null;
+
+    } catch (error) {
+        throw new Error('createUser failed');
+    }
+}
+export async function setUserMeta(
+    userId: string,
+    email: string,
+    firstname: string,
+    lastname: string,
+): Promise<boolean> {
+
+    const variables = {
+        creds: {
+            email,
+            userId,
+            meta: {
+                firstname,
+                lastname,
+                email
+            }
+        },
+    };
+
+    try {
+        const responseData = await apiGraphQLClient.unauthorizedRequest<any, SetUserMetaResponse>(
+            SO7_SET_USER_META_MUTATION,
+            variables,
+        );
+
+        const success = responseData?.setUserMeta;
+
+        if (!success) {
+            throw new Error('Couldn\'nt setUserMeta');
+        }
+
+        return success;
 
     } catch (error) {
         throw new Error('createUser failed');
