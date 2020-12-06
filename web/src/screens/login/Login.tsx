@@ -6,12 +6,14 @@ import { Button, Form, Input, message, Spin } from 'antd';
 import { CoreCtx } from '../../index';
 import {createUser, login_so7, meApi, setUserMeta} from '../../services/userService';
 import { LoadingOutlined } from '@ant-design/icons';
+import {createOrganization} from "../../services/orgService";
+import {addResourceUserRoles} from "../../services/surveyService";
 
 type Props = {};
 
 export const SignUp: React.FC<Props> = () => {
-    const [user, setUser] = useContext(CoreCtx).user;
-    const [userToken, setUserToken] = useContext(CoreCtx).userToken;
+    const [, setUser] = useContext(CoreCtx).user;
+    const [, setUserToken] = useContext(CoreCtx).userToken;
 
     const onFinish = async (values: any) => {
         const {email, password, firstname, lastname, orgName} = values;
@@ -32,6 +34,20 @@ export const SignUp: React.FC<Props> = () => {
                 lastname
             );
 
+            const newOrgId = await createOrganization(orgName, newToken);
+
+            if (!newOrgId) {
+                throw new Error('failed to create org!');
+            }
+
+            await addResourceUserRoles(
+                newToken,
+                user.id,
+                newOrgId
+            );
+
+            setUser(newUser);
+            setUserToken(newToken);
         } catch (error) {
             console.error(error)
         }

@@ -43,3 +43,4 @@ export async function createOrganization(
         throw new Error(error);
     }
 }
+
