@@ -109,3 +109,21 @@ export type Survey = {
     sections: Section[];
 };
 
+export type Organization = {
+    id: string;
+
+    meta: {
+        name: string;
+    };
+
+    config: any;
+
+    surveys: ReadonlyArray<Survey>;
+
+    // TODO: type these
+    viewerRights: any;
+    userRights: any;
+    related: any;
+    flags: any;
+
+}
