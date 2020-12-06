@@ -477,17 +477,16 @@ export const get_resolvers = () => {
 
                 return Promise.all(
                     args.surveys.map(async surveyQuery => {
+                        ctx.userRefId = ctx.userContext?.userId;
 
-                        const surveyRefId = await resolve_res_params(
+                        const surveyId = await resolve_res_params(
                             ResourceType.SURVEY,
                             surveyQuery,
                             ctx.deps,
                         );
 
-                        ctx.userRefId = surveyRefId;
-
                         return {
-                            id: surveyRefId,
+                            id: surveyId,
                         };
                     }),
                 );

@@ -70,7 +70,7 @@ input SurveyEntry {
     """Survey name"""
     surveyName: String
     """Survey GUID."""
-    SurveyId: ID
+    surveyId: ID
 }
 
 """User rights on the specific resource."""
