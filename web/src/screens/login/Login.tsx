@@ -4,15 +4,68 @@ import './styles.css';
 import { Redirect } from 'react-router';
 import { Button, Form, Input, message, Spin } from 'antd';
 import { CoreCtx } from '../../index';
-import { login_so7, meApi } from '../../services/userService';
+import {createUser, login_so7, meApi} from '../../services/userService';
 import { LoadingOutlined } from '@ant-design/icons';
 
 type Props = {};
 
+export const SignUp: React.FC<Props> = () => {
+    const [user, setUser] = useContext(CoreCtx).user;
+    const [userToken, setUserToken] = useContext(CoreCtx).userToken;
+
+    const onFinish = async (values: any) => {
+        const {email, password, firstname, lastname, orgName} = values;
+
+        try {
+            const newUser = await createUser(email, password);
+            console.log(newUser);
+
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    return (
+        <div className="login-form">
+            <Form
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 24 }}
+                name="basic"
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+                onFinishFailed={console.error}
+            >
+                <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                >
+                    <Input/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Input.Password/>
+                </Form.Item>
+
+
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        LOGIN
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
+    )
+}
 export const Login: React.FC<Props> = () => {
     const [user, setUser] = useContext(CoreCtx).user;
     const [userToken, setUserToken] = useContext(CoreCtx).userToken;
-    const [singUp, setSignUp] = useState(false);
+    const [signUp, setSignUp] = useState(false);
 
     useEffect(() => {
         // try using saved auth on first render
@@ -74,10 +127,6 @@ export const Login: React.FC<Props> = () => {
         await login(email, password);
     };
 
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
-
     if (userToken) {
         // trying with the stored userToken
 
@@ -93,6 +142,10 @@ export const Login: React.FC<Props> = () => {
         )
     }
 
+    if (signUp) {
+        return <SignUp />;
+    }
+
     return (
         <div className="login-form">
             <Form
@@ -101,7 +154,7 @@ export const Login: React.FC<Props> = () => {
                 name="basic"
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
+                onFinishFailed={console.error}
             >
                 <Form.Item
                     label="Email"
