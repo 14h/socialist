@@ -6,12 +6,16 @@ import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
 
 const UserOptionsMenu = () => {
-    const [user, setUser] = useContext(CoreCtx).user;
+    const [, setUser] = useContext(CoreCtx).user;
+    const [, setUserToken] = useContext(CoreCtx).userToken;
 
     return (
         <Menu>
             <Menu.Item
-                onClick={() => setUser(null)}
+                onClick={() => {
+                    setUserToken(null)
+                    setUser(null)
+                }}
                 key="logout"
                 icon={<LogoutOutlined />}
             >

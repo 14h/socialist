@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import './styles.css';
 import { Redirect } from 'react-router';
@@ -12,6 +12,7 @@ type Props = {};
 export const Login: React.FC<Props> = () => {
     const [user, setUser] = useContext(CoreCtx).user;
     const [userToken, setUserToken] = useContext(CoreCtx).userToken;
+    const [singUp, setSignUp] = useState(false);
 
     useEffect(() => {
         // try using saved auth on first render

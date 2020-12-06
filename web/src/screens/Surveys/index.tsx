@@ -47,66 +47,6 @@ const handleCreateSurvey = async (
     }
 };
 
-const duplicateSurvey = async (id: string) => {
-    const hide = message.loading(`Duplicating survey ${id} ..`, 0);
-    try {
-        const newSurveyId = await new Promise((
-            resolve,
-            _reject,
-        ) => {
-            setTimeout(() => resolve('survey_1'), 3000);
-        });
-        hide();
-        message.success(`${newSurveyId} got successfully duplicated!`);
-        // history.push(`/surveys/${newSurveyId}`);
-    } catch (error) {
-        hide();
-        message.error(`Failed to duplicated: ${error.message}`);
-    }
-};
-
-// const SURVEYS_LIST = [
-//     {
-//         id: 'survey_1',
-//         key: 'survey_1',
-//         title: 'Global Drug Survey 2020',
-//         responses: 1,
-//         updatedAt: 1581635524722,
-//         createdAt: 1581615521722,
-//     },
-//     {
-//         id: 'survey_2',
-//         key: 'survey_2',
-//         title: 'Global Drug Survey 2021 new Platform test',
-//         responses: 100100,
-//         updatedAt: 1289625564722,
-//         createdAt: 1289615561722,
-//     },
-//     {
-//         id: 'survey_3',
-//         key: 'survey_3',
-//         title: 'Global Drug Survey: The Big UK Cannabis Survey 2019',
-//         responses: 222,
-//         updatedAt: 1589631564222,
-//         createdAt: 1589611561222,
-//     },
-//     {
-//         id: 'survey_4',
-//         key: 'survey_4',
-//         title: 'Global Drug Survey 2020 - copy',
-//         responses: 1235,
-//         updatedAt: 1588635562722,
-//         createdAt: 1588615561722,
-//     },
-//     {
-//         id: 'survey_4',
-//         key: 'survey_4',
-//         title: 'Global Drug Survey 2020 - copy - Global Drug Survey 2020 - copy Global Drug Survey 2020 - copy Global Drug Survey 2020 - copy',
-//         responses: 1235,
-//         updatedAt: 1588635562722,
-//         createdAt: 1588615561722,
-//     },
-// ];
 
 const columns = (
     userToken: string,
@@ -114,7 +54,7 @@ const columns = (
     {
         title: 'Title',
         dataIndex: 'title',
-        width: 600,
+        width: '90%',
     },
     // {
     //     title: 'Responses',
@@ -154,12 +94,6 @@ const columns = (
             record: any,
         ) => (
             <Space size="middle">
-                <Popconfirm
-                    title={`Duplicate survey ${record.title}`}
-                    onConfirm={() => duplicateSurvey(record.id)}
-                >
-                    <Button>Duplicate</Button>
-                </Popconfirm>
                 <Link to={`/surveys/${record.id}`}>Edit</Link>
                 <Popconfirm
                     title={`Delete survey ${record.title}`}
@@ -194,7 +128,7 @@ const Surveys = () => {
 
             setSurveys(fetchedSurveys);
         })();
-    }, [user?.id    ]);
+    }, [user?.id]);
 
     if (!userToken || !user) {
         return null;

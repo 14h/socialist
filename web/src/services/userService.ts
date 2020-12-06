@@ -8,6 +8,12 @@ const SO7_GET_USERTOKEN_MUTATION =
 const SO7_REVOKEUSERTOKEN_MUTATION =
     'mutation($token:String!){revokeUserToken(userToken:$token)}';
 
+const SO7_CREATE_USER_MUTATION = `
+    mutation($creds:UserCreateInput!){
+        createUser(creds:$creds)
+    }
+`;
+
 const SO7_USER_AND_RELATED_QUERY = `
     query getUserAndRelated{
         user{
@@ -46,6 +52,10 @@ type CreateLoginChipResponse = Readonly<{
     };
 }>;
 
+type CreateUserResponse = Readonly<{
+    createUser?: User;
+}>;
+
 export async function login_so7(
     email: string,
     password: string,
@@ -77,6 +87,38 @@ export async function login_so7(
     }
 }
 
+
+export async function createUser(
+    email: string,
+    password: string,
+): Promise<User> {
+
+    const variables = {
+        creds: {
+            email,
+            password,
+        },
+    };
+
+    try {
+        const responseData = await apiGraphQLClient.unauthorizedRequest<any, CreateUserResponse>(
+            SO7_CREATE_USER_MUTATION,
+            variables,
+        );
+
+        const user = responseData?.createUser;
+
+        if (!user) {
+            throw new Error('Couldn\'nt create user');
+        }
+
+        return user ?? null;
+
+    } catch (error) {
+        throw new Error('createUser failed');
+    }
+}
+
 export async function logoutApi(userToken: string): Promise<void> {
     await apiGraphQLClient.authorizedRequest<any, boolean>(
         userToken,
@@ -91,6 +133,7 @@ export async function logoutApi(userToken: string): Promise<void> {
 
 export async function meApi(userToken: string): Promise<User> {
     try {
+        console.log(userToken)
         const responseData = await apiGraphQLClient.authorizedRequest<any, UserAndRelated | null>(
             userToken,
             SO7_USER_AND_RELATED_QUERY,

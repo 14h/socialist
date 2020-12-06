@@ -392,7 +392,7 @@ type Mutation {
     createUser(
         """A map including an email and a password of the user to be created."""
         creds: UserCreateInput!,
-    ): User @auth(privileged: true)
+    ): User
 
     """Delete a user account using email or GUID. [privileged]"""
     deleteUser(email: String, userId: ID): Boolean! @auth(privileged: true)
