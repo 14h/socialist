@@ -47,9 +47,9 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
 
 const publicPaths = [
     { exact: true, path: '/', component: Home },
-    { exact: true, path: '/surveys', component: Surveys },
-    { exact: true, path: '/surveys/:survey_id', component: EditSurvey },
-    { exact: true, path: '/translations', component: Translations },
+    { exact: true, path: '/:orgName/surveys', component: Surveys },
+    { exact: true, path: '/:orgName/surveys/:survey_id', component: EditSurvey },
+    { exact: true, path: '/:orgName/translations', component: Translations },
 ];
 
 const publicRoutes = publicPaths.map(({ path, ...props }) => (
