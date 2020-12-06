@@ -10,7 +10,27 @@ const SO7_REVOKEUSERTOKEN_MUTATION =
 
 const SO7_CREATE_USER_MUTATION = `
     mutation($creds:UserCreateInput!){
-        createUser(creds:$creds)
+        createUser(creds:$creds) {
+            id,
+            meta{
+                email,
+                firstname,
+                lastname
+            }
+            rights{
+                perms
+            }
+            related{
+                orgs{
+                    meta {
+                        name
+                    }
+                }
+                surveys{
+                    id
+                }
+            }
+        }
     }
 `;
 
@@ -101,12 +121,16 @@ export async function login_so7(
 export async function createUser(
     email: string,
     password: string,
+    firstname: string,
+    lastname: string,
 ): Promise<User> {
 
     const variables = {
         creds: {
             email,
             password,
+            firstname,
+            lastname
         },
     };
 

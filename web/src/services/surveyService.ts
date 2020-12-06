@@ -82,7 +82,7 @@ export async function createSurvey(
             throw new Error('Survey couldn\'t be created');
         }
 
-        await addResourceUserRoles(userToken, userId, surveyId)
+        await addResourceUserRoles(userToken, userId, surveyId, 'SURVEY')
 
         return surveyId;
 
@@ -95,11 +95,12 @@ export async function addResourceUserRoles(
     userToken: string,
     userId: string,
     resId: string,
+    type: 'SURVEY' | 'ORG'
 ): Promise<boolean> {
     const variables = {
         userId,
         resId,
-        type: 'SURVEY',
+        type,
         roles: ['admin'],
     };
 
