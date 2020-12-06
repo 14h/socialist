@@ -16,8 +16,9 @@ export type SurveyStore = {
 
 const SURVEY: Survey = {
     id: 'survey_1',
-    name: 'survey1',
-    description: 'survey_title',
+    meta: {
+        name: 'survey1',
+    },
     sections: [
         {
             name: 'page1',

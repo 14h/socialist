@@ -5,28 +5,26 @@ import './styles.css';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import {CoreCtx} from "../../index";
-import {createSurvey, fetchSurveys} from "../../services/surveyService";
+import {createSurvey, deleteSurvey, fetchSurveys} from "../../services/surveyService";
 import {Survey} from "../../types";
 
 const { Content } = Layout;
 
 const GDS_ORG_ID = 'b668b413-08c3-46bd-9d71-88feb2b1ac4d';
 
-const deleteSurvey = async (id: string) => {
-    const hide = message.loading(`Deleting ${id}..`, 0);
+const handleDeleteSurvey = async (
+    userToken: string,
+    surveyId: string,
+) => {
+    const hide = message.loading(`Deleting ${surveyId}..`, 0);
 
     try {
-        await new Promise((
-            resolve,
-            _reject,
-        ) => {
-            setTimeout(() => resolve('survey_1'), 3000);
-        });
+        await deleteSurvey(userToken, surveyId);
         hide();
-        message.success(`${id} got successfully deleted!`);
+        message.success(`${surveyId} got successfully deleted!`);
     } catch (error) {
         hide();
-        message.error(`Failed to delete ${id}: ${error.message}`);
+        message.error(`Failed to delete ${surveyId}: ${error.message}`);
     }
 };
 
@@ -110,47 +108,49 @@ const duplicateSurvey = async (id: string) => {
 //     },
 // ];
 
-const columns = [
+const columns = (
+    userToken: string,
+) => [
     {
         title: 'Title',
         dataIndex: 'title',
-        width: 400,
+        width: 600,
     },
-    {
-        title: 'Responses',
-        dataIndex: 'responses',
-        sorter: (
-            a: any,
-            b: any,
-        ) => a.responses - b.responses,
-    },
-    {
-        title: 'Last Edited',
-        dataIndex: 'updatedAt',
-        render: (lastUpdated: number) => (
-            <span>{(new Date(lastUpdated)).toDateString()}</span>
-        ),
-        sorter: (
-            a: any,
-            b: any,
-        ) => a.updatedAt - b.updatedAt,
-    },
-    {
-        title: 'Date created',
-        dataIndex: 'createdAt',
-        render: (lastUpdated: number) => (
-            <span>{(new Date(lastUpdated)).toDateString()}</span>
-        ),
-        sorter: (
-            a: any,
-            b: any,
-        ) => a.createdAt - b.createdAt,
-    },
+    // {
+    //     title: 'Responses',
+    //     dataIndex: 'responses',
+    //     sorter: (
+    //         a: any,
+    //         b: any,
+    //     ) => a.responses - b.responses,
+    // },
+    // {
+    //     title: 'Last Edited',
+    //     dataIndex: 'updatedAt',
+    //     render: (lastUpdated: number) => (
+    //         <span>{(new Date(lastUpdated)).toDateString()}</span>
+    //     ),
+    //     sorter: (
+    //         a: any,
+    //         b: any,
+    //     ) => a.updatedAt - b.updatedAt,
+    // },
+    // {
+    //     title: 'Date created',
+    //     dataIndex: 'createdAt',
+    //     render: (lastUpdated: number) => (
+    //         <span>{(new Date(lastUpdated)).toDateString()}</span>
+    //     ),
+    //     sorter: (
+    //         a: any,
+    //         b: any,
+    //     ) => a.createdAt - b.createdAt,
+    // },
     {
         title: null,
         key: 'action',
         render: (
-            _text: any,
+            text: any,
             record: any,
         ) => (
             <Space size="middle">
@@ -163,9 +163,9 @@ const columns = [
                 <Link to={`/surveys/${record.id}`}>Edit</Link>
                 <Popconfirm
                     title={`Delete survey ${record.title}`}
-                    onConfirm={() => deleteSurvey(record.id)}
+                    onConfirm={() => handleDeleteSurvey(userToken, record.id)}
                 >
-                    <Button>Delete</Button>
+                    <Link to="#">Delete</Link>
                 </Popconfirm>
             </Space>
         ),
@@ -180,23 +180,21 @@ const Surveys = () => {
     const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
 
 
-
     const orgId = GDS_ORG_ID;
-    console.log(user);
 
     useEffect(() => {
         (async () => {
             if (!user?.surveys || !userToken) {
-                console.log('panic');
 
                 return;
             }
+
             // fetch user surveys
             const fetchedSurveys = await fetchSurveys(userToken, user.surveys);
 
             setSurveys(fetchedSurveys);
         })();
-    }, [user?.id]);
+    }, [user?.id    ]);
 
     if (!userToken || !user) {
         return null;
@@ -205,10 +203,10 @@ const Surveys = () => {
     const dataSource = surveys.map(survey => ({
         id: survey.id,
         key: survey.id,
-        title: survey.name,
-        responses: 1235,
-        updatedAt: 1588635562722,
-        createdAt: 1588615561722,
+        title: survey.meta.name,
+        // responses: 1235,
+        // updatedAt: 1588635562722,
+        // createdAt: 1588615561722,
     }))
 
     return (
@@ -219,7 +217,7 @@ const Surveys = () => {
                 </Button>
                 <Table
                     dataSource={dataSource}
-                    columns={columns}
+                    columns={columns(userToken)}
                     pagination={false}
                 />
                 <Modal

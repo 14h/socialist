@@ -1,6 +1,5 @@
 import { apiGraphQLClient } from "@utils/graphQlClient";
 import {Survey} from "../types";
-import {UserMultiQuery} from "../../../api/src/types";
 
 const SO7_CREATE_SURVEY_MUTATION = `
     mutation($surveyName: String!, $orgName: String, $orgId: ID){
@@ -13,6 +12,12 @@ const SO7_CREATE_SURVEY_MUTATION = `
 const SO7_ADD_RESOURCE_USER_ROLES = `
     mutation($type: NonUserResourceType!, $resId: ID, $resName: String, $email: String, $userId: ID, $roles: [String!]!){
         addResourceUserRoles(type: $type, resId: $resId, resName: $resName, email: $email, userId: $userId, roles: $roles)
+    }
+`;
+
+const SO7_DELETE_SURVEY = `
+    mutation($surveyName: String, $surveyId: ID){
+        deleteSurvey(surveyName: $surveyName, surveyId: $surveyId)
     }
 `;
 
@@ -36,6 +41,10 @@ type CreateSurveyResponse = Readonly<{
 
 type AddResourceUserRolesResponse = Readonly<{
     addResourceUserRoles?: boolean;
+}>;
+
+type DeleteSurveyResponse = Readonly<{
+    deleteSurvey?: boolean;
 }>;
 
 // TODO: fix type after fixing the query
@@ -115,11 +124,37 @@ export async function addSurveyToUser(
     }
 }
 
+
+export async function deleteSurvey(
+    userToken: string,
+    surveyId: string,
+): Promise<boolean> {
+    const variables = {
+        surveyId,
+    };
+
+    try {
+        const responseData = await apiGraphQLClient.authorizedRequest<any, DeleteSurveyResponse>(
+            userToken,
+            SO7_DELETE_SURVEY,
+            variables,
+        );
+
+        const result = responseData?.deleteSurvey ?? false;
+        if (!result) {
+            throw new Error('couldn\'t be done.');
+        }
+
+        return result;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 export async function fetchSurveys(
     userToken: string,
     surveysIds: ReadonlyArray<string>,
 ): Promise<Survey[]> {
-    console.log(-3, surveysIds.map((surveyId) => ({surveyId})),)
     const variables = {
         surveys: surveysIds.map((surveyId) => ({surveyId})),
     };
@@ -139,8 +174,7 @@ export async function fetchSurveys(
 
         return surveys.map(({id, meta}) => ({
             id,
-            name: meta.name,
-            description: null,
+            meta,
             sections: [],
         }));
 
