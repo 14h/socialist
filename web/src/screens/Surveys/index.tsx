@@ -3,10 +3,11 @@ import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table }
 
 import './styles.css';
 import { Link } from 'react-router-dom';
-import { useHistory } from 'react-router';
+import {useHistory, useParams} from 'react-router';
 import {CoreCtx} from "../../index";
 import {createSurvey, deleteSurvey, fetchSurveys} from "../../services/surveyService";
 import {Survey} from "../../types";
+import {fetchOrganization} from "../../services/orgService";
 
 const { Content } = Layout;
 
@@ -107,6 +108,7 @@ const columns = (
 ];
 
 const Surveys = () => {
+    const { orgName } = useParams();
     const [showAddModal, setShowAddModal] = useState(false);
     const history = useHistory();
     const [user] = useContext(CoreCtx).user;
@@ -114,23 +116,26 @@ const Surveys = () => {
     const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
 
 
-    const orgId = GDS_ORG_ID;
-
     useEffect(() => {
         (async () => {
-            if (!user?.surveys || !userToken) {
+            if (!orgName || !userToken) {
+                return;
+            }
+
+            const org = await fetchOrganization(orgName, userToken);
+            if (!org?.surveys || !userToken) {
 
                 return;
             }
 
             // fetch user surveys
-            const fetchedSurveys = await fetchSurveys(userToken, user.surveys);
+            const fetchedSurveys = await fetchSurveys(userToken, org.surveys.map(({id}) => id));
 
             setSurveys(fetchedSurveys);
         })();
     }, [user?.id]);
 
-    if (!userToken || !user) {
+    if (!userToken || !user || !orgName) {
         return null;
     }
 
@@ -169,7 +174,7 @@ const Surveys = () => {
                                 values.name,
                                 user.id,
                                 userToken,
-                                orgId,
+                                orgName,
                                 history
                             )
                         }
