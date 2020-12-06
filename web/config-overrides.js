@@ -27,9 +27,13 @@ module.exports = override(
   addLessLoader({
     paths: ['./src/styles', './node_modules'],
     javascriptEnabled: true,
-    modifyVars: getThemeVariables({
-        dark: true,
-        compact: false,
-    }),
+    modifyVars: {
+        ...getThemeVariables({
+                              dark: true,
+                              compact: false,
+                          }),
+        "@body-background": "#16161d",
+        "@primary-color": "#17BF3E",
+    },
   }),
 );
