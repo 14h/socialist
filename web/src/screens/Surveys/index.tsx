@@ -1,11 +1,12 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import './styles.css';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import {CoreCtx} from "../../index";
-import {createSurvey} from "../../services/surveyService";
+import {createSurvey, fetchSurveys} from "../../services/surveyService";
+import {Survey} from "../../types";
 
 const { Content } = Layout;
 
@@ -32,12 +33,13 @@ const deleteSurvey = async (id: string) => {
 const handleCreateSurvey = async (
     title: string,
     userToken: string,
-    orgName: string,
+    userId: string,
+    orgId: string,
     history: any,
 ) => {
     const hide = message.loading('Creating survey..', 0);
     try {
-        const newSurveyId = await createSurvey(title, userToken, GDS_ORG_ID);
+        const newSurveyId = await createSurvey(title, userId, userToken, orgId);
         hide();
         message.success(`${title} got successfully created!`);
         history.push(`/surveys/${newSurveyId}`);
@@ -65,48 +67,48 @@ const duplicateSurvey = async (id: string) => {
     }
 };
 
-const SURVEYS_LIST = [
-    {
-        id: 'survey_1',
-        key: 'survey_1',
-        title: 'Global Drug Survey 2020',
-        responses: 1,
-        updatedAt: 1581635524722,
-        createdAt: 1581615521722,
-    },
-    {
-        id: 'survey_2',
-        key: 'survey_2',
-        title: 'Global Drug Survey 2021 new Platform test',
-        responses: 100100,
-        updatedAt: 1289625564722,
-        createdAt: 1289615561722,
-    },
-    {
-        id: 'survey_3',
-        key: 'survey_3',
-        title: 'Global Drug Survey: The Big UK Cannabis Survey 2019',
-        responses: 222,
-        updatedAt: 1589631564222,
-        createdAt: 1589611561222,
-    },
-    {
-        id: 'survey_4',
-        key: 'survey_4',
-        title: 'Global Drug Survey 2020 - copy',
-        responses: 1235,
-        updatedAt: 1588635562722,
-        createdAt: 1588615561722,
-    },
-    {
-        id: 'survey_4',
-        key: 'survey_4',
-        title: 'Global Drug Survey 2020 - copy - Global Drug Survey 2020 - copy Global Drug Survey 2020 - copy Global Drug Survey 2020 - copy',
-        responses: 1235,
-        updatedAt: 1588635562722,
-        createdAt: 1588615561722,
-    },
-];
+// const SURVEYS_LIST = [
+//     {
+//         id: 'survey_1',
+//         key: 'survey_1',
+//         title: 'Global Drug Survey 2020',
+//         responses: 1,
+//         updatedAt: 1581635524722,
+//         createdAt: 1581615521722,
+//     },
+//     {
+//         id: 'survey_2',
+//         key: 'survey_2',
+//         title: 'Global Drug Survey 2021 new Platform test',
+//         responses: 100100,
+//         updatedAt: 1289625564722,
+//         createdAt: 1289615561722,
+//     },
+//     {
+//         id: 'survey_3',
+//         key: 'survey_3',
+//         title: 'Global Drug Survey: The Big UK Cannabis Survey 2019',
+//         responses: 222,
+//         updatedAt: 1589631564222,
+//         createdAt: 1589611561222,
+//     },
+//     {
+//         id: 'survey_4',
+//         key: 'survey_4',
+//         title: 'Global Drug Survey 2020 - copy',
+//         responses: 1235,
+//         updatedAt: 1588635562722,
+//         createdAt: 1588615561722,
+//     },
+//     {
+//         id: 'survey_4',
+//         key: 'survey_4',
+//         title: 'Global Drug Survey 2020 - copy - Global Drug Survey 2020 - copy Global Drug Survey 2020 - copy Global Drug Survey 2020 - copy',
+//         responses: 1235,
+//         updatedAt: 1588635562722,
+//         createdAt: 1588615561722,
+//     },
+// ];
 
 const columns = [
     {
@@ -175,14 +177,39 @@ const Surveys = () => {
     const history = useHistory();
     const [user] = useContext(CoreCtx).user;
     const [userToken] = useContext(CoreCtx).userToken;
+    const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
+
+
+
+    const orgId = GDS_ORG_ID;
+    console.log(user);
+
+    useEffect(() => {
+        (async () => {
+            if (!user?.surveys || !userToken) {
+                console.log('panic');
+
+                return;
+            }
+            // fetch user surveys
+            const fetchedSurveys = await fetchSurveys(userToken, user.surveys);
+
+            setSurveys(fetchedSurveys);
+        })();
+    }, [user?.id]);
 
     if (!userToken || !user) {
         return null;
     }
 
-    const orgName = '';
-    console.log(user);
-
+    const dataSource = surveys.map(survey => ({
+        id: survey.id,
+        key: survey.id,
+        title: survey.name,
+        responses: 1235,
+        updatedAt: 1588635562722,
+        createdAt: 1588615561722,
+    }))
 
     return (
         <Layout className="container-layout">
@@ -191,7 +218,7 @@ const Surveys = () => {
                     Create a survey
                 </Button>
                 <Table
-                    dataSource={SURVEYS_LIST}
+                    dataSource={dataSource}
                     columns={columns}
                     pagination={false}
                 />
@@ -208,8 +235,9 @@ const Surveys = () => {
                         onFinish={
                             (values: any) => handleCreateSurvey(
                                 values.name,
+                                user.id,
                                 userToken,
-                                orgName,
+                                orgId,
                                 history
                             )
                         }

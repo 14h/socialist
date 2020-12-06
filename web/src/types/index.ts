@@ -100,6 +100,7 @@ export type Section = {
 }
 
 export type Survey = {
+    id: string;
     name: string;
     description: TranslationRef;
     sections: Section[];
