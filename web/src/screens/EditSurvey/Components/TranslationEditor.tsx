@@ -86,7 +86,7 @@ export const TranslationEditor = (props: TProps) => {
                             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
                             ['blockquote'],
 
-                            // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }],               // custom button values
+                            // [{ 'sider': 1 }, { 'sider': 2 }, { 'sider': 3 }],               // custom button values
                             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                             [{ 'direction': 'rtl' }],                         // text direction
 

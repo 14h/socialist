@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { LayoutSider } from '@layout/header';
+import { LayoutSider } from '@layout/sider';
 import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';

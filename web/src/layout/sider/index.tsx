@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button, Dropdown, Layout, Menu, message } from 'antd';
+import {Button, Col, Dropdown, Layout, Menu, message, Row} from 'antd';
 import { LogoutOutlined, UserOutlined, UpOutlined } from '@ant-design/icons';
 import './styles.css';
 import { Link } from 'react-router-dom';
@@ -29,6 +29,7 @@ const UserOptionsMenu = () => {
 export const LayoutSider = () => {
     const selectedMenuItem = window.location.pathname.split('/')[1];
     const [user, setUser] = useContext(CoreCtx).user;
+    console.log(user);
 
 
     return (
@@ -39,20 +40,41 @@ export const LayoutSider = () => {
             <Menu
                 className="sider-menu"
                 theme="dark"
-                mode="vertical"
+                mode="inline"
                 defaultSelectedKeys={[selectedMenuItem]}
+                defaultOpenKeys={[user?.organization?.[0] ?? '']}
             >
-                <Menu.Item key="surveys">
-                    <Link to="/surveys">Surveys</Link>
-                </Menu.Item>
+                <Menu.ItemGroup
+                    key="orgs"
+                    title={<Row justify="space-between">
+                        <Col span={11}>
+                            Your organizations
+                        </Col>
+                        <Col span={1}>
+                            <PlusOutline />
+                        </Col>
+                    </Row>}
+                >
+                {
+                    user?.organization?.map(
+                        org => (
+                            <Menu.SubMenu key={org} title={org}>
+                                <Menu.Item key="surveys">
+                                    <Link to="/surveys">Surveys</Link>
+                                </Menu.Item>
 
-                <Menu.Item key="translations">
-                    <Link to="/translations">Translations</Link>
-                </Menu.Item>
+                                <Menu.Item key="translations">
+                                    <Link to="/translations">Translations</Link>
+                                </Menu.Item>
 
-                <Menu.Item key="people">
-                    <Link to="/people">People</Link>
-                </Menu.Item>
+                                <Menu.Item key="people">
+                                    <Link to="/people">People</Link>
+                                </Menu.Item>
+                            </Menu.SubMenu>
+                        )
+                    )
+                }
+                </Menu.ItemGroup>
             </Menu>
 
             <div className='sider-details'>
