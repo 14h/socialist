@@ -61,11 +61,11 @@ export async function createSurvey(
     surveyName: string,
     userToken: string,
     userId: string,
-    orgId?: string,
+    orgName?: string,
 ): Promise<string | null> {
     const variables = {
         surveyName,
-        orgId
+        orgName
     };
 
     try {
