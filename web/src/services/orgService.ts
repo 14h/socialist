@@ -80,7 +80,6 @@ export async function fetchOrganization(
             variables,
         );
 
-        console.log(responseData);
         const org = responseData?.org ?? null;
 
         if (!org) {

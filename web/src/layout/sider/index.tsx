@@ -1,12 +1,10 @@
-import React, {useContext, useRef, useState} from 'react';
-import {Button, Col, Dropdown, Input, Layout, Menu, message, Popconfirm, Row} from 'antd';
+import React, { useContext, useRef, useState } from 'react';
+import { Button, Col, Dropdown, Input, Layout, Menu, message, Popconfirm, Row, Select, Space } from 'antd';
 import { LogoutOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
-import './styles.css';
+import './styles.less';
 import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
-import {Logo} from "@components/Logo";
-import {createOrganization} from "../../services/orgService";
-import {addResourceUserRoles} from "../../services/surveyService";
+import { Logo } from '@components/Logo';
 
 const UserOptionsMenu = () => {
     const [, setUser] = useContext(CoreCtx).user;
@@ -15,118 +13,106 @@ const UserOptionsMenu = () => {
     return (
         <Menu>
             <Menu.Item
-                onClick={() => {
-                    setUserToken(null)
-                    setUser(null)
-                }}
+                onClick={ () => {
+                    setUserToken(null);
+                    setUser(null);
+                } }
                 key="logout"
-                icon={<LogoutOutlined />}
+                icon={ <LogoutOutlined/> }
             >
                 Logout
             </Menu.Item>
         </Menu>
     );
-}
+};
 
 export const LayoutSider = () => {
     const selectedMenuItem = window.location.pathname.split('/')[1];
     const [user] = useContext(CoreCtx).user;
     const [userToken] = useContext(CoreCtx).userToken;
-
-    const newOrgNameRef = useRef<Input>(null);
+    const [selectedOrg, setSelectedOrg] = useState<string | null>(user?.organization?.[0] ?? null);
 
     if (!user || !userToken) {
         return null;
     }
 
-
-    const handleCreateOrg = async () => {
-        const newOrgName = newOrgNameRef?.current?.state?.value;
-        if (!newOrgName) {
-            message.error('Insert a valid org name!');
-        }
-        try {
-            const newOrgId = await createOrganization(newOrgName, userToken);
-
-            if (!newOrgId) {
-                throw new Error('failed to create org!');
-            }
-
-            await addResourceUserRoles(
-                userToken,
-                user.id,
-                newOrgId,
-                'ORG'
-            );
-
-        } catch (error) {
-            message.error('failed to create new org')
-        }
-
-    }
-
     return (
         <div className="sider">
-            <Link to="/surveys" className="logo">
-                <Logo />
+            <Link to="/" className="logo">
+                <Logo/>
             </Link>
             <Menu
                 className="sider-menu"
                 theme="dark"
                 mode="inline"
-                defaultSelectedKeys={[selectedMenuItem]}
-                defaultOpenKeys={[user?.organization?.[0] ?? '']}
+                defaultSelectedKeys={ [selectedMenuItem] }
+                defaultOpenKeys={ [user?.organization?.[0] ?? ''] }
             >
-                <Menu.ItemGroup
-                    key="orgs"
-                    title={<Row justify="space-between">
-                        <Col span={11}>
-                            Your orgs
-                        </Col>
-                        <Col span={1}>
-                            <Popconfirm
-                                placement="right"
-                                title={<Input ref={newOrgNameRef} placeholder="organization name" style={{width: '100%'}}/>}
-                                icon={null}
-                                onConfirm={handleCreateOrg}
-                                okText="create Organization"
-                                cancelText="cancel"
+
+                <Menu.Divider/>
+
+                <Menu.Item key="organizations">
+                    <Link to={ `/organizations` }>Organizations</Link>
+                </Menu.Item>
+                <Menu.Divider/>
+
+
+                {
+                    selectedOrg && (
+                        <>
+                            <Menu.ItemGroup
+                                title={
+                                    <Select
+                                        defaultValue={ selectedOrg }
+                                        onChange={ (org) => setSelectedOrg(org)}
+                                        bordered={ false }
+                                        style={{
+                                            width: '100%'
+                                        }}
+
+                                    >
+                                        {
+                                            user?.organization?.map(
+                                                (org: string) => (
+                                                    <Select.Option
+                                                        key={ `org-select-${ org }` }
+                                                        value={ org }>{ org }</Select.Option>
+                                                ),
+                                            )
+                                        }
+
+                                    </Select>
+                                }
                             >
-                                <PlusOutlined />
-                            </Popconfirm>
-                            {/*<Link to='/create-org' ><PlusOutlined /></Link>*/}
-                        </Col>
-                    </Row>}
-                >
-                    {
-                        user?.organization?.map(
-                            org => (
-                                <Menu.SubMenu key={org} title={org}>
-                                    <Menu.Item key="surveys">
-                                        <Link to={`/${org}/surveys`}>Surveys</Link>
-                                    </Menu.Item>
+                                <Menu.Divider/>
+                                <Menu.Item key="surveys">
+                                    <Link to={ `/${ selectedOrg }/surveys` }>Surveys</Link>
+                                </Menu.Item>
 
-                                    <Menu.Item key="translations">
-                                        <Link to={`/${org}/translations`}>Translations</Link>
-                                    </Menu.Item>
+                                <Menu.Item key="translations">
+                                    <Link to={ `/${ selectedOrg }/translations` }>Translations</Link>
+                                </Menu.Item>
 
-                                    <Menu.Item key="people">
-                                        <Link to={`/${org}/people`}>People</Link>
-                                    </Menu.Item>
-                                </Menu.SubMenu>
-                            )
-                        )
-                    }
-                </Menu.ItemGroup>
+                                <Menu.Item key="people">
+                                    <Link to={ `/${ selectedOrg }/people` }>People</Link>
+                                </Menu.Item>
+                            </Menu.ItemGroup>
+                        </>
+                    )
+                }
+
+                <Menu.Divider/>
+
+
             </Menu>
 
             <div className='sider-details'>
-                <Dropdown overlay={<UserOptionsMenu/>}>
+                <Dropdown overlay={ <UserOptionsMenu/> }>
                     <Button
-                        onClick={e => e.preventDefault()}
+                        onClick={ e => e.preventDefault() }
                         className='sider-details-button'
                     >
-                        {user?.email ?? ''} <UpOutlined />
+                        { user?.email ?? '' } <UpOutlined/>
                     </Button>
                 </Dropdown>
             </div>

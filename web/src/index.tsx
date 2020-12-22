@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
@@ -7,13 +7,13 @@ import { LayoutSider } from '@layout/sider';
 import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
-import Translations, { Translation } from './screens/Translations';
-import {useLocalStorage} from "@utils/helpers";
-import {SO7_USER_TOKEN} from "./services/userService";
-import Home from "./screens/home/Home";
-import Surveys from "./screens/Surveys";
-import EditSurvey from "./screens/EditSurvey";
-
+import Translations from './screens/Translations';
+import { useLocalStorage } from '@utils/helpers';
+import { SO7_USER_TOKEN } from './services/userService';
+import Home from './screens/home/Home';
+import EditSurvey from './screens/EditSurvey';
+import { Organizations } from './screens/Organizations';
+import { Surveys } from './screens/Surveys';
 
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 
@@ -26,9 +26,8 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
         user,
     };
 
-    return <CoreCtx.Provider value={store}>{props.children}</CoreCtx.Provider>;
+    return <CoreCtx.Provider value={ store }>{ props.children }</CoreCtx.Provider>;
 };
-
 
 export const App = () => {
     const [user] = useContext(CoreCtx).user;
@@ -44,16 +43,16 @@ export const App = () => {
             </Layout.Sider>
             <Layout.Content>
                 <Switch>
-                    <Route exact={false} path={'/'} component={Home} />
-                    <Route exact={true} path={'/:orgName/surveys'} component={Surveys} />
-                    <Route exact={true} path={'/:orgName/surveys/:survey_id'} component={EditSurvey} />
-                    <Route exact={true} path={'/:orgName/translations'} component={Translations} />
+                    <Route exact={ true } path={ '/' } component={ Home }/>
+                    <Route exact={ true } path={ '/organizations' } component={ Organizations }/>
+                    <Route exact={ true } path={ '/:orgName/surveys' } component={ Surveys }/>
+                    <Route exact={ true } path={ '/:orgName/surveys/:survey_id' } component={ EditSurvey }/>
+                    <Route exact={ true } path={ '/:orgName/translations' } component={ Translations }/>
                 </Switch>
             </Layout.Content>
         </Layout>
     );
 };
-
 
 ReactDOM.render(
     <BrowserRouter>
