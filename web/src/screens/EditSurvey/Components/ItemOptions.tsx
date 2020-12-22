@@ -5,6 +5,7 @@ import { Button, List } from 'antd';
 import { TranslationEditor } from './TranslationEditor';
 import { CoreCtx } from '../../../index';
 import { DeleteOutlined } from '@ant-design/icons/lib';
+import {Translation} from "../../Translations";
 
 type TProps = {
     item: Item;
@@ -14,7 +15,10 @@ type TProps = {
 
 export const ItemOptions = (props: TProps) => {
     const { item, updateItem, editMode } = props;
-    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translations = new Map<string, Translation>();
+    const setTranslations = console.log;
+    // TODO fix translations here
     const currentLang = 'en';
 
     if (item.type !== 'multi') {

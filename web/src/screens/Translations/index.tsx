@@ -20,7 +20,9 @@ type TranslationTableProps = {
 };
 const TranslationTable = (props: TranslationTableProps) => {
     const {langFrom, langTo} = props;
-    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translations = new Map<string, Translation>();
+    const setTranslations = console.log;
 
     const handleSave = (lang: Lang, key: string, translation: Translation) => (newContent: string) => {
         const newTranslation = Object.assign(
@@ -69,7 +71,9 @@ const TranslationTable = (props: TranslationTableProps) => {
 };
 
 const Translations = () => {
-    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translations = new Map<string, Translation>();
+    const setTranslations = console.log;
     const [langFrom, setLangFrom] = useState<Lang>('en');
     const [langTo, setLangTo] = useState<Lang>('de');
     const currentLang = 'en';

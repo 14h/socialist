@@ -5,7 +5,6 @@ import {User} from "./models/User";
 export type TCoreState = {
     userToken: string | null;
     user: User | null;
-    translations: Map<string, Translation>;
 };
 
 export type TUseStateEnvelope<T> = {
@@ -13,12 +12,6 @@ export type TUseStateEnvelope<T> = {
 };
 
 export type TCoreCtxUseStateEnv = TUseStateEnvelope<TCoreState>;
-
-// util
-
-export type Shallow<T> = {
-    [P in keyof T]: T[P] | null;
-};
 
 
 // SURVEY types

@@ -7,16 +7,13 @@ import { LayoutSider } from '@layout/sider';
 import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
-import { Translation } from './screens/Translations';
+import Translations, { Translation } from './screens/Translations';
 import {useLocalStorage} from "@utils/helpers";
 import {SO7_USER_TOKEN} from "./services/userService";
+import Home from "./screens/home/Home";
+import Surveys from "./screens/Surveys";
+import EditSurvey from "./screens/EditSurvey";
 
-const { Sider } = Layout;
-
-const Home = React.lazy(() => import('./screens/home/Home'));
-const Surveys = React.lazy(() => import('./screens/Surveys/index'));
-const EditSurvey = React.lazy(() => import('./screens/EditSurvey/index'));
-const Translations = React.lazy(() => import('./screens/Translations/index'));
 
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 
@@ -24,37 +21,14 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
     const userToken = useLocalStorage(SO7_USER_TOKEN, null);
     const user = useState(null);
 
-    const initialTranslations = new Map<string, Translation>();
-    initialTranslations
-    .set(
-        "0",
-        {
-            en: "English translation",
-            de: "German translation"
-        }
-    );
-
-    const translations = useState<Map<string, Translation>>(initialTranslations);
-
     const store: any = {
         userToken,
         user,
-        translations,
     };
 
     return <CoreCtx.Provider value={store}>{props.children}</CoreCtx.Provider>;
 };
 
-const publicPaths = [
-    { exact: true, path: '/', component: Home },
-    { exact: true, path: '/:orgName/surveys', component: Surveys },
-    { exact: true, path: '/:orgName/surveys/:survey_id', component: EditSurvey },
-    { exact: true, path: '/:orgName/translations', component: Translations },
-];
-
-const publicRoutes = publicPaths.map(({ path, ...props }) => (
-    <Route key={path} path={path} {...props} />
-));
 
 export const App = () => {
     const [user] = useContext(CoreCtx).user;
@@ -65,13 +39,17 @@ export const App = () => {
 
     return (
         <Layout>
-            <Sider>
+            <Layout.Sider>
                 <LayoutSider/>
-            </Sider>
-
-            <Switch>
-                <Suspense fallback={<div/>}>{publicRoutes}</Suspense>
-            </Switch>
+            </Layout.Sider>
+            <Layout.Content>
+                <Switch>
+                    <Route exact={false} path={'/'} component={Home} />
+                    <Route exact={true} path={'/:orgName/surveys'} component={Surveys} />
+                    <Route exact={true} path={'/:orgName/surveys/:survey_id'} component={EditSurvey} />
+                    <Route exact={true} path={'/:orgName/translations'} component={Translations} />
+                </Switch>
+            </Layout.Content>
         </Layout>
     );
 };

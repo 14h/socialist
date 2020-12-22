@@ -10,10 +10,13 @@ import { SectionItem } from './Components/SectionItem';
 import './styles.css';
 import { CoreCtx } from '../../index';
 import { AddItem } from './Components/AddItem';
+import {Translation} from "../Translations";
 
 const AddNewSectionButton = () => {
     const { survey_id } = useParams();
-    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translations = new Map<string, Translation>();
+    const setTranslations = console.log;
     const currentLang = 'en';
     const surveyStore = useSurvey(survey_id);
 
@@ -63,7 +66,9 @@ const EditSurvey = () => {
 
     const [sectionKey, setSectionKey] = useState(sections?.[0]?.name);
 
-    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translations = new Map<string, Translation>();
+    const setTranslations = console.log;
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 

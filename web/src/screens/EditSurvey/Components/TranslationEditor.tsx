@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import { CoreCtx } from '../../../index';
 import { TranslationRef } from '../../../types';
+import {Translation} from "../../Translations";
 
 type TProps = {
     description: TranslationRef;
@@ -16,7 +17,9 @@ export const TranslationEditor = (props: TProps) => {
         editMode,
     } = props;
 
-    const [translations, setTranslations] = useContext(CoreCtx).translations;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const translations = new Map<string, Translation>();
+    const setTranslations = console.log;
     const translation = description ? translations.get(description) : {};
     const currentLang = 'en';
     const content = translation?.[currentLang];

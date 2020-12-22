@@ -1,6 +1,6 @@
-import { TUserRights, User, UserAndRelated } from '../types/models/User';
-import { apiGraphQLClient } from "@utils/graphQlClient";
-import { safeLocalStorage } from "@utils/safeLocalStorage";
+import {TUserRights, User, UserAndRelated} from '../types/models/User';
+import {apiGraphQLClient} from "@utils/graphQlClient";
+import {safeLocalStorage} from "@utils/safeLocalStorage";
 
 const SO7_GET_USERTOKEN_MUTATION =
     'mutation($creds:UserCredInput!){createLoginChip(creds:$creds){userToken}}';
@@ -113,7 +113,7 @@ export async function login_so7(
         return userToken ?? null;
 
     } catch (error) {
-        throw new Error('login strategy failed');
+        throw new Error('login failed');
     }
 }
 
@@ -152,6 +152,7 @@ export async function createUser(
         throw new Error('createUser failed');
     }
 }
+
 export async function setUserMeta(
     userId: string,
     email: string,
@@ -202,9 +203,8 @@ export async function logoutApi(userToken: string): Promise<void> {
     clearUserToken();
 }
 
-export async function meApi(userToken: string): Promise<User> {
+export const meApi = async (userToken: string): Promise<User> => {
     try {
-        console.log(userToken)
         const responseData = await apiGraphQLClient.authorizedRequest<any, UserAndRelated | null>(
             userToken,
             SO7_USER_AND_RELATED_QUERY,

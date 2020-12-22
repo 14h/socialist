@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 
 import './styles.css';
-import { Redirect } from 'react-router';
+import {Redirect} from 'react-router';
 import {Button, Form, Input, message, Modal, Spin, Row, Col} from 'antd';
-import { CoreCtx } from '../../index';
+import {CoreCtx} from '../../index';
 import {createUser, login_so7, meApi} from '../../services/userService';
-import { LoadingOutlined } from '@ant-design/icons';
+import {LoadingOutlined} from '@ant-design/icons';
 import {createOrganization} from "../../services/orgService";
 import {addResourceUserRoles} from "../../services/surveyService";
 import {Logo} from "@components/Logo";
@@ -17,46 +17,46 @@ export const SignUp: React.FC<Props> = () => {
     const [, setUser] = useContext(CoreCtx).user;
     const [, setUserToken] = useContext(CoreCtx).userToken;
 
-            const onFinish = async (values: any) => {
-                const {email, password, firstname, lastname, orgName} = values;
+    const onFinish = async (values: any) => {
+        const {email, password, firstname, lastname, orgName} = values;
 
-                try {
-                    const newUser = await createUser(email, password, firstname, lastname);
-                    console.log(newUser);
-                    const newToken = await login_so7(email, password);
-                    if (!newToken) {
-                        throw new Error('failed to login with new account!');
-                    }
-                    const user = await meApi(newToken);
-
-                    const newOrgId = await createOrganization(orgName, newToken);
-
-                    if (!newOrgId) {
-                        throw new Error('failed to create org!');
-                    }
-
-                    await addResourceUserRoles(
-                        newToken,
-                        user.id,
-                        newOrgId,
-                        'ORG'
-                    );
-
-                    setUser(user);
-                    setUserToken(newToken);
-                } catch (error) {
-                    console.error(error)
-                }
+        try {
+            const newUser = await createUser(email, password, firstname, lastname);
+            console.log(newUser);
+            const newToken = await login_so7(email, password);
+            if (!newToken) {
+                throw new Error('failed to login with new account!');
             }
+            const user = await meApi(newToken);
+
+            const newOrgId = await createOrganization(orgName, newToken);
+
+            if (!newOrgId) {
+                throw new Error('failed to create org!');
+            }
+
+            await addResourceUserRoles(
+                newToken,
+                user.id,
+                newOrgId,
+                'ORG'
+            );
+
+            setUser(user);
+            setUserToken(newToken);
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <div>
             <Form
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
+                labelCol={{span: 24}}
+                wrapperCol={{span: 24}}
                 layout="vertical"
                 name="signup"
-                initialValues={{ remember: false }}
+                initialValues={{remember: false}}
                 onFinish={onFinish}
                 onFinishFailed={console.error}
             >
@@ -65,7 +65,7 @@ export const SignUp: React.FC<Props> = () => {
                         <Form.Item
                             label="Email"
                             name="email"
-                            rules={[{ required: true, message: 'Please input your email!' }]}
+                            rules={[{required: true, message: 'Please input your email!'}]}
                         >
                             <Input/>
                         </Form.Item>
@@ -74,7 +74,7 @@ export const SignUp: React.FC<Props> = () => {
                         <Form.Item
                             label="Password"
                             name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
+                            rules={[{required: true, message: 'Please input your password!'}]}
                         >
                             <Input.Password/>
                         </Form.Item>
@@ -86,7 +86,7 @@ export const SignUp: React.FC<Props> = () => {
                         <Form.Item
                             label="firstname"
                             name="firstname"
-                            rules={[{ required: true, message: 'Please input your firstname!' }]}
+                            rules={[{required: true, message: 'Please input your firstname!'}]}
                         >
                             <Input/>
                         </Form.Item>
@@ -95,14 +95,12 @@ export const SignUp: React.FC<Props> = () => {
                         <Form.Item
                             label="lastname"
                             name="lastname"
-                            rules={[{ required: true, message: 'Please input your lastname!' }]}
+                            rules={[{required: true, message: 'Please input your lastname!'}]}
                         >
                             <Input/>
                         </Form.Item>
                     </Col>
                 </Row>
-
-
 
 
                 <hr/>
@@ -115,13 +113,15 @@ export const SignUp: React.FC<Props> = () => {
                     For this registration process, you only need to provide the name of your organization.
                     You can edit this after login.
                 </span>
-                <br/><br/><hr/><br/>
+                <br/><br/>
+                <hr/>
+                <br/>
                 <Row justify="center">
                     <Col span={11}>
                         <Form.Item
                             label="Organization name"
                             name="orgName"
-                            rules={[{ required: true, message: 'Please input your orgName!' }]}
+                            rules={[{required: true, message: 'Please input your orgName!'}]}
                         >
                             <Input/>
                         </Form.Item>
@@ -138,7 +138,7 @@ export const SignUp: React.FC<Props> = () => {
             <span>
                 By clicking on "Create account" you agree to the terms of use and the privacy policy . You also consent to receive information and offers by email that concern our service. If necessary, you can unsubscribe from these emails under "My Account".
             </span>
-    </div>
+        </div>
     )
 }
 export const Login: React.FC<Props> = () => {
@@ -202,7 +202,7 @@ export const Login: React.FC<Props> = () => {
     };
 
     const onFinish = async (values: any) => {
-        const { email, password } = values;
+        const {email, password} = values;
         await login(email, password);
     };
 
@@ -214,7 +214,7 @@ export const Login: React.FC<Props> = () => {
 
                 <Spin
                     indicator={
-                        <LoadingOutlined style={{ fontSize: 24 }} spin={ true } />
+                        <LoadingOutlined style={{fontSize: 24}} spin={true}/>
                     }
                 />
             </div>
@@ -224,21 +224,21 @@ export const Login: React.FC<Props> = () => {
     return (
         <div className="login-form">
             <Link to="/surveys" className="logo">
-                <Logo />
+                <Logo/>
                 <h2>Socialist</h2>
             </Link>
             <Form
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
+                labelCol={{span: 24}}
+                wrapperCol={{span: 24}}
                 name="login"
-                initialValues={{ remember: true }}
+                initialValues={{remember: true}}
                 onFinish={onFinish}
                 onFinishFailed={console.error}
             >
                 <Form.Item
                     label="Email"
                     name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{required: true, message: 'Please input your email!'}]}
                 >
                     <Input/>
                 </Form.Item>
@@ -246,7 +246,7 @@ export const Login: React.FC<Props> = () => {
                 <Form.Item
                     label="Password"
                     name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[{required: true, message: 'Please input your password!'}]}
                 >
                     <Input.Password/>
                 </Form.Item>
@@ -264,7 +264,7 @@ export const Login: React.FC<Props> = () => {
                 onCancel={() => setSignUp(false)}
                 footer={null}
             >
-                <SignUp />
+                <SignUp/>
             </Modal>
             <div>
                 Don't have an account yet?
