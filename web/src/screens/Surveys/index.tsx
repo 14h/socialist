@@ -5,13 +5,9 @@ import './styles.css';
 import { Link } from 'react-router-dom';
 import { useHistory, useParams } from 'react-router';
 import { CoreCtx } from '../../index';
-import { createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
+import { addResourceUserRoles, createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
 import { Survey } from '../../types';
 import { fetchOrganization } from '../../services/orgService';
-
-const { Content } = Layout;
-
-const GDS_ORG_ID = 'b668b413-08c3-46bd-9d71-88feb2b1ac4d';
 
 const handleDeleteSurvey = async (
     userToken: string,
@@ -33,15 +29,31 @@ const handleCreateSurvey = async (
     title: string,
     userToken: string,
     userId: string,
-    orgId: string,
+    orgName: string,
     history: any,
 ) => {
     const hide = message.loading('Creating survey..', 0);
     try {
-        const newSurveyId = await createSurvey(title, userId, userToken, orgId);
+        const newSurveyId = await createSurvey(title, userId, userToken, orgName);
+
+        if (!newSurveyId) {
+            message.error(`Survey couldn't be created!`);
+
+            return;
+        }
+
         hide();
+
+        await addResourceUserRoles(
+            userToken,
+            userId,
+            newSurveyId,
+            'SURVEY'
+        );
+
         message.success(`${ title } got successfully created!`);
-        history.push(`/surveys/${ newSurveyId }`);
+
+        history.push(`/${ orgName }/surveys/${ newSurveyId }`);
     } catch (error) {
         hide();
         message.error(`Failed to create ${ title }: ${ error.message }`);
@@ -51,6 +63,7 @@ const handleCreateSurvey = async (
 
 const columns = (
     userToken: string,
+    orgName: string,
 ) => [
     {
         title: 'Title',
@@ -95,7 +108,7 @@ const columns = (
             record: any,
         ) => (
             <Space size="middle">
-                <Link to={ `/surveys/${ record.id }` }>Edit</Link>
+                <Link to={ `/${ orgName }/surveys/${ record.id }` }>Edit</Link>
                 <Popconfirm
                     title={ `Delete survey ${ record.title }` }
                     onConfirm={ () => handleDeleteSurvey(userToken, record.id) }
@@ -143,6 +156,7 @@ export const Surveys = () => {
         id: survey.id,
         key: survey.id,
         title: survey.meta.name,
+
         // responses: 1235,
         // updatedAt: 1588635562722,
         // createdAt: 1588615561722,
@@ -150,13 +164,13 @@ export const Surveys = () => {
 
     return (
         <Layout className="container-layout">
-            <Content>
+            <Layout.Content>
                 <Button onClick={ () => setShowAddModal(true) } type="primary" className="create-survey-button">
                     Create a survey
                 </Button>
                 <Table
                     dataSource={ dataSource }
-                    columns={ columns(userToken) }
+                    columns={ columns(userToken, orgName) }
                     pagination={ false }
                 />
                 <Modal
@@ -165,7 +179,6 @@ export const Surveys = () => {
                     onCancel={ () => setShowAddModal(false) }
                     footer={ null }
                 >
-                    <h2>What would you like to name this survey?</h2>
                     <Form
                         name="basic"
                         initialValues={ { remember: true } }
@@ -189,6 +202,7 @@ export const Surveys = () => {
                                     message: 'Please input your a valid name for your survey!',
                                 },
                             ] }
+                            label="name"
                         >
                             <Input/>
                         </Form.Item>
@@ -200,7 +214,7 @@ export const Surveys = () => {
                         </Form.Item>
                     </Form>
                 </Modal>
-            </Content>
+            </Layout.Content>
         </Layout>
     );
 };

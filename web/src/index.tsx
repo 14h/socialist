@@ -11,9 +11,9 @@ import Translations from './screens/Translations';
 import { useLocalStorage } from '@utils/helpers';
 import { SO7_USER_TOKEN } from './services/userService';
 import Home from './screens/home/Home';
-import EditSurvey from './screens/EditSurvey';
 import { Organizations } from './screens/Organizations';
 import { Surveys } from './screens/Surveys';
+import { EditSurvey } from './screens/EditSurvey';
 
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 

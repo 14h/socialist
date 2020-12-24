@@ -1,6 +1,6 @@
-import React, { useContext, useRef, useState } from 'react';
-import { Button, Col, Dropdown, Input, Layout, Menu, message, Popconfirm, Row, Select, Space } from 'antd';
-import { LogoutOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
+import React, { useContext } from 'react';
+import { Button, Dropdown, Menu } from 'antd';
+import { LogoutOutlined, UpOutlined } from '@ant-design/icons';
 import './styles.less';
 import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
@@ -30,7 +30,6 @@ export const LayoutSider = () => {
     const selectedMenuItem = window.location.pathname.split('/')[1];
     const [user] = useContext(CoreCtx).user;
     const [userToken] = useContext(CoreCtx).userToken;
-    const [selectedOrg, setSelectedOrg] = useState<string | null>(user?.organization?.[0] ?? null);
 
     if (!user || !userToken) {
         return null;
@@ -56,48 +55,26 @@ export const LayoutSider = () => {
                 </Menu.Item>
                 <Menu.Divider/>
 
-
                 {
-                    selectedOrg && (
-                        <>
-                            <Menu.ItemGroup
-                                title={
-                                    <Select
-                                        defaultValue={ selectedOrg }
-                                        onChange={ (org) => setSelectedOrg(org)}
-                                        bordered={ false }
-                                        style={{
-                                            width: '100%'
-                                        }}
-
-                                    >
-                                        {
-                                            user?.organization?.map(
-                                                (org: string) => (
-                                                    <Select.Option
-                                                        key={ `org-select-${ org }` }
-                                                        value={ org }>{ org }</Select.Option>
-                                                ),
-                                            )
-                                        }
-
-                                    </Select>
-                                }
+                    user.organization?.map(
+                        org => (
+                            <Menu.SubMenu
+                                title={ org }
                             >
                                 <Menu.Divider/>
-                                <Menu.Item key="surveys">
-                                    <Link to={ `/${ selectedOrg }/surveys` }>Surveys</Link>
+                                <Menu.Item key={ `${ org }-surveys` }>
+                                    <Link to={ `/${ org }/surveys` }>Surveys</Link>
                                 </Menu.Item>
 
-                                <Menu.Item key="translations">
-                                    <Link to={ `/${ selectedOrg }/translations` }>Translations</Link>
+                                <Menu.Item key={ `${ org }-translations` }>
+                                    <Link to={ `/${ org }/translations` }>Translations</Link>
                                 </Menu.Item>
 
-                                <Menu.Item key="people">
-                                    <Link to={ `/${ selectedOrg }/people` }>People</Link>
+                                <Menu.Item key={ `${ org }-people` }>
+                                    <Link to={ `/${ org }/people` }>People</Link>
                                 </Menu.Item>
-                            </Menu.ItemGroup>
-                        </>
+                            </Menu.SubMenu>
+                        ),
                     )
                 }
 

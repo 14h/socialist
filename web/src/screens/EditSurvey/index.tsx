@@ -57,7 +57,7 @@ const AddNewSectionButton = () => {
 }
 
 
-const EditSurvey = () => {
+export const EditSurvey = () => {
     const { survey_id } = useParams();
     const surveyStore = useSurvey(survey_id);
     const currentLang = 'en';
@@ -170,5 +170,3 @@ const EditSurvey = () => {
         </div>
     );
 };
-
-export default EditSurvey;
