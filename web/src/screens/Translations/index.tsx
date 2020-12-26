@@ -1,11 +1,10 @@
-import React, { Dispatch, SetStateAction, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Layout, Select } from 'antd';
 
 import './styles.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { CoreCtx } from '../../index';
 
 export type Translation = {
     [key: string]: string;
@@ -103,7 +102,6 @@ const Translations = () => {
                         className="translations-actions-select"
                         defaultValue={langFrom}
                         onChange={setLangFrom}
-                        disabled
                     >
                         {AVAILABLE_LANGS.map((lang: Lang) => (
                             <Select.Option key={`from-${lang}`} value={lang}>

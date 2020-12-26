@@ -9,37 +9,37 @@ type TProps = {
     updateItems: (newItems: Item[]) => any;
 }
 export const SortModal = (
-    props: TProps
+    props: TProps,
 ) => {
-    const {items, updateItems} = props;
+    const { items, updateItems } = props;
     const [showModal, setShowModal] = useState(false);
 
     return (
         <>
-            <Button onClick={() => setShowModal(true)}>Sort section items</Button>
+            <Button onClick={ () => setShowModal(true) }>Sort section items</Button>
 
             <Modal
                 title="Sort items"
-                visible={showModal}
-                onCancel={() => setShowModal(false)}
-                footer={null}
+                visible={ showModal }
+                onCancel={ () => setShowModal(false) }
+                footer={ null }
             >
                 <ReactSortable
-                    list={items as any[]}
-                    setList={updateItems as any}
+                    list={ items as any[] }
+                    setList={ updateItems as any }
                     className="sider-list"
                 >
-                    {items.map((
+                    { items.map((
                         item: Item,
                         index: number,
                     ) => (
                         <div
                             className="sider-item"
-                            key={`surveyListItem-${index}`}
+                            key={ `surveyListItem-${ index }` }
                         >
-                            <div className="survey-item-option">{item.name}</div>
+                            <div className="survey-item-option">{ item.name }</div>
                         </div>
-                    ))}
+                    )) }
                 </ReactSortable>
             </Modal>
         </>

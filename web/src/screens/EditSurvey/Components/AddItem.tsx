@@ -15,23 +15,23 @@ type TProps = {
     callback: (selectedQuestion: Item['type']) => void;
 }
 export const AddItem = (props: TProps) => {
-    const {callback} = props;
+    const { callback } = props;
 
     return (
         <div className='add-item'>
-            <div onClick={() => callback('text')}>
+            <div onClick={ () => callback('text') }>
                 Text answer
             </div>
-            <div onClick={() => callback('multi')}>
+            <div onClick={ () => callback('multi') }>
                 Multiple answers
             </div>
-            <div onClick={() => callback('rating')}>
+            <div onClick={ () => callback('rating') }>
                 Rating scale
             </div>
-            <div onClick={() => callback('date')}>
+            <div onClick={ () => callback('date') }>
                 Date
             </div>
-            <div onClick={() => callback('number')}>
+            <div onClick={ () => callback('number') }>
                 Number
             </div>
 

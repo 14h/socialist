@@ -30,19 +30,19 @@ export const ItemEdit = (props: TProps) => {
             <Tabs>
                 <Tabs.TabPane tab="Edit item" key="item">
                     <ItemSettings
-                        item={item}
-                        updateItem={updateItem}
+                        item={ item }
+                        updateItem={ updateItem }
                     />
 
                     <Popconfirm
                         title="Are you sure?"
-                        onConfirm={deleteItem}
+                        onConfirm={ deleteItem }
                         okText="Delete"
                         cancelText="Cancel"
                     >
                         <Button
                             type="link"
-                            style={{ color: '#ff4d4faa' }}>
+                            style={ { color: '#ff4d4faa' } }>
                             Delete<DeleteOutlined/>
                         </Button>
                     </Popconfirm>
@@ -51,25 +51,25 @@ export const ItemEdit = (props: TProps) => {
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Sort section items" key="sort">
                     <ReactSortable
-                        list={section.items as any[]}
-                        setList={((items: Item[]) => surveyStore.updateSection({...section, items})) as any}
+                        list={ section.items as any[] }
+                        setList={ ((items: Item[]) => surveyStore.updateSection({ ...section, items })) as any }
                         className="sider-list"
                     >
-                        {section.items.map((
+                        { section.items.map((
                             i: Item,
                             index: number,
                         ) => (
                             <div
                                 className="sider-item"
-                                key={`surveyListItem-${index}`}
+                                key={ `surveyListItem-${ index }` }
                             >
-                                <div className="survey-item-option">{i.name}</div>
+                                <div className="survey-item-option">{ i.name }</div>
                             </div>
-                        ))}
+                        )) }
                     </ReactSortable>
                 </Tabs.TabPane>
             </Tabs>
 
         </div>
-    )
-}
+    );
+};

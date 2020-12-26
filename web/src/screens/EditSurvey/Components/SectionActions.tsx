@@ -9,17 +9,17 @@ type TProps = {
 }
 
 export const SectionActions = (props: TProps) => {
-    const {section, updateSection} = props;
+    const { section, updateSection } = props;
     return (
         <div className="survey-actions">
             <SortModal
                 items={ section.items }
-                updateItems={ (items: Item[]) => updateSection({...section, items})}
+                updateItems={ (items: Item[]) => updateSection({ ...section, items }) }
             />
             <LogicModal
-                section={section}
-                setSection={updateSection}
+                section={ section }
+                setSection={ updateSection }
             />
         </div>
     );
-}
+};

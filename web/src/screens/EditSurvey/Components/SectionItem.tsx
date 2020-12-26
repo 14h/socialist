@@ -31,27 +31,27 @@ export const SectionItem = (props: TProps) => {
 
     return (
 
-        <div className={`item-wrapper ${editMode && 'item-wrapper-selected'}`}>
+        <div className={ `item-wrapper ${ editMode && 'item-wrapper-selected' }` }>
             <TranslationEditor
-                description={item?.description}
-                updateDescription={console.log}
-                editMode={editMode}
+                description={ item?.description }
+                updateDescription={ console.log }
+                editMode={ editMode }
             />
 
             <ItemOptions
-                item={item}
-                updateItem={updateItem}
-                editMode={editMode}
+                item={ item }
+                updateItem={ updateItem }
+                editMode={ editMode }
             />
 
             <div className='item-actions'>
                 <Popconfirm
                     title="Are you sure?"
-                    onConfirm={console.log}
+                    onConfirm={ console.log }
                     okText="Delete"
                     cancelText="Cancel"
                 >
-                    <DeleteOutlined style={{ fontSize: '24px', color: '#a61d24'}} />
+                    <DeleteOutlined style={ { fontSize: '24px', color: '#a61d24' } }/>
                 </Popconfirm>
             </div>
 

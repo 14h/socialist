@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-
 import './styles.css';
-import { Redirect } from 'react-router';
 import { Button, Form, Input, message, Modal, Spin, Row, Col } from 'antd';
 import { CoreCtx } from '../../index';
 import { createUser, login_so7, meApi } from '../../services/userService';
-import { LoadingOutlined } from '@ant-design/icons';
 import { createOrganization } from '../../services/orgService';
 import { addResourceUserRoles } from '../../services/surveyService';
 import { Logo } from '@components/Logo';

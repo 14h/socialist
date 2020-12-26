@@ -4,6 +4,7 @@ import '../styles.css';
 import { Item } from '../../../types';
 import { EditOutlined } from '@ant-design/icons/lib';
 import { ItemFormat } from './ItemFormat';
+
 const { Text } = Typography;
 
 
@@ -19,11 +20,11 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
                 <>
                     <div className='option-item'>
                         <span>Min Characters:  </span>
-                        <InputNumber defaultValue={item?.minCharacters} onChange={updateMinChars}/>
+                        <InputNumber defaultValue={ item?.minCharacters } onChange={ updateMinChars }/>
                     </div>
                     <div className='option-item'>
                         <span>Max Characters: </span>
-                        <InputNumber defaultValue={item?.minCharacters} onChange={updateMaxChars}/>
+                        <InputNumber defaultValue={ item?.minCharacters } onChange={ updateMaxChars }/>
                     </div>
                 </>
             );
@@ -39,11 +40,11 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
                 <>
                     <div className='option-item'>
                         <span>Min Value:  </span>
-                        <InputNumber defaultValue={item?.minValue} onChange={updateMinValue}/>
+                        <InputNumber defaultValue={ item?.minValue } onChange={ updateMinValue }/>
                     </div>
                     <div className='option-item'>
                         <span>Max Value: </span>
-                        <InputNumber defaultValue={item?.maxValue} onChange={updateMaxValue}/>
+                        <InputNumber defaultValue={ item?.maxValue } onChange={ updateMaxValue }/>
                     </div>
 
                 </>
@@ -61,11 +62,11 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
                 <>
                     <div className='option-item'>
                         <span>Min Options:  </span>
-                        <InputNumber defaultValue={item?.minOptions} onChange={updateMinOptions}/>
+                        <InputNumber defaultValue={ item?.minOptions } onChange={ updateMinOptions }/>
                     </div>
                     <div className='option-item'>
                         <span>Max Options: </span>
-                        <InputNumber defaultValue={item?.maxOptions} onChange={updateMaxOptions}/>
+                        <InputNumber defaultValue={ item?.maxOptions } onChange={ updateMaxOptions }/>
                     </div>
 
                 </>
@@ -81,7 +82,7 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
         return (
             <div/>
         );
-    }
+    };
     const onChangeType = (type: Item['type']) => updateItem({ type, name: item.name, description: item.description });
     const updateName = (name: string) => updateItem(Object.assign({}, item, { name }));
 
@@ -89,20 +90,20 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
         <div className='item-block'>
             <div className='option-item'>
                 <span>Item name: </span>
-                <Text editable={{ onChange: updateName }}>{item.name}</Text>
+                <Text editable={ { onChange: updateName } }>{ item.name }</Text>
             </div>
             <div className='option-item'>
                 <span>Item type: </span>
-                <ItemFormat callback={onChangeType} className="edit-format">
+                <ItemFormat callback={ onChangeType } className="edit-format">
                     <Button
                         type="link"
                     >
-                        {item.type}
+                        { item.type }
                         <EditOutlined/>
                     </Button>
                 </ItemFormat>
             </div>
-            {renderOptions()}
+            { renderOptions() }
         </div>
     );
 

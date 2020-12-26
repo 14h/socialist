@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import '../styles.css';
 import { Item, MultiItemOption } from '../../../types';
 import { Button, List } from 'antd';
 import { TranslationEditor } from './TranslationEditor';
-import { CoreCtx } from '../../../index';
 import { DeleteOutlined } from '@ant-design/icons/lib';
-import {Translation} from "../../Translations";
+import { Translation } from '../../Translations';
 
 type TProps = {
     item: Item;
@@ -28,17 +27,17 @@ export const ItemOptions = (props: TProps) => {
     const handleOnClick = () => {
         const newTranslationKey = translations.size.toString();
         const newTranslation = {
-            [currentLang]: ''
-        }
+            [currentLang]: '',
+        };
 
-        const cloneMap = new Map(translations)
+        const cloneMap = new Map(translations);
         cloneMap.set(
             newTranslationKey,
             newTranslation,
         );
 
         setTranslations(
-            cloneMap
+            cloneMap,
         );
 
         const newOption: MultiItemOption = {
@@ -48,7 +47,7 @@ export const ItemOptions = (props: TProps) => {
 
         const itemOptions = [
             ...(item?.options ?? []),
-            newOption
+            newOption,
         ];
 
         const newItem = Object.assign(
@@ -56,23 +55,23 @@ export const ItemOptions = (props: TProps) => {
             item,
             {
                 options: itemOptions,
-            }
+            },
         );
 
         updateItem(newItem);
-    }
+    };
 
     const updateOptionDescription = (translationRef: string, index: number) => {
         const newOption: MultiItemOption = {
             name: translationRef,
-            description: translationRef
-        }
+            description: translationRef,
+        };
 
         const newOptions = (item?.options ?? []).slice();
         newOptions.splice(
             index,
             1,
-            newOption
+            newOption,
         );
 
         const newItem = Object.assign(
@@ -80,7 +79,7 @@ export const ItemOptions = (props: TProps) => {
             item,
             {
                 options: newOptions,
-            }
+            },
         );
 
         updateItem(newItem);
@@ -99,45 +98,45 @@ export const ItemOptions = (props: TProps) => {
             item,
             {
                 options: newOptions,
-            }
+            },
         );
 
         updateItem(newItem);
-    }
+    };
 
     return (
         <div className='item-option-wrapper'>
             <List
-                header={<div>Options</div>}
-                locale={{emptyText: 'No options found!'}}
+                header={ <div>Options</div> }
+                locale={ { emptyText: 'No options found!' } }
                 footer={
                     <Button
-                        onClick={handleOnClick}
+                        onClick={ handleOnClick }
                         className='item-option-add-button'
                     >
                         Add option
                     </Button>
                 }
                 bordered
-                dataSource={(item?.options ?? []) as any}
+                dataSource={ (item?.options ?? []) as any }
                 size="small"
-                renderItem={(option: MultiItemOption, index: number) => (
+                renderItem={ (option: MultiItemOption, index: number) => (
                     <List.Item
                         extra={
                             <a
                                 key="list-delete"
-                                onClick={() => onDeleteOption(index)}
+                                onClick={ () => onDeleteOption(index) }
                             >
-                                <DeleteOutlined style={{ fontSize: '24px', color: '#a61d24', marginLeft: '24px' }} />
-                            </a>}
+                                <DeleteOutlined style={ { fontSize: '24px', color: '#a61d24', marginLeft: '24px' } }/>
+                            </a> }
                     >
                         <TranslationEditor
-                            description={option?.description}
-                            updateDescription={(t) => updateOptionDescription(t, index)}
-                            editMode={editMode}
+                            description={ option?.description }
+                            updateDescription={ (t) => updateOptionDescription(t, index) }
+                            editMode={ editMode }
                         />
                     </List.Item>
-                )}
+                ) }
             />
 
         </div>

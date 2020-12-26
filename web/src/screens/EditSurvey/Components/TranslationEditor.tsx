@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
-import { CoreCtx } from '../../../index';
 import { TranslationRef } from '../../../types';
-import {Translation} from "../../Translations";
+import { Translation } from '../../Translations';
 
 type TProps = {
     description: TranslationRef;
@@ -27,7 +26,7 @@ export const TranslationEditor = (props: TProps) => {
     const tRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if(editMode && tRef?.current) {
+        if (editMode && tRef?.current) {
             tRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center',
@@ -47,7 +46,7 @@ export const TranslationEditor = (props: TProps) => {
             translation,
             {
                 [currentLang]: text,
-            }
+            },
         );
         const cloneMap = new Map(translations);
         cloneMap.set(
@@ -56,32 +55,32 @@ export const TranslationEditor = (props: TProps) => {
         );
 
         setTranslations(
-            cloneMap
+            cloneMap,
         );
-    }
+    };
 
-    if(!editMode) {
+    if (!editMode) {
         return (
             <div
                 className='t-editor'
             >
                 <ReactQuill
-                    value={content || ''}
-                    readOnly={true}
-                    theme={"bubble"}
+                    value={ content || '' }
+                    readOnly={ true }
+                    theme={ 'bubble' }
                 />
             </div>
-        )
+        );
     }
 
     return (
         <div
             className='t-editor'
-            ref={tRef}
+            ref={ tRef }
         >
             <ReactQuill
-                value={content || ''}
-                onChange={onChangeTranslation}
+                value={ content || '' }
+                onChange={ onChangeTranslation }
                 modules={
                     {
                         toolbar: [
@@ -90,7 +89,7 @@ export const TranslationEditor = (props: TProps) => {
                             ['blockquote'],
 
                             // [{ 'sider': 1 }, { 'sider': 2 }, { 'sider': 3 }],               // custom button values
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                             [{ 'direction': 'rtl' }],                         // text direction
 
                             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -107,6 +106,6 @@ export const TranslationEditor = (props: TProps) => {
                 }
             />
         </div>
-    )
+    );
 
-}
+};

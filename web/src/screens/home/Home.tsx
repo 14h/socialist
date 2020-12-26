@@ -5,7 +5,7 @@ import './Home.less';
 type Props = {};
 
 const Home: React.FC<Props> = () => {
-  return <></>;
+    return <></>;
 };
 
 export default Home;

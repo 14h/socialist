@@ -60,6 +60,8 @@ export const LayoutSider = () => {
                         org => (
                             <Menu.SubMenu
                                 title={ org }
+                                key={ org }
+
                             >
                                 <Menu.Divider/>
                                 <Menu.Item key={ `${ org }-surveys` }>

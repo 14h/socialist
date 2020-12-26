@@ -26,6 +26,9 @@ const SO7_ORG_QUERY = `
             meta{
                 name
             }
+            surveys{
+                id
+            }
         }
     }
 `;

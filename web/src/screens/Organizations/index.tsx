@@ -47,7 +47,7 @@ const handleCreateOrg = async (
     name: string,
     user: User,
     userToken: string,
-    callback: () => void
+    callback: () => void,
 ) => {
     if (!name) {
         message.error('Insert a valid org name!');
@@ -100,11 +100,9 @@ export const Organizations: React.FC<Props> = () => {
 
             const fetchedOrgs = [];
             for (const userOrgName of fetchedUser?.organization ?? []) {
-                const fetchedOrg = await fetchOrganization(userOrgName, userToken)
-                fetchedOrgs.push(fetchedOrg)
+                const fetchedOrg = await fetchOrganization(userOrgName, userToken);
+                fetchedOrgs.push(fetchedOrg);
             }
-
-            console.log(fetchedUser?.organization, fetchedOrgs)
 
             setOrgs(fetchedOrgs);
         })();
@@ -146,7 +144,7 @@ export const Organizations: React.FC<Props> = () => {
                         values.name,
                         user,
                         userToken,
-                        () => setShowAddModal(false)
+                        () => setShowAddModal(false),
                     )
                 }
                 onFinishFailed={ console.log }

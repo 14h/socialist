@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
+import { Affix, Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
 
-import './styles.css';
+import './styles.less';
 import { Link } from 'react-router-dom';
 import { useHistory, useParams } from 'react-router';
 import { CoreCtx } from '../../index';
@@ -43,13 +43,6 @@ const handleCreateSurvey = async (
         }
 
         hide();
-
-        await addResourceUserRoles(
-            userToken,
-            userId,
-            newSurveyId,
-            'SURVEY'
-        );
 
         message.success(`${ title } got successfully created!`);
 
@@ -135,16 +128,24 @@ export const Surveys = () => {
                 return;
             }
 
-            const org = await fetchOrganization(orgName, userToken);
-            if (!org?.surveys || !userToken) {
+            try {
 
-                return;
+                const org = await fetchOrganization(orgName, userToken);
+                console.log('org', org)
+                if (!org?.surveys || !userToken) {
+
+                    return;
+                }
+
+                // fetch user surveys
+                const fetchedSurveys = await fetchSurveys(userToken, org.surveys.map(({ id }) => id));
+
+                setSurveys(fetchedSurveys);
+
+            } catch (err) {
+                message.error(JSON.stringify(err?.message));
             }
 
-            // fetch user surveys
-            const fetchedSurveys = await fetchSurveys(userToken, org.surveys.map(({ id }) => id));
-
-            setSurveys(fetchedSurveys);
         })();
     }, [user?.id]);
 
@@ -165,9 +166,16 @@ export const Surveys = () => {
     return (
         <Layout className="container-layout">
             <Layout.Content>
-                <Button onClick={ () => setShowAddModal(true) } type="primary" className="create-survey-button">
-                    Create a survey
-                </Button>
+                <Affix offsetBottom={ 0 }>
+                    <Button
+                        onClick={ () => setShowAddModal(true) }
+                        type="primary"
+                        className="create-survey-button"
+                    >
+                        +
+                    </Button>
+                </Affix>
+
                 <Table
                     dataSource={ dataSource }
                     columns={ columns(userToken, orgName) }
