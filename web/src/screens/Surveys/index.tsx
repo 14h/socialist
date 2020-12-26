@@ -131,7 +131,6 @@ export const Surveys = () => {
             try {
 
                 const org = await fetchOrganization(orgName, userToken);
-                console.log('org', org)
                 if (!org?.surveys || !userToken) {
 
                     return;

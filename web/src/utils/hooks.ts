@@ -1,5 +1,8 @@
 import { Item, Section, Survey } from '../types';
 import { useEffect, useState } from 'react';
+import { fetchSurvey, fetchSurveys } from '../services/surveyService';
+import { message } from 'antd';
+import { User } from '../types/models/User';
 
 export type SurveyStore = {
     value: Survey;
@@ -14,61 +17,41 @@ export type SurveyStore = {
     getItem: (sectionIndex: number, itemIndex: number) => Item;
 }
 
-const SURVEY: Survey = {
-    id: 'survey_1',
+const DEFAULT_SURVEY: Survey = {
+    id: 'laoding',
     meta: {
-        name: 'survey1',
+        name: 'loading',
     },
-    sections: [
-        {
-            name: 'page1',
-            description: 'page1_description',
-            conditions: [],
-            items: [
-                {
-                    type: 'multi',
-                    name: 'question1',
-                    description: '2',
-                    options: [],
-                },
-                {
-                    type: 'text',
-                    name: 'question2',
-                    description: '3',
-                    minCharacters: 0,
-                    maxCharacters: 10,
-                },
-            ]
-        },
-        {
-            name: 'page2',
-            description: 'page2_description',
-            conditions: [],
-            items: [
-                {
-                    type: 'number',
-                    name: 'question21',
-                    description: '5',
-                    minValue: 0,
-                    maxValue: 10,
-                },
-                {
-                    type: 'number',
-                    name: 'question22',
-                    description: '6',
-                    minValue: 0,
-                    maxValue: 10,
-                },
-            ]
-        },
-    ],
+    sections: [],
 };
 
 
-export const useSurvey = (surveyId: string | undefined): SurveyStore => {
-    const [value, setValue] = useState<Survey>(
-        SURVEY,
-    );
+export const useSurvey = (
+    userToken: string | null,
+    surveyId: string | null | undefined,
+    user: User | null,
+): SurveyStore => {
+    const [value, setValue] = useState<Survey>(DEFAULT_SURVEY);
+
+    useEffect(() => {
+        (async () => {
+            if (!surveyId || !userToken  || !user) {
+                return;
+            }
+
+            const survey = await fetchSurvey(
+                userToken,
+                surveyId,
+                user.email,
+                user.id,
+            );
+            if (!survey) {
+                return;
+            }
+
+            setValue(survey);
+        })();
+    }, [surveyId]);
 
     const duplicateItem = (
         sectionIndex: number,

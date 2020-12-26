@@ -1,5 +1,6 @@
 import { apiGraphQLClient } from "@utils/graphQlClient";
 import {Survey} from "../types";
+import { message } from 'antd';
 
 const SO7_CREATE_SURVEY_MUTATION = `
     mutation($surveyName: String!, $orgName: String, $orgId: ID){
@@ -29,6 +30,28 @@ const SO7_SURVEY_MULTI_QUERY = `
             meta{
                 name
             }
+        }
+    }
+`;
+
+const SO7_SURVEY_QUERY = `
+    query(
+        $surveyName: String,
+        $surveyId: ID,
+        $email: String,
+        $userId: ID,
+    ){
+        survey(
+            surveyName: $surveyName,
+            surveyId: $surveyId,
+            email: $email,
+            userId: $userId,
+        ){
+            id,
+            meta{
+                name
+            },
+            config,
         }
     }
 `;
@@ -149,6 +172,33 @@ export async function deleteSurvey(
         return result;
     } catch (error) {
         throw new Error(error);
+    }
+}
+
+export const fetchSurvey = async (
+    userToken: string,
+    surveyId: string,
+    email: string,
+    userId: string,
+): Promise<Survey | null> => {
+    const variables = {
+        surveyId,
+        email,
+        userId,
+    };
+
+    try {
+        const responseData = await apiGraphQLClient.authorizedRequest<any, { survey: Survey }>(
+            userToken,
+            SO7_SURVEY_QUERY,
+            variables,
+        );
+
+        return responseData?.survey ?? null;
+    } catch (err) {
+        message.error(JSON.stringify(err?.message));
+
+        return null;
     }
 }
 

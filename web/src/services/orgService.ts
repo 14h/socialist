@@ -54,7 +54,6 @@ export async function createOrganization(
             variables,
         );
 
-        console.log(responseData);
         const id = responseData?.createOrganization?.id ?? null;
 
         if (!id) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Layout, Tabs } from 'antd';
 import { Item, Section } from '../../types';
 import { useParams } from 'react-router';
@@ -10,14 +10,21 @@ import { SectionItem } from './Components/SectionItem';
 import './styles.css';
 import { AddItem } from './Components/AddItem';
 import { Translation } from '../Translations';
+import { CoreCtx } from '../../index';
 
 const AddNewSectionButton = () => {
     const { survey_id } = useParams();
+    const [userToken] = useContext(CoreCtx).userToken;
+    const [user] = useContext(CoreCtx).user;
     // const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
     const currentLang = 'en';
-    const surveyStore = useSurvey(survey_id);
+    const surveyStore = useSurvey(
+        userToken,
+        survey_id,
+        user
+    );
 
     const handleOnClick = () => {
         const newTranslationKey = translations.size.toString();
@@ -58,7 +65,16 @@ const AddNewSectionButton = () => {
 
 export const EditSurvey = () => {
     const { survey_id } = useParams();
-    const surveyStore = useSurvey(survey_id);
+    const [userToken] = useContext(CoreCtx).userToken;
+    const [user] = useContext(CoreCtx).user;
+    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const surveyStore = useSurvey(
+        userToken,
+        survey_id,
+        user
+    );
+
+    const survey = surveyStore.value;
     const currentLang = 'en';
 
     const sections = surveyStore.value?.sections ?? [];
@@ -109,7 +125,7 @@ export const EditSurvey = () => {
     return (
         <div className="survey-wrapper">
             <div className="survey-title">
-                { survey_id }
+                { survey.meta.name }
                 <SurveyActions/>
             </div>
             <Layout>
