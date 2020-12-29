@@ -2,14 +2,12 @@ import React from 'react';
 import '../styles.css';
 import { Item } from '../../../types';
 
-
-const itemDescription = {
-    'text': 'Users can enter a short phrase.',
-    'multi': 'Users can select one or more options.',
-    'rating': 'Users can answer with a 5 star rating scale (e.g. "Not interested" to "Very interested").',
-    'date': 'Users can select a specific date',
-};
-
+// const itemDescription = {
+//     'text': 'Users can enter a short phrase.',
+//     'multi': 'Users can select one or more options.',
+//     'rating': 'Users can answer with a 5 star rating scale (e.g. "Not interested" to "Very interested").',
+//     'date': 'Users can select a specific date',
+// };
 
 type TProps = {
     callback: (selectedQuestion: Item['type']) => void;

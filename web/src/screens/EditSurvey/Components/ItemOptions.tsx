@@ -117,18 +117,18 @@ export const ItemOptions = (props: TProps) => {
                         Add option
                     </Button>
                 }
-                bordered
+                bordered={ true }
                 dataSource={ (item?.options ?? []) as any }
                 size="small"
                 renderItem={ (option: MultiItemOption, index: number) => (
                     <List.Item
                         extra={
-                            <a
+                            <div
                                 key="list-delete"
                                 onClick={ () => onDeleteOption(index) }
                             >
                                 <DeleteOutlined style={ { fontSize: '24px', color: '#a61d24', marginLeft: '24px' } }/>
-                            </a> }
+                            </div> }
                     >
                         <TranslationEditor
                             description={ option?.description }

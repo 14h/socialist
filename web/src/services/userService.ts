@@ -1,6 +1,6 @@
-import {TUserRights, User, UserAndRelated} from '../types/models/User';
-import {apiGraphQLClient} from "@utils/graphQlClient";
-import {safeLocalStorage} from "@utils/safeLocalStorage";
+import { User, UserAndRelated } from '../types/models/User';
+import { apiGraphQLClient } from '@utils/graphQlClient';
+import { safeLocalStorage } from '@utils/safeLocalStorage';
 
 const SO7_GET_USERTOKEN_MUTATION =
     'mutation($creds:UserCredInput!){createLoginChip(creds:$creds){userToken}}';
@@ -130,7 +130,7 @@ export async function createUser(
             email,
             password,
             firstname,
-            lastname
+            lastname,
         },
     };
 
@@ -167,8 +167,8 @@ export async function setUserMeta(
             meta: {
                 firstname,
                 lastname,
-                email
-            }
+                email,
+            },
         },
     };
 
@@ -203,13 +203,14 @@ export async function logoutApi(userToken: string): Promise<void> {
     clearUserToken();
 }
 
-export const meApi = async (userToken: string): Promise<User> => {
+export const meApi = async (userToken: string): Promise<User | null> => {
     try {
         const responseData = await apiGraphQLClient.authorizedRequest<any, UserAndRelated | null>(
             userToken,
             SO7_USER_AND_RELATED_QUERY,
             {},
         );
+        console.log('responseData', responseData)
 
         if (responseData === null) {
             throw new Error('Api returned empty data. Did the exception handling miss something?');
@@ -237,6 +238,6 @@ export const meApi = async (userToken: string): Promise<User> => {
     } catch (err) {
         clearUserToken();
 
-        throw err;
+        return null;
     }
-}
+};

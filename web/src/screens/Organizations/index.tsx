@@ -11,6 +11,7 @@ import { Organization } from '../../types';
 import { createOrganization, fetchOrganization } from '../../services/orgService';
 import { User } from '../../types/models/User';
 import { meApi } from '../../services/userService';
+import { PlusOutlined } from '@ant-design/icons';
 
 const handleDeleteOrg = console.log;
 
@@ -82,6 +83,7 @@ export const Organizations: React.FC<Props> = () => {
     const [userToken] = useContext(CoreCtx).userToken;
     const [orgs, setOrgs] = useState<ReadonlyArray<Organization>>([]);
 
+    const userId = user?.id;
 
     useEffect(() => {
         (async () => {
@@ -106,7 +108,7 @@ export const Organizations: React.FC<Props> = () => {
 
             setOrgs(fetchedOrgs);
         })();
-    }, [user?.id, showAddModal]);
+    }, [userId, showAddModal]);
 
 
     if (!userToken || !user) {
@@ -120,11 +122,14 @@ export const Organizations: React.FC<Props> = () => {
         title: org.meta.name,
     }));
 
-    return <div className="orgs-table">
+    return <div className="table">
 
-        <Button onClick={ () => setShowAddModal(true) } type="primary" className="create-org-button">
-            Create an Organization
-        </Button>
+        <div
+            onClick={ () => setShowAddModal(true) }
+            className="create-button"
+        >
+            <PlusOutlined/>
+        </div>
         <Table
             dataSource={ dataSource }
             columns={ columns(userToken) }

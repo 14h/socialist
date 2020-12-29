@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Affix, Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import './styles.less';
 import { Link } from 'react-router-dom';
 import { useHistory, useParams } from 'react-router';
 import { CoreCtx } from '../../index';
-import { addResourceUserRoles, createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
+import { createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
 import { Survey } from '../../types';
 import { fetchOrganization } from '../../services/orgService';
+import { PlusOutlined } from '@ant-design/icons';
 
 const handleDeleteSurvey = async (
     userToken: string,
@@ -146,7 +147,7 @@ export const Surveys = () => {
             }
 
         })();
-    }, [user?.id]);
+    }, [user, orgName]);
 
     if (!userToken || !user || !orgName) {
         return null;
@@ -163,66 +164,61 @@ export const Surveys = () => {
     }));
 
     return (
-        <Layout className="container-layout">
-            <Layout.Content>
-                <Affix offsetBottom={ 0 }>
-                    <Button
-                        onClick={ () => setShowAddModal(true) }
-                        type="primary"
-                        className="create-survey-button"
-                    >
-                        +
-                    </Button>
-                </Affix>
+        <div className="table">
+            <div
+                onClick={ () => setShowAddModal(true) }
+                className="create-button"
+            >
+                <PlusOutlined/>
+            </div>
 
-                <Table
-                    dataSource={ dataSource }
-                    columns={ columns(userToken, orgName) }
-                    pagination={ false }
-                />
-                <Modal
-                    title="Create survey"
-                    visible={ showAddModal }
-                    onCancel={ () => setShowAddModal(false) }
-                    footer={ null }
+            <Table
+                dataSource={ dataSource }
+                columns={ columns(userToken, orgName) }
+                pagination={ false }
+            />
+            <Modal
+                title="Create survey"
+                visible={ showAddModal }
+                onCancel={ () => setShowAddModal(false) }
+                footer={ null }
+            >
+                <Form
+                    name="basic"
+                    initialValues={ { remember: true } }
+                    onFinish={
+                        (values: any) => handleCreateSurvey(
+                            values.name,
+                            user.id,
+                            userToken,
+                            orgName,
+                            history,
+                        )
+                    }
+                    onFinishFailed={ console.log }
                 >
-                    <Form
-                        name="basic"
-                        initialValues={ { remember: true } }
-                        onFinish={
-                            (values: any) => handleCreateSurvey(
-                                values.name,
-                                user.id,
-                                userToken,
-                                orgName,
-                                history,
-                            )
-                        }
-                        onFinishFailed={ console.log }
+                    <Form.Item
+                        name="name"
+                        rules={ [
+                            {
+                                required: true,
+                                whitespace: true,
+                                message: 'Please input your a valid name for your survey!',
+                            },
+                        ] }
+                        label="name"
                     >
-                        <Form.Item
-                            name="name"
-                            rules={ [
-                                {
-                                    required: true,
-                                    whitespace: true,
-                                    message: 'Please input your a valid name for your survey!',
-                                },
-                            ] }
-                            label="name"
-                        >
-                            <Input/>
-                        </Form.Item>
+                        <Input/>
+                    </Form.Item>
 
-                        <Form.Item style={ { textAlign: 'center', marginTop: '60px' } }>
-                            <Button type="primary" htmlType="submit" style={ { width: '40%' } }>
-                                Create
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            </Layout.Content>
-        </Layout>
+                    <Form.Item style={ { textAlign: 'center', marginTop: '60px' } }>
+                        <Button type="primary" htmlType="submit" style={ { width: '40%' } }>
+                            Create
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
     );
 };
 

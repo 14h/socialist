@@ -5,8 +5,6 @@ import { OrgEnvelope } from './organization';
 import { RootAuditor } from '../core/rootAuditor';
 import { validation_assert, assert_valid_fqdn } from '../util/helpers';
 
-import * as schema from '../../schema/survey-schema-iots';
-
 export interface SureyData {
     name: string;
 }
@@ -51,7 +49,7 @@ export class Survey extends RootAuditor<Survey> {
 
         validation_assert(
             !await this._deps.db.exists(
-                `survey:name:${nameLC}`,
+                `survey:name:${ nameLC }`,
             ),
             'A survey with that name already exists.',
         );
@@ -101,7 +99,7 @@ export class Survey extends RootAuditor<Survey> {
 
         validation_assert(
             meta !== null,
-            `internal/delete/valasrt: ${surveyId} lacks valid meta item.`,
+            `internal/delete/valasrt: ${ surveyId } lacks valid meta item.`,
         );
 
         let tx;
@@ -111,17 +109,17 @@ export class Survey extends RootAuditor<Survey> {
             tx = this._deps
                 .db
                 .multi()
-                .del(`survey:name:${meta!.name}`)
-                .del(`survey:id:${surveyId}:meta`)
-                .del(`survey:id:${surveyId}:config`)
-                .del(`survey:id:${surveyId}:org`);
+                .del(`survey:name:${ meta!.name }`)
+                .del(`survey:id:${ surveyId }:meta`)
+                .del(`survey:id:${ surveyId }:config`)
+                .del(`survey:id:${ surveyId }:org`);
         }
 
         // resolve parent organization and remove its
         // reference to this survey
         {
             const relatedOrgId = await this._deps.db.get(
-                `survey:id:${surveyId}:org`,
+                `survey:id:${ surveyId }:org`,
             );
 
             if (relatedOrgId !== null) {
@@ -135,20 +133,20 @@ export class Survey extends RootAuditor<Survey> {
         // delete relations in user accounts
         {
             const rel_users = await this._deps.db.hkeys(
-                `survey:id:${surveyId}:perm`,
+                `survey:id:${ surveyId }:perm`,
             );
 
             if (rel_users && rel_users.length) {
                 for (const userId of rel_users) {
                     tx = tx.srem(
-                        `user:id:${userId}:perm_related`,
-                        `survey:${surveyId}`,
+                        `user:id:${ userId }:perm_related`,
+                        `survey:${ surveyId }`,
                     );
                 }
             }
 
             tx = tx.del(
-                `survey:id:${surveyId}:perm`,
+                `survey:id:${ surveyId }:perm`,
             );
         }
 
@@ -167,7 +165,7 @@ export class Survey extends RootAuditor<Survey> {
 
         validation_assert(
             meta !== null,
-            `internal/rename/valasrt: ${surveyId} lacks valid meta item.`,
+            `internal/rename/valasrt: ${ surveyId } lacks valid meta item.`,
         );
 
         validation_assert(
@@ -203,7 +201,7 @@ export class Survey extends RootAuditor<Survey> {
         // reference to this survey
         {
             const relatedOrgId = await this._deps.db.get(
-                `survey:id:${surveyId}:org`,
+                `survey:id:${ surveyId }:org`,
             );
 
             validation_assert(
@@ -212,9 +210,9 @@ export class Survey extends RootAuditor<Survey> {
             );
 
             tx = tx
-                .srem(`org:id:${relatedOrgId}:surveys`, surveyId)
-                .sadd(`org:id:${newOrgId}:surveys`, surveyId)
-                .set(`survey:id:${surveyId}:org`, newOrgId);
+                .srem(`org:id:${ relatedOrgId }:surveys`, surveyId)
+                .sadd(`org:id:${ newOrgId }:surveys`, surveyId)
+                .set(`survey:id:${ surveyId }:org`, newOrgId);
         }
 
         await Database.exec_multi(
@@ -228,7 +226,7 @@ export class Survey extends RootAuditor<Survey> {
         surveyId: string,
     ): Promise<SureyData> {
         return this._deps.db.hgetall(
-            `survey:id:${surveyId}:meta`,
+            `survey:id:${ surveyId }:meta`,
         ) as unknown as Promise<SureyData>;
     }
 
@@ -251,18 +249,18 @@ export class Survey extends RootAuditor<Survey> {
         // previous survey name reference, if needed
         {
             if (oldMeta && oldMeta.name) {
-                tx = tx.del(`survey:name:${oldMeta.name}`);
+                tx = tx.del(`survey:name:${ oldMeta.name }`);
             }
         }
 
         // recreate directly related resources
         {
             tx = tx
-                .del(`survey:id:${surveyId}:org`)
-                .del(`survey:id:${surveyId}:meta`)
-                .set(`survey:name:${name}`, surveyId)
-                .set(`survey:id:${surveyId}:org`, orgId)
-                .hmset(`survey:id:${surveyId}:meta`, newMeta as any);
+                .del(`survey:id:${ surveyId }:org`)
+                .del(`survey:id:${ surveyId }:meta`)
+                .set(`survey:name:${ name }`, surveyId)
+                .set(`survey:id:${ surveyId }:org`, orgId)
+                .hmset(`survey:id:${ surveyId }:meta`, newMeta as any);
         }
 
         await Database.exec_multi(
@@ -275,13 +273,11 @@ export class Survey extends RootAuditor<Survey> {
     public async get_config(
         surveyId: string,
     ): Promise<SurveyConfig> {
-        const config = JSON.parse(
+        return JSON.parse(
             await this._deps.db.get(
-                `survey:id:${surveyId}:config`,
+                `survey:id:${ surveyId }:config`,
             ) || '{}',
         );
-
-        return config;
     }
 
     public async set_config(
@@ -294,8 +290,8 @@ export class Survey extends RootAuditor<Survey> {
             this._deps
                 .db
                 .multi()
-                .del(`survey:id:${surveyId}:config`)
-                .set(`survey:id:${surveyId}:config`, serializedConfig),
+                .del(`survey:id:${ surveyId }:config`)
+                .set(`survey:id:${ surveyId }:config`, serializedConfig),
         );
 
         return true;
@@ -373,7 +369,7 @@ export class Survey extends RootAuditor<Survey> {
         surveyId: string,
     ): Promise<Nullable<string>> {
         return await this._deps.db.get(
-            `survey:id:${surveyId}:org`,
+            `survey:id:${ surveyId }:org`,
         ) || null;
     }
 
@@ -407,7 +403,7 @@ export class Survey extends RootAuditor<Survey> {
         flagNames: string[],
     ): Promise<boolean> {
         return await this._deps.db.sadd(
-            `survey:id:${surveyId}:flags`,
+            `survey:id:${ surveyId }:flags`,
             ...flagNames,
         ) !== 0;
     }
@@ -417,7 +413,7 @@ export class Survey extends RootAuditor<Survey> {
         flagNames: string[],
     ): Promise<boolean> {
         return await this._deps.db.srem(
-            `survey:id:${surveyId}:flags`,
+            `survey:id:${ surveyId }:flags`,
             ...flagNames,
         ) !== 0;
     }
@@ -426,7 +422,7 @@ export class Survey extends RootAuditor<Survey> {
         surveyId: string,
     ): Promise<string[]> {
         const flags = await this._deps.db.smembers(
-            `survey:id:${surveyId}:flags`,
+            `survey:id:${ surveyId }:flags`,
         );
 
         return flags;
@@ -440,7 +436,7 @@ export class Survey extends RootAuditor<Survey> {
         }
 
         return await this._deps.db.exists(
-            `survey:id:${surveyId}:meta`,
+            `survey:id:${ surveyId }:meta`,
         ) !== 0;
     }
 
@@ -452,7 +448,7 @@ export class Survey extends RootAuditor<Survey> {
         }
 
         const id = await this._deps.db.get(
-            `survey:name:${name}`,
+            `survey:name:${ name }`,
         );
 
         if (!id) {

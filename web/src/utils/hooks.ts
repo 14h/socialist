@@ -1,19 +1,18 @@
 import { Item, Section, Survey } from '../types';
 import { useEffect, useState } from 'react';
-import { fetchSurvey, fetchSurveys } from '../services/surveyService';
-import { message } from 'antd';
+import { fetchSurvey } from '../services/surveyService';
 import { User } from '../types/models/User';
 
 export type SurveyStore = {
     value: Survey;
-    setValue: (s: Survey) => any;
-    updateSection: (s: Section) => any;
-    insertSection: (s: Section) => any;
-    deleteSection: (sectionIndex: number) => any;
-    insertItem: (i: Item, sectionIndex: number, itemIndex: number) => any;
-    updateItem: (sectionIndex: number, itemIndex: number, item: Item) => any;
-    duplicateItem: (sectionIndex: number, itemIndex: number) => any;
-    deleteItem: (sectionIndex: number, itemIndex: number) => any;
+    setValue: (s: Survey) => void;
+    updateSection: (s: Section) => void;
+    insertSection: (s: Section) => void;
+    deleteSection: (key: string) => void;
+    insertItem: (i: Item, sectionIndex: number, itemIndex: number) => void;
+    updateItem: (sectionIndex: number, itemIndex: number, item: Item) => void;
+    duplicateItem: (sectionIndex: number, itemIndex: number) => void;
+    deleteItem: (sectionIndex: number, itemIndex: number) => void;
     getItem: (sectionIndex: number, itemIndex: number) => Item;
 }
 
@@ -35,7 +34,7 @@ export const useSurvey = (
 
     useEffect(() => {
         (async () => {
-            if (!surveyId || !userToken  || !user) {
+            if (!surveyId || !userToken || !user) {
                 return;
             }
 
@@ -51,7 +50,7 @@ export const useSurvey = (
 
             setValue(survey);
         })();
-    }, [surveyId]);
+    }, [surveyId, user, userToken]);
 
     const duplicateItem = (
         sectionIndex: number,
@@ -63,20 +62,20 @@ export const useSurvey = (
             {},
             itemToClone,
             {
-                name: `${itemToClone.name}_${sectionsClone[sectionIndex].items.length}`
-            }
-        )
+                name: `${ itemToClone.name }_${ sectionsClone[sectionIndex].items.length }`,
+            },
+        );
 
         sectionsClone[sectionIndex].items.splice(
             itemIndex + 1,
             0,
             newItem,
-        )
+        );
 
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
         setValue(newValue);
     };
     const insertItem = (
@@ -93,7 +92,7 @@ export const useSurvey = (
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
         setValue(newValue);
     };
 
@@ -106,7 +105,7 @@ export const useSurvey = (
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
         setValue(newValue);
     };
 
@@ -120,43 +119,49 @@ export const useSurvey = (
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
         setValue(newValue);
-    }
+    };
 
     const updateSection = (newPage: Section) => {
         const sectionsClone = value.sections.slice();
-        const sectionIndex = sectionsClone.findIndex((p: Section) => p.name === newPage.name)
+        const sectionIndex = sectionsClone.findIndex((p: Section) => p.name === newPage.name);
         sectionsClone[sectionIndex] = newPage;
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
         setValue(newValue);
     };
 
     const insertSection = (section: Section) => {
-        const sectionsClone = value.sections.slice();
+        const sectionsClone = value.sections?.slice() ?? [];
 
         sectionsClone.push(section);
 
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
 
         setValue(newValue);
-    }
+    };
 
-    const deleteSection = (sectionIndex: number) => {
+    const deleteSection = (key: string) => {
+        const sectionIndex = value.sections.findIndex((s: Section) => s.name === key);
+        if (sectionIndex < 0) {
+            console.warn('Page not found');
+            return;
+        }
+
         const sectionsClone = value.sections.slice();
         sectionsClone.splice(sectionIndex, 1);
         const newValue = {
             ...value,
             sections: sectionsClone,
-        }
+        };
         setValue(newValue);
-    }
+    };
 
     const getItem = (sectionIndex: number, itemIndex: number) =>
         value?.sections?.[sectionIndex]?.items?.[itemIndex];
@@ -173,8 +178,8 @@ export const useSurvey = (
         deleteItem,
         updateItem,
         getItem,
-    }
-}
+    };
+};
 
 export function useOnClickOutside(ref: any, handler: any) {
     useEffect(
@@ -202,6 +207,6 @@ export function useOnClickOutside(ref: any, handler: any) {
         // ... callback/cleanup to run every render. It's not a big deal ...
         // ... but to optimize you can wrap handler in useCallback before ...
         // ... passing it into this hook.
-        [ref, handler]
+        [ref, handler],
     );
 }

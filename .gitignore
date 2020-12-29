@@ -4,3 +4,4 @@ node_modules
 web/.parcel-cache
 web/node_modules
 dist/
+api/dump.rdb

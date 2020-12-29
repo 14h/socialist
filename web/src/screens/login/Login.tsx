@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './styles.css';
-import { Button, Form, Input, message, Modal, Spin, Row, Col } from 'antd';
+import { Button, Form, Input, message, Modal, Row, Col } from 'antd';
 import { CoreCtx } from '../../index';
 import { createUser, login_so7, meApi } from '../../services/userService';
 import { createOrganization } from '../../services/orgService';
@@ -25,6 +25,9 @@ export const SignUp: React.FC<Props> = () => {
                 throw new Error('failed to login with new account!');
             }
             const user = await meApi(newToken);
+            if (!user) {
+                throw new Error('failed to fetch user!');
+            }
 
             const newOrgId = await createOrganization(orgName, newToken);
 
@@ -225,9 +228,9 @@ export const Login: React.FC<Props> = () => {
             </Modal>
             <div>
                 Don't have an account yet?
-                <a href="#" onClick={ () => setSignUp(true) }>
+                <div onClick={ () => setSignUp(true) }>
                     { ' ' }register
-                </a>
+                </div>
             </div>
 
         </div>

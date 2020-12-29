@@ -27,13 +27,17 @@ const UserOptionsMenu = () => {
 };
 
 export const LayoutSider = () => {
-    const selectedMenuItem = window.location.pathname.split('/')[1];
+    const selectedOrg = window.location.pathname.split('/')?.[1] ?? null;
+    const subSection = window.location.pathname.split('/')?.[2] ?? null;
+
     const [user] = useContext(CoreCtx).user;
     const [userToken] = useContext(CoreCtx).userToken;
 
     if (!user || !userToken) {
         return null;
     }
+
+    console.log(`${ user?.organization?.[0] }-${ subSection }`)
 
     return (
         <div className="sider">
@@ -44,7 +48,7 @@ export const LayoutSider = () => {
                 className="sider-menu"
                 theme="dark"
                 mode="inline"
-                defaultSelectedKeys={ [selectedMenuItem] }
+                defaultSelectedKeys={ [`${ selectedOrg }-${ subSection }`] }
                 defaultOpenKeys={ [user?.organization?.[0] ?? ''] }
             >
 

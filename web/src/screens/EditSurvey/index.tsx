@@ -4,7 +4,7 @@ import { Item, Section } from '../../types';
 import { useParams } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import { SurveyActions } from './Components/SurveyActions';
-import { useSurvey } from '@utils/hooks';
+import { SurveyStore, useSurvey } from '@utils/hooks';
 import { SectionItem } from './Components/SectionItem';
 
 import './styles.css';
@@ -12,19 +12,10 @@ import { AddItem } from './Components/AddItem';
 import { Translation } from '../Translations';
 import { CoreCtx } from '../../index';
 
-const AddNewSectionButton = () => {
-    const { survey_id } = useParams();
-    const [userToken] = useContext(CoreCtx).userToken;
-    const [user] = useContext(CoreCtx).user;
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+const AddNewSectionButton = ({ surveyStore }: { surveyStore: SurveyStore }) => {
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
     const currentLang = 'en';
-    const surveyStore = useSurvey(
-        userToken,
-        survey_id,
-        user
-    );
 
     const handleOnClick = () => {
         const newTranslationKey = translations.size.toString();
@@ -42,8 +33,8 @@ const AddNewSectionButton = () => {
             cloneMap,
         );
 
-        const newSection = {
-            name: `newPage_${ surveyStore.value.sections.length }`,
+        const newSection: Section = {
+            name: `${(surveyStore.value.sections?.length ?? 0) + 1}` ,
             description: newTranslationKey,
             items: [],
             conditions: [],
@@ -67,11 +58,11 @@ export const EditSurvey = () => {
     const { survey_id } = useParams();
     const [userToken] = useContext(CoreCtx).userToken;
     const [user] = useContext(CoreCtx).user;
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+
     const surveyStore = useSurvey(
         userToken,
         survey_id,
-        user
+        user,
     );
 
     const survey = surveyStore.value;
@@ -87,16 +78,6 @@ export const EditSurvey = () => {
 
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
-
-    const removePage = (key: any) => {
-        const sectionIndex = sections.findIndex((s: Section) => s.name === key);
-        if (sectionIndex < 0) {
-            console.warn('Page not found');
-            return;
-        }
-
-        surveyStore.deleteSection(sectionIndex);
-    };
 
     const insertNewItem = (type: Item['type'], sectionIndex: number, itemIndex: number) => {
         const newTranslationKey = translations.size.toString();
@@ -133,9 +114,9 @@ export const EditSurvey = () => {
                     type="editable-card"
                     onChange={ setSectionKey }
                     activeKey={ sectionKey }
-                    onEdit={ removePage }
+                    onEdit={ surveyStore.deleteSection as any }
                     hideAdd={ true }
-                    tabBarExtraContent={ <AddNewSectionButton/> }
+                    tabBarExtraContent={ <AddNewSectionButton surveyStore={ surveyStore }/> }
                     size="large"
                 >
                     { sections.map((section: Section, sectionIndex: number) => (

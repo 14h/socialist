@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { LayoutSider } from '@layout/sider';
-import { Layout, Spin } from 'antd';
+import { Layout } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreCtxUseStateEnv } from './types';
 import Translations from './screens/Translations';
-import { useLocalStorage } from '@utils/helpers';
-import { meApi, SO7_USER_TOKEN } from './services/userService';
 import Home from './screens/home/Home';
 import { Organizations } from './screens/Organizations';
 import { Surveys } from './screens/Surveys';
@@ -19,35 +17,13 @@ import { User } from './types/models/User';
 export const CoreCtx = React.createContext<TCoreCtxUseStateEnv>(null as never);
 
 export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
-    const [userToken, setUserToken] = useLocalStorage<string | null>(SO7_USER_TOKEN, null);
+    const [userToken, setUserToken] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
 
     const store: any = {
         userToken: [userToken, setUserToken],
         user: [user, setUser],
     };
-
-    useEffect(() => {
-        // try using saved auth on first render
-        if (!userToken) {
-            return;
-        }
-
-        try {
-            (async () => {
-                const user = await meApi(userToken);
-
-                if (!user) {
-                    throw new Error('me endpoint didn\'t work ');
-                }
-
-                setUser(user);
-            })();
-        } catch (error) {
-            console.log(error);
-            setUserToken(null);
-        }
-    }, []);
 
     return <CoreCtx.Provider value={ store }>{ props.children }</CoreCtx.Provider>;
 };
