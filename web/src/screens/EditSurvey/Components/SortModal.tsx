@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
-import '../styles.css';
+import '../styles.less';
 import { Item } from '../../../types';
 
 type TProps = {

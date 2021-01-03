@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
-import '../styles.css';
+import '../styles.less';
 import { Section } from '../../../types';
 
 type TProps = {

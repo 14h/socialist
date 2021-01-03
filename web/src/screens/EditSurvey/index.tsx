@@ -7,7 +7,7 @@ import { SurveyActions } from './Components/SurveyActions';
 import { SurveyStore, useSurvey } from '@utils/hooks';
 import { SectionItem } from './Components/SectionItem';
 
-import './styles.css';
+import './styles.less';
 import { AddItem } from './Components/AddItem';
 import { Translation } from '../Translations';
 import { CoreCtx } from '../../index';

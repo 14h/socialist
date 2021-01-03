@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles.css';
+import '../styles.less';
 import { Button } from 'antd';
 
 export const SurveyActions = () => (

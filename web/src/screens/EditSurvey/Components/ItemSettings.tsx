@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, InputNumber, Typography } from 'antd';
-import '../styles.css';
+import '../styles.less';
 import { Item } from '../../../types';
 import { EditOutlined } from '@ant-design/icons/lib';
 import { ItemFormat } from './ItemFormat';

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles.css';
+import '../styles.less';
 import { Item, MultiItemOption } from '../../../types';
 import { Button, List } from 'antd';
 import { TranslationEditor } from './TranslationEditor';

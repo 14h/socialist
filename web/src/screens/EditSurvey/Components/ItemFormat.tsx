@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles.css';
+import '../styles.less';
 import { Button, Modal, Radio, Typography } from 'antd';
 import { WarningOutlined } from '@ant-design/icons';
 import { Item } from '../../../types';
