@@ -1,5 +1,5 @@
 import { apiGraphQLClient } from '@utils/graphQlClient';
-import { Survey } from '../types';
+import { Section, Survey } from '../types';
 import { message } from 'antd';
 
 const SO7_CREATE_SURVEY_MUTATION = `
@@ -19,6 +19,12 @@ const SO7_ADD_RESOURCE_USER_ROLES = `
 const SO7_DELETE_SURVEY = `
     mutation($surveyName: String, $surveyId: ID){
         deleteSurvey(surveyName: $surveyName, surveyId: $surveyId)
+    }
+`;
+
+const SO7_SET_SURVEY_SECTIONS = `
+    mutation($surveyName: String, $surveyId: ID, $sections: [JSON]!){
+        setSurveySections(surveyName: $surveyName, surveyId: $surveyId, sections: $sections)
     }
 `;
 
@@ -101,7 +107,6 @@ export async function createSurvey(
             variables,
         );
 
-        console.log(responseData);
         const surveyId = responseData?.createSurvey?.id ?? null;
 
         if (!surveyId) {
@@ -173,6 +178,27 @@ export async function deleteSurvey(
         }
 
         return result;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+export const setSurveySections = async (
+    userToken: string,
+    surveyId: string,
+    sections: Section[],
+): Promise<void> => {
+    const variables = {
+        surveyId,
+        sections,
+    }
+
+    try {
+        await apiGraphQLClient.authorizedRequest<any, any>(
+            userToken,
+            SO7_SET_SURVEY_SECTIONS,
+            variables,
+        );
     } catch (error) {
         throw new Error(error);
     }

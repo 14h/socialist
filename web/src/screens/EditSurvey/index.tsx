@@ -128,7 +128,7 @@ export const EditSurvey = () => {
                                         }
                                     }
                                 />
-                                { section.items.map((item: Item, itemIndex: number) => (
+                                { (section?.items ?? []).map((item: Item, itemIndex: number) => (
                                     <>
                                         <div
                                             onClick={ () => setSelectedItemIndex(itemIndex) }

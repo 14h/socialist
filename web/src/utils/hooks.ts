@@ -1,13 +1,14 @@
 import { Item, Section, Survey } from '../types';
 import { useEffect, useState } from 'react';
-import { fetchSurvey } from '../services/surveyService';
+import { fetchSurvey, setSurveySections } from '../services/surveyService';
 import { User } from '../types/models/User';
+import { message } from 'antd';
 
 export type SurveyStore = {
     value: Survey;
     setValue: (s: Survey) => void;
     updateSection: (s: Section) => void;
-    insertSection: (s: Section) => void;
+    insertSection: (s: Section) => Promise<void>;
     deleteSection: (key: string) => void;
     insertItem: (i: Item, sectionIndex: number, itemIndex: number) => void;
     updateItem: (sectionIndex: number, itemIndex: number, item: Item) => void;
@@ -96,17 +97,28 @@ export const useSurvey = (
         setValue(newValue);
     };
 
-    const deleteItem = (
+    const deleteItem = async (
         sectionIndex: number,
         itemIndex: number,
     ) => {
+        if (!userToken || !surveyId) {
+            return;
+        }
+
         const sectionsClone = value.sections.slice();
         sectionsClone[sectionIndex].items.splice(itemIndex, 1);
         const newValue = {
             ...value,
             sections: sectionsClone,
         };
-        setValue(newValue);
+
+        try {
+            await setSurveySections(userToken, surveyId, sectionsClone)
+
+            setValue(newValue);
+        } catch (err) {
+            message.error(JSON.stringify(err))
+        }
     };
 
     const updateItem = (
@@ -134,7 +146,10 @@ export const useSurvey = (
         setValue(newValue);
     };
 
-    const insertSection = (section: Section) => {
+    const insertSection = async (section: Section) => {
+        if (!userToken || !surveyId) {
+            return;
+        }
         const sectionsClone = value.sections?.slice() ?? [];
 
         sectionsClone.push(section);
@@ -144,10 +159,20 @@ export const useSurvey = (
             sections: sectionsClone,
         };
 
-        setValue(newValue);
+        try {
+            await setSurveySections(userToken, surveyId, sectionsClone)
+
+            setValue(newValue);
+        } catch (err) {
+            message.error(JSON.stringify(err))
+        }
     };
 
-    const deleteSection = (key: string) => {
+    const deleteSection = async (key: string) => {
+        if (!userToken || !surveyId) {
+            return;
+        }
+
         const sectionIndex = value.sections.findIndex((s: Section) => s.name === key);
         if (sectionIndex < 0) {
             console.warn('Page not found');
@@ -160,7 +185,14 @@ export const useSurvey = (
             ...value,
             sections: sectionsClone,
         };
-        setValue(newValue);
+
+        try {
+            await setSurveySections(userToken, surveyId, sectionsClone)
+
+            setValue(newValue);
+        } catch (err) {
+            message.error(JSON.stringify(err))
+        }
     };
 
     const getItem = (sectionIndex: number, itemIndex: number) =>
