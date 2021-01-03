@@ -170,6 +170,13 @@ export const get_resolvers = () => {
             ) {
                 return ctx.deps.survey.get_flags(source.id);
             },
+            async sections(
+                source: IdSrc,
+                _: any,
+                ctx: RootCtx,
+            ) {
+                return ctx.deps.survey.get_sections(source.id);
+            },
             meta(
                 source: IdSrc,
                 _: any,
@@ -1077,6 +1084,25 @@ export const get_resolvers = () => {
                 );
 
                 return ctx.deps.survey.set_config(surveyId, args.config);
+            },
+
+            async setSurveySections(
+                _source: {},
+                args: SurveyQuery & { sections: any },
+                ctx: RootCtx,
+            ): Promise<boolean> {
+                const surveyId = await resolve_res_params(
+                    ResourceType.SURVEY,
+                    args,
+                    ctx.deps,
+                );
+
+                await ctx.deps.survey.set_sections(
+                    surveyId,
+                    args.sections,
+                );
+
+                return true;
             },
         },
 

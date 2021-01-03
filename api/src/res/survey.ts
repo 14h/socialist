@@ -4,6 +4,7 @@ import { UserRole, UserRoles } from './rights';
 import { OrgEnvelope } from './organization';
 import { RootAuditor } from '../core/rootAuditor';
 import { validation_assert, assert_valid_fqdn } from '../util/helpers';
+import { Section } from '../types/contracts';
 
 export interface SureyData {
     name: string;
@@ -112,6 +113,7 @@ export class Survey extends RootAuditor<Survey> {
                 .del(`survey:name:${ meta!.name }`)
                 .del(`survey:id:${ surveyId }:meta`)
                 .del(`survey:id:${ surveyId }:config`)
+                .del(`survey:id:${ surveyId }:sections`)
                 .del(`survey:id:${ surveyId }:org`);
         }
 
@@ -426,6 +428,43 @@ export class Survey extends RootAuditor<Survey> {
         );
 
         return flags;
+    }
+
+    public async set_sections(
+        surveyId: string,
+        sections: Section[],
+    ): Promise<void> {
+        await this._deps.db.del(
+            `survey:id:${ surveyId }:sections`,
+        );
+
+        if(sections.length === 0) {
+            return;
+        }
+
+        sections.map(
+                async (section, score) => {
+                await this._deps.db.zadd(
+                    `survey:id:${ surveyId }:sections`,
+                    score,
+                    JSON.stringify(section)
+                );
+            }
+        );
+
+        return;
+    }
+
+    public async get_sections(
+        surveyId: string,
+    ): Promise<Section[]> {
+        const sections = await this._deps.db.zrange(
+            `survey:id:${ surveyId }:sections`,
+            0,
+            9999
+        );
+
+        return sections?.map(section => JSON.parse(section)) ?? [];
     }
 
     public async exists(

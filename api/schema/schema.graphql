@@ -460,4 +460,7 @@ type Mutation {
 
     """Set the configuration of a survey using its name or GUID. [[[privileged]]]"""
     setSurveyConfig(surveyName: String, surveyId: ID, config: JSON!): Boolean! @auth(privileged: true)
+
+    """Set the configuration of a survey using its name or GUID. [[[privileged]]]"""
+    setSurveySections(surveyName: String, surveyId: ID, sections: [JSON]): Boolean! @auth(privileged: true)
 }
