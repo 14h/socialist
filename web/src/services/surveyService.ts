@@ -52,6 +52,9 @@ const SO7_SURVEY_QUERY = `
                 name
             },
             config,
+            sections {
+                name
+            }
         }
     }
 `;
