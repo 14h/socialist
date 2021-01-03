@@ -28,6 +28,10 @@ export class Database {
     public readonly sismember: (set: string, key: string) => Promise<number>;
     public readonly smembers: (set: string) => Promise<string[]>;
 
+    public readonly zadd: (set: string, scrore: number, ...keys: string[]) => Promise<number>;
+    public readonly zrem: (set: string, ...keys: string[]) => Promise<number>;
+    public readonly zrange: (set: string, start: number, stop: number) => Promise<string[]>;
+
     public readonly hget: (hash: string, field: string) => Promise<string>;
     public readonly hset: (hash: string, field: string, value: string) => Promise<number>;
     public readonly hgetall: (hash: string) => Promise<{[key: string]: string}>;
@@ -58,6 +62,10 @@ export class Database {
         this.srem = promisify(this._client.srem.bind(this._client));
         this.sismember = promisify(this._client.sismember.bind(this._client));
         this.smembers = promisify(this._client.smembers.bind(this._client));
+
+        this.zadd = promisify(this._client.zadd.bind(this._client));
+        this.zrem = promisify(this._client.zrem.bind(this._client));
+        this.zrange = promisify(this._client.zrange.bind(this._client));
 
         this.hget = promisify(this._client.hget.bind(this._client));
         this.hset = promisify(this._client.hset.bind(this._client));
