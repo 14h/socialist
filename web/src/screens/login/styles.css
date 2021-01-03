@@ -7,6 +7,10 @@
     align-items: center;;
 }
 
+.login-form .logo {
+    width: 128px;
+    height: 128px;
+}
 .ant-form-item-control-input-content {
     text-align: center;
 }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { LayoutSider } from '@layout/sider';
+import { LayoutHeader } from '@layout/header';
 import { Layout, message } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreState } from './types';
@@ -108,9 +108,9 @@ export const App = () => {
 
     return (
         <Layout>
-            <Layout.Sider>
-                <LayoutSider/>
-            </Layout.Sider>
+            <Layout.Header>
+                <LayoutHeader/>
+            </Layout.Header>
             <Layout.Content>
                 <Switch>
                     <Route exact={ true } path={ '/' } component={ Home }/>
