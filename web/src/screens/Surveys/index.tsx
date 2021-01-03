@@ -118,8 +118,7 @@ export const Surveys = () => {
     const { orgName } = useParams();
     const [showAddModal, setShowAddModal] = useState(false);
     const history = useHistory();
-    const [user] = useContext(CoreCtx).user;
-    const [userToken] = useContext(CoreCtx).userToken;
+    const {user, userToken} = useContext(CoreCtx);
     const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
 
 
@@ -130,7 +129,6 @@ export const Surveys = () => {
             }
 
             try {
-
                 const org = await fetchOrganization(orgName, userToken);
                 if (!org?.surveys || !userToken) {
 
@@ -147,7 +145,7 @@ export const Surveys = () => {
             }
 
         })();
-    }, [user, orgName]);
+    }, [userToken, orgName]);
 
     if (!userToken || !user || !orgName) {
         return null;

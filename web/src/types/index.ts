@@ -1,17 +1,12 @@
-import { Dispatch, SetStateAction } from 'react';
-import { Translation } from '../screens/Translations';
 import {User} from "./models/User";
 
 export type TCoreState = {
     userToken: string | null;
     user: User | null;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+    refreshUser: () => Promise<void>;
 };
-
-export type TUseStateEnvelope<T> = {
-    [P in keyof T]: [T[P], Dispatch<SetStateAction<T[P]>>];
-};
-
-export type TCoreCtxUseStateEnv = TUseStateEnvelope<TCoreState>;
 
 
 // SURVEY types

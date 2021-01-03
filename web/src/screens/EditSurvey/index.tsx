@@ -56,8 +56,7 @@ const AddNewSectionButton = ({ surveyStore }: { surveyStore: SurveyStore }) => {
 
 export const EditSurvey = () => {
     const { survey_id } = useParams();
-    const [userToken] = useContext(CoreCtx).userToken;
-    const [user] = useContext(CoreCtx).user;
+    const {user, userToken} = useContext(CoreCtx);
 
     const surveyStore = useSurvey(
         userToken,
@@ -72,7 +71,6 @@ export const EditSurvey = () => {
 
     const [sectionKey, setSectionKey] = useState(sections?.[0]?.name);
 
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
 

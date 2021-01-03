@@ -7,16 +7,12 @@ import { CoreCtx } from '../../index';
 import { Logo } from '@components/Logo';
 
 const UserOptionsMenu = () => {
-    const [, setUser] = useContext(CoreCtx).user;
-    const [, setUserToken] = useContext(CoreCtx).userToken;
+    const { logout } = useContext(CoreCtx);
 
     return (
         <Menu>
             <Menu.Item
-                onClick={ () => {
-                    setUserToken(null);
-                    setUser(null);
-                } }
+                onClick={ logout }
                 key="logout"
                 icon={ <LogoutOutlined/> }
             >
@@ -30,14 +26,13 @@ export const LayoutSider = () => {
     const selectedOrg = window.location.pathname.split('/')?.[1] ?? null;
     const subSection = window.location.pathname.split('/')?.[2] ?? null;
 
-    const [user] = useContext(CoreCtx).user;
-    const [userToken] = useContext(CoreCtx).userToken;
+    const { user, userToken } = useContext(CoreCtx);
 
     if (!user || !userToken) {
         return null;
     }
 
-    console.log(`${ user?.organization?.[0] }-${ subSection }`)
+    console.log(`${ user?.organization?.[0] }-${ subSection }`);
 
     return (
         <div className="sider">

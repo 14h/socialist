@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import './styles.css';
-import { Button, Form, Input, message, Modal, Row, Col } from 'antd';
+import { Button, Form, Input, Modal, Row, Col } from 'antd';
 import { CoreCtx } from '../../index';
 import { createUser, login_so7, meApi } from '../../services/userService';
 import { createOrganization } from '../../services/orgService';
@@ -11,8 +11,7 @@ import { Link } from 'react-router-dom';
 type Props = {};
 
 export const SignUp: React.FC<Props> = () => {
-    const [, setUser] = useContext(CoreCtx).user;
-    const [, setUserToken] = useContext(CoreCtx).userToken;
+    const {login} = useContext(CoreCtx);
 
     const onFinish = async (values: any) => {
         const { email, password, firstname, lastname, orgName } = values;
@@ -42,8 +41,7 @@ export const SignUp: React.FC<Props> = () => {
                 'ORG',
             );
 
-            setUser(user);
-            setUserToken(newToken);
+            await login(email, password);
         } catch (error) {
             console.error(error);
         }
@@ -142,39 +140,10 @@ export const SignUp: React.FC<Props> = () => {
     );
 };
 export const Login: React.FC<Props> = () => {
-    const [, setUser] = useContext(CoreCtx).user;
-    const [, setUserToken] = useContext(CoreCtx).userToken;
+    const {login} = useContext(CoreCtx);
     const [signUp, setSignUp] = useState(false);
 
-    const login = async (
-        email: string,
-        password: string,
-    ) => {
-        if (!email || !password) {
-            return;
-        }
 
-        try {
-            const newToken = await login_so7(email, password);
-
-            if (!newToken) {
-                throw new Error('Login failed');
-            }
-
-            const user = await meApi(newToken);
-
-            if (!user) {
-                throw new Error('me endpoint didn\'t work ');
-            }
-
-            setUser(user);
-            setUserToken(newToken);
-
-        } catch (error) {
-
-            message.error(JSON.stringify(error?.message));
-        }
-    };
 
     const onFinish = async (values: any) => {
         const { email, password } = values;

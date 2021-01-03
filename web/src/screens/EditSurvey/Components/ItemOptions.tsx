@@ -14,7 +14,6 @@ type TProps = {
 
 export const ItemOptions = (props: TProps) => {
     const { item, updateItem, editMode } = props;
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
     // TODO fix translations here

@@ -10,7 +10,6 @@ import { addResourceUserRoles } from '../../services/surveyService';
 import { Organization } from '../../types';
 import { createOrganization, fetchOrganization } from '../../services/orgService';
 import { User } from '../../types/models/User';
-import { meApi } from '../../services/userService';
 import { PlusOutlined } from '@ant-design/icons';
 
 const handleDeleteOrg = console.log;
@@ -79,11 +78,8 @@ type Props = {};
 
 export const Organizations: React.FC<Props> = () => {
     const [showAddModal, setShowAddModal] = useState(false);
-    const [user, setUser] = useContext(CoreCtx).user;
-    const [userToken] = useContext(CoreCtx).userToken;
+    const { user, userToken, refreshUser } = useContext(CoreCtx);
     const [orgs, setOrgs] = useState<ReadonlyArray<Organization>>([]);
-
-    const userId = user?.id;
 
     useEffect(() => {
         (async () => {
@@ -91,24 +87,15 @@ export const Organizations: React.FC<Props> = () => {
                 return;
             }
 
-            // Re-fetching user to insure we have all the orgs created recently
-            const fetchedUser = await meApi(userToken);
-
-            if (!fetchedUser) {
-                throw new Error('me endpoint didn\'t work ');
-            }
-
-            setUser(fetchedUser);
-
             const fetchedOrgs = [];
-            for (const userOrgName of fetchedUser?.organization ?? []) {
+            for (const userOrgName of user?.organization ?? []) {
                 const fetchedOrg = await fetchOrganization(userOrgName, userToken);
                 fetchedOrgs.push(fetchedOrg);
             }
 
             setOrgs(fetchedOrgs);
         })();
-    }, [userId, showAddModal]);
+    }, [user, userToken, showAddModal]);
 
 
     if (!userToken || !user) {
@@ -149,7 +136,10 @@ export const Organizations: React.FC<Props> = () => {
                         values.name,
                         user,
                         userToken,
-                        () => setShowAddModal(false),
+                        async () => {
+                            await refreshUser();
+                            setShowAddModal(false);
+                        },
                     )
                 }
                 onFinishFailed={ console.log }

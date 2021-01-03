@@ -18,8 +18,7 @@ type TranslationTableProps = {
     langTo: Lang;
 };
 const TranslationTable = (props: TranslationTableProps) => {
-    const {langFrom, langTo} = props;
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
+    const { langFrom, langTo } = props;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
 
@@ -29,37 +28,37 @@ const TranslationTable = (props: TranslationTableProps) => {
             translation,
             {
                 [lang]: newContent,
-            }
+            },
         );
-        const cloneMap = new Map(translations)
+        const cloneMap = new Map(translations);
         cloneMap.set(
             key,
             newTranslation,
         );
 
         setTranslations(
-            cloneMap
-        )
-    }
+            cloneMap,
+        );
+    };
 
     return (
         <div className="translation-table">
             {
                 Array.from(translations).map(([key, translation]) => (
-                    <div className="translation-row" key={`translation-${key}`}>
+                    <div className="translation-row" key={ `translation-${ key }` }>
                         <div className="translation-column">
                             <ReactQuill
                                 theme="snow"
-                                value={translation[langFrom] || ''}
-                                onChange={handleSave(langFrom, key, translation)}
+                                value={ translation[langFrom] || '' }
+                                onChange={ handleSave(langFrom, key, translation) }
                             />
                         </div>
                         <ArrowRightOutlined/>
                         <div className="translation-column">
                             <ReactQuill
                                 theme="snow"
-                                value={translation[langTo] || ''}
-                                onChange={handleSave(langTo, key, translation)}
+                                value={ translation[langTo] || '' }
+                                onChange={ handleSave(langTo, key, translation) }
                             />
                         </div>
                     </div>
@@ -70,7 +69,6 @@ const TranslationTable = (props: TranslationTableProps) => {
 };
 
 const Translations = () => {
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
     const [langFrom, setLangFrom] = useState<Lang>('en');
@@ -79,18 +77,18 @@ const Translations = () => {
 
     const handleAdd = () => {
         const newTranslation = {
-            [currentLang]: ''
-        }
+            [currentLang]: '',
+        };
 
-        const cloneMap = new Map(translations)
+        const cloneMap = new Map(translations);
         cloneMap.set(
             translations.size.toString(),
             newTranslation,
         );
 
         setTranslations(
-            cloneMap
-        )
+            cloneMap,
+        );
     };
 
 
@@ -100,37 +98,37 @@ const Translations = () => {
                 <div>
                     <Select
                         className="translations-actions-select"
-                        defaultValue={langFrom}
-                        onChange={setLangFrom}
+                        defaultValue={ langFrom }
+                        onChange={ setLangFrom }
                     >
-                        {AVAILABLE_LANGS.map((lang: Lang) => (
-                            <Select.Option key={`from-${lang}`} value={lang}>
-                                {lang}
+                        { AVAILABLE_LANGS.map((lang: Lang) => (
+                            <Select.Option key={ `from-${ lang }` } value={ lang }>
+                                { lang }
                             </Select.Option>
-                        ))}
+                        )) }
                     </Select>
                     <ArrowRightOutlined/>
                     <Select
                         className="translations-actions-select"
-                        defaultValue={langTo}
-                        onChange={setLangTo}
+                        defaultValue={ langTo }
+                        onChange={ setLangTo }
                     >
-                        {AVAILABLE_LANGS.filter((lang: Lang) => lang !== 'en').map(
+                        { AVAILABLE_LANGS.filter((lang: Lang) => lang !== 'en').map(
                             (lang: Lang) => (
-                                <Select.Option key={`to-${lang}`} value={lang}>
-                                    {lang}
+                                <Select.Option key={ `to-${ lang }` } value={ lang }>
+                                    { lang }
                                 </Select.Option>
                             ),
-                        )}
+                        ) }
                     </Select>
                 </div>
-                <Button onClick={handleAdd} type="primary">
+                <Button onClick={ handleAdd } type="primary">
                     Add a row
                 </Button>
             </div>
             <TranslationTable
-                langFrom={langFrom}
-                langTo={langTo}
+                langFrom={ langFrom }
+                langTo={ langTo }
             />
         </Layout>
     );

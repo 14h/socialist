@@ -16,7 +16,6 @@ export const TranslationEditor = (props: TProps) => {
         editMode,
     } = props;
 
-    // const [translations, setTranslations] = useContext(CoreCtx).translations;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
     const translation = description ? translations.get(description) : {};
