@@ -85,7 +85,7 @@ export const useSurvey = (
         itemIndex: number,
     ) => {
         const sectionsClone = value.sections.slice();
-        sectionsClone[sectionIndex].items.splice(
+        sectionsClone[sectionIndex]?.items?.splice(
             itemIndex,
             0,
             item,

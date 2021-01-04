@@ -34,7 +34,7 @@ const AddNewSectionButton = ({ surveyStore }: { surveyStore: SurveyStore }) => {
         );
 
         const newSection: Section = {
-            name: `${(surveyStore.value.sections?.length ?? 0) + 1}` ,
+            name: 'Untitled section' ,
             description: newTranslationKey,
             items: [],
             conditions: [],
@@ -69,7 +69,6 @@ export const EditSurvey = () => {
 
     const sections = surveyStore.value?.sections ?? [];
 
-    const [sectionKey, setSectionKey] = useState(sections?.[0]?.name);
 
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
@@ -110,15 +109,13 @@ export const EditSurvey = () => {
             <Layout>
                 <Tabs
                     type="editable-card"
-                    onChange={ setSectionKey }
-                    activeKey={ sectionKey }
                     onEdit={ surveyStore.deleteSection as any }
                     hideAdd={ true }
                     tabBarExtraContent={ <AddNewSectionButton surveyStore={ surveyStore }/> }
                     size="large"
                 >
                     { sections.map((section: Section, sectionIndex: number) => (
-                        <Tabs.TabPane tab={ section.name } key={ section.name } closable={ true }>
+                        <Tabs.TabPane tab={ section.name } key={ sectionIndex } closable={ true }>
                             <div className='section-tab'>
                                 <AddItem
                                     callback={
