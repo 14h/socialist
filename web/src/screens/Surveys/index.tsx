@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Form, Input, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import './styles.less';
@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import { useHistory, useParams } from 'react-router';
 import { CoreCtx } from '../../index';
 import { createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
-import { Survey } from '../../types';
-import { fetchOrganization } from '../../services/orgService';
 import { PlusOutlined } from '@ant-design/icons';
+import { useSurveys } from '@utils/hooks';
+import { CreateSurveyModal } from '@components/Modals';
 
 const handleDeleteSurvey = async (
     userToken: string,
@@ -23,34 +23,6 @@ const handleDeleteSurvey = async (
     } catch (error) {
         hide();
         message.error(`Failed to delete ${ surveyId }: ${ error.message }`);
-    }
-};
-
-const handleCreateSurvey = async (
-    title: string,
-    userToken: string,
-    userId: string,
-    orgName: string,
-    history: any,
-) => {
-    const hide = message.loading('Creating survey..', 0);
-    try {
-        const newSurveyId = await createSurvey(title, userId, userToken, orgName);
-
-        if (!newSurveyId) {
-            message.error(`Survey couldn't be created!`);
-
-            return;
-        }
-
-        hide();
-
-        message.success(`${ title } got successfully created!`);
-
-        history.push(`/${ orgName }/surveys/${ newSurveyId }`);
-    } catch (error) {
-        hide();
-        message.error(`Failed to create ${ title }: ${ error.message }`);
     }
 };
 
@@ -114,40 +86,16 @@ const columns = (
     },
 ];
 
+
 export const Surveys = () => {
     const { orgName } = useParams();
     const [showAddModal, setShowAddModal] = useState(false);
     const history = useHistory();
     const {user, userToken} = useContext(CoreCtx);
-    const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
 
+    const surveys = useSurveys(orgName);
 
-    useEffect(() => {
-        (async () => {
-            if (!orgName || !userToken) {
-                return;
-            }
-
-            try {
-                const org = await fetchOrganization(orgName, userToken);
-                if (!org?.surveys || !userToken) {
-
-                    return;
-                }
-
-                // fetch user surveys
-                const fetchedSurveys = await fetchSurveys(userToken, org.surveys.map(({ id }) => id));
-
-                setSurveys(fetchedSurveys);
-
-            } catch (err) {
-                message.error(JSON.stringify(err?.message));
-            }
-
-        })();
-    }, [userToken, orgName]);
-
-    if (!userToken || !user || !orgName) {
+    if (!userToken || !orgName || !user) {
         return null;
     }
 
@@ -163,60 +111,12 @@ export const Surveys = () => {
 
     return (
         <div className="table">
-            <div
-                onClick={ () => setShowAddModal(true) }
-                className="create-button"
-            >
-                <PlusOutlined/>
-            </div>
-
+            <CreateSurveyModal/>
             <Table
                 dataSource={ dataSource }
                 columns={ columns(userToken, orgName) }
                 pagination={ false }
             />
-            <Modal
-                title="Create survey"
-                visible={ showAddModal }
-                onCancel={ () => setShowAddModal(false) }
-                footer={ null }
-            >
-                <Form
-                    name="basic"
-                    initialValues={ { remember: true } }
-                    onFinish={
-                        (values: any) => handleCreateSurvey(
-                            values.name,
-                            user.id,
-                            userToken,
-                            orgName,
-                            history,
-                        )
-                    }
-                    onFinishFailed={ console.log }
-                >
-                    <Form.Item
-                        name="name"
-                        rules={ [
-                            {
-                                required: true,
-                                whitespace: true,
-                                message: 'Please input your a valid name for your survey!',
-                            },
-                        ] }
-                        label="name"
-                    >
-                        <Input/>
-                    </Form.Item>
-
-                    <Form.Item style={ { textAlign: 'center', marginTop: '60px' } }>
-                        <Button type="primary" htmlType="submit" style={ { width: '40%' } }>
-                            Create
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
         </div>
     );
 };
-

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './styles.css';
 import { Button, Form, Input, Modal, Row, Col } from 'antd';
 import { CoreCtx } from '../../index';
@@ -142,7 +142,6 @@ export const SignUp: React.FC<Props> = () => {
 export const Login: React.FC<Props> = () => {
     const {login} = useContext(CoreCtx);
     const [signUp, setSignUp] = useState(false);
-
 
 
     const onFinish = async (values: any) => {

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import './styles.less';
 
-import { Button, Form, Input, message, Modal, Popconfirm, Space, Table } from 'antd';
+import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
@@ -31,7 +31,10 @@ const columns = (
             record: any,
         ) => (
             <Space size="middle">
-                <Link to={ `/organizations/${ record.id }` }>Edit</Link>
+                <Link to={ `/${ record.id }/surveys` }>Surveys</Link>
+                <Link to={ `/${ record.id }/translations` }>Translations</Link>
+                <Link to={ `/${ record.id }/people` }>People</Link>
+                <Link to={ `/organizations/${ record.id }` }>Settings</Link>
                 <Popconfirm
                     title={ `Delete organization ${ record.title }` }
                     onConfirm={ () => handleDeleteOrg(userToken, record.id) }
@@ -97,7 +100,6 @@ export const Organizations: React.FC<Props> = () => {
         })();
     }, [user, userToken, showAddModal]);
 
-
     if (!userToken || !user) {
         return null;
     }
@@ -110,6 +112,18 @@ export const Organizations: React.FC<Props> = () => {
     }));
 
     return <div className="table">
+        <Layout>
+
+            <Layout.Content>
+
+                <Table
+                    dataSource={ dataSource }
+                    columns={ columns(userToken) }
+                    pagination={ false }
+                    showHeader={ false }
+                />
+            </Layout.Content>
+        </Layout>
 
         <div
             onClick={ () => setShowAddModal(true) }
@@ -117,11 +131,6 @@ export const Organizations: React.FC<Props> = () => {
         >
             <PlusOutlined/>
         </div>
-        <Table
-            dataSource={ dataSource }
-            columns={ columns(userToken) }
-            pagination={ false }
-        />
         <Modal
             title="Create Organization"
             visible={ showAddModal }
@@ -168,4 +177,3 @@ export const Organizations: React.FC<Props> = () => {
 
     </div>;
 };
-

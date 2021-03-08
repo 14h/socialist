@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less';
@@ -8,18 +8,31 @@ import { Layout, message } from 'antd';
 import { Login } from './screens/login/Login';
 import { TCoreState } from './types';
 import Translations from './screens/Translations';
-import Home from './screens/home/Home';
 import { Organizations } from './screens/Organizations';
 import { Surveys } from './screens/Surveys';
 import { EditSurvey } from './screens/EditSurvey';
 import { User } from './types/models/User';
 import { login_so7, logoutApi, meApi } from './services/userService';
+import { useLocalStorage } from '@utils/helpers';
 
 export const CoreCtx = React.createContext<TCoreState>({} as TCoreState);
 
 export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
     const [userToken, setUserToken] = useState<string | null>(null);
+    const [email, setEmail] = useLocalStorage<string | null>('SO7_EMAIL', null);
+    const [password, setPassword] = useLocalStorage<string | null>('SO7_EMAIL', null);
     const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        if (!email || !password) {
+            setPassword(null);
+            setEmail(null);
+
+            return;
+        }
+
+        login('root@gds.fauna.dev', password);
+    }, []);
 
     const login = async (
         email: string,
@@ -32,21 +45,18 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
         try {
             const fetchedToken = await login_so7(email, password);
             if (!fetchedToken) {
-                message.error('failed to get new token');
-
                 return;
             }
 
             const fetchedUser = await meApi(fetchedToken);
             if (!fetchedUser) {
-                message.error('meApi of new token didn\'t work');
-
                 return;
             }
 
             setUser(fetchedUser);
+            setEmail(email);
+            setPassword(password);
             setUserToken(fetchedToken);
-
         } catch (error) {
             message.error(JSON.stringify(error?.message));
         }
@@ -62,8 +72,12 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
             setUser(null);
             setUserToken(null);
 
+            setEmail(null);
+            setPassword(null);
         } catch (error) {
             setUser(null);
+            setEmail(null);
+            setPassword(null);
 
             message.error(JSON.stringify(error?.message));
         }
@@ -77,14 +91,12 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
 
             const fetchedUser = await meApi(userToken);
             if (!fetchedUser) {
-                message.error('meApi of new token didn\'t work');
-
                 return;
             }
 
             setUser(fetchedUser);
         } catch (error) {
-            message.error(JSON.stringify(error?.message));
+            console.warn(error);
         }
     }
 
@@ -113,7 +125,7 @@ export const App = () => {
             </Layout.Header>
             <Layout.Content>
                 <Switch>
-                    <Route exact={ true } path={ '/' } component={ Home }/>
+                    <Route exact={ true } path={ '/' } component={ Organizations }/>
                     <Route exact={ true } path={ '/organizations' } component={ Organizations }/>
                     <Route exact={ true } path={ '/:orgName/surveys' } component={ Surveys }/>
                     <Route exact={ true } path={ '/:orgName/people' } component={ Surveys }/>

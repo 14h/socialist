@@ -1,8 +1,10 @@
 import { Item, Section, Survey } from '../types';
-import { useEffect, useState } from 'react';
-import { fetchSurvey, setSurveySections } from '../services/surveyService';
+import { useContext, useEffect, useState } from 'react';
+import { fetchSurvey, fetchSurveys, setSurveySections } from '../services/surveyService';
 import { User } from '../types/models/User';
 import { message } from 'antd';
+import { CoreCtx } from '../index';
+import { fetchOrganization } from '../services/orgService';
 
 export type SurveyStore = {
     value: Survey;
@@ -242,3 +244,37 @@ export function useOnClickOutside(ref: any, handler: any) {
         [ref, handler],
     );
 }
+
+export const useSurveys =  (
+    orgName?: string,
+): ReadonlyArray<Survey> => {
+    const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
+    const {userToken} = useContext(CoreCtx);
+
+    useEffect(() => {
+        (async () => {
+            if (!orgName || !userToken) {
+                return;
+            }
+
+            try {
+                const org = await fetchOrganization(orgName, userToken);
+                if (!org?.surveys || !userToken) {
+
+                    return;
+                }
+
+                // fetch user surveys
+                const fetchedSurveys = await fetchSurveys(userToken, org.surveys.map(({ id }) => id));
+
+                setSurveys(fetchedSurveys);
+
+            } catch (err) {
+                message.error(JSON.stringify(err?.message));
+            }
+
+        })();
+    }, [userToken, orgName]);
+
+    return surveys;
+};
