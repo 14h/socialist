@@ -1,12 +1,12 @@
-import React, { useContext, useState } from 'react';
-import { Breadcrumb, Button, Form, Input, message, Modal, Popconfirm, Space, Table } from 'antd';
+import React, { useContext } from 'react';
+import { Breadcrumb, message, Popconfirm, Space, Table } from 'antd';
 
 import './styles.less';
 import { Link } from 'react-router-dom';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { CoreCtx } from '../../index';
-import { createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
-import { HomeOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { deleteSurvey } from '../../services/surveyService';
+import { HomeOutlined } from '@ant-design/icons';
 import { useSurveys } from '@utils/hooks';
 import { CreateSurveyModal } from '@components/Modals';
 
@@ -36,36 +36,6 @@ const columns = (
         dataIndex: 'title',
         width: '90%',
     },
-    // {
-    //     title: 'Responses',
-    //     dataIndex: 'responses',
-    //     sorter: (
-    //         a: any,
-    //         b: any,
-    //     ) => a.responses - b.responses,
-    // },
-    // {
-    //     title: 'Last Edited',
-    //     dataIndex: 'updatedAt',
-    //     render: (lastUpdated: number) => (
-    //         <span>{(new Date(lastUpdated)).toDateString()}</span>
-    //     ),
-    //     sorter: (
-    //         a: any,
-    //         b: any,
-    //     ) => a.updatedAt - b.updatedAt,
-    // },
-    // {
-    //     title: 'Date created',
-    //     dataIndex: 'createdAt',
-    //     render: (lastUpdated: number) => (
-    //         <span>{(new Date(lastUpdated)).toDateString()}</span>
-    //     ),
-    //     sorter: (
-    //         a: any,
-    //         b: any,
-    //     ) => a.createdAt - b.createdAt,
-    // },
     {
         title: null,
         key: 'action',
@@ -86,6 +56,17 @@ const columns = (
     },
 ];
 
+const PageBreadcrumbs = ({orgName}: {orgName: string}) => (
+    <Breadcrumb>
+        <Breadcrumb.Item href="">
+            <HomeOutlined />
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="">
+            <span>{ orgName }</span>
+        </Breadcrumb.Item>
+        <span>Surveys</span>
+    </Breadcrumb>
+);
 
 export const Surveys = () => {
     const { orgName } = useParams();
@@ -101,24 +82,12 @@ export const Surveys = () => {
         id: survey.id,
         key: survey.id,
         title: survey.meta.name,
-
-        // responses: 1235,
-        // updatedAt: 1588635562722,
-        // createdAt: 1588615561722,
     }));
 
     if (surveys.length === 0) {
         return (
             <>
-                <Breadcrumb>
-                    <Breadcrumb.Item href="">
-                        <HomeOutlined />
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item href="">
-                        <span>{ orgName }</span>
-                    </Breadcrumb.Item>
-                    <span>Surveys</span>
-                </Breadcrumb>
+                <PageBreadcrumbs orgName={ orgName } />
                 <CreateSurveyModal/>
                 Click on the plus button to create your first Survey!
             </>
@@ -127,14 +96,7 @@ export const Surveys = () => {
 
     return (
         <div className="table">
-            <Breadcrumb>
-                <Breadcrumb.Item href="">
-                    <HomeOutlined />
-                </Breadcrumb.Item>
-                <UserOutlined />
-                <span>Application List</span>
-                <Breadcrumb.Item>Application</Breadcrumb.Item>
-            </Breadcrumb>
+            <PageBreadcrumbs orgName={ orgName } />
             <CreateSurveyModal/>
             <Table
                 dataSource={ dataSource }
