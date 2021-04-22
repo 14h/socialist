@@ -83,29 +83,11 @@ export const CoreProvider = (props: React.PropsWithChildren<{}>) => {
         }
     };
 
-    const refreshUser = async () => {
-        try {
-            if (!userToken) {
-                return;
-            }
-
-            const fetchedUser = await meApi(userToken);
-            if (!fetchedUser) {
-                return;
-            }
-
-            setUser(fetchedUser);
-        } catch (error) {
-            console.warn(error);
-        }
-    }
-
     const store: TCoreState = {
         userToken,
         user,
         login,
         logout,
-        refreshUser,
     };
 
     return <CoreCtx.Provider value={ store }>{ props.children }</CoreCtx.Provider>;

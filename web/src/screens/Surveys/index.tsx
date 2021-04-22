@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { Button, Form, Input, message, Modal, Popconfirm, Space, Table } from 'antd';
+import { Breadcrumb, Button, Form, Input, message, Modal, Popconfirm, Space, Table } from 'antd';
 
 import './styles.less';
 import { Link } from 'react-router-dom';
 import { useHistory, useParams } from 'react-router';
 import { CoreCtx } from '../../index';
 import { createSurvey, deleteSurvey, fetchSurveys } from '../../services/surveyService';
-import { PlusOutlined } from '@ant-design/icons';
+import { HomeOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
 import { useSurveys } from '@utils/hooks';
 import { CreateSurveyModal } from '@components/Modals';
 
@@ -89,8 +89,6 @@ const columns = (
 
 export const Surveys = () => {
     const { orgName } = useParams();
-    const [showAddModal, setShowAddModal] = useState(false);
-    const history = useHistory();
     const {user, userToken} = useContext(CoreCtx);
 
     const surveys = useSurveys(orgName);
@@ -109,8 +107,34 @@ export const Surveys = () => {
         // createdAt: 1588615561722,
     }));
 
+    if (surveys.length === 0) {
+        return (
+            <>
+                <Breadcrumb>
+                    <Breadcrumb.Item href="">
+                        <HomeOutlined />
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item href="">
+                        <span>{ orgName }</span>
+                    </Breadcrumb.Item>
+                    <span>Surveys</span>
+                </Breadcrumb>
+                <CreateSurveyModal/>
+                Click on the plus button to create your first Survey!
+            </>
+        );
+    }
+
     return (
         <div className="table">
+            <Breadcrumb>
+                <Breadcrumb.Item href="">
+                    <HomeOutlined />
+                </Breadcrumb.Item>
+                <UserOutlined />
+                <span>Application List</span>
+                <Breadcrumb.Item>Application</Breadcrumb.Item>
+            </Breadcrumb>
             <CreateSurveyModal/>
             <Table
                 dataSource={ dataSource }

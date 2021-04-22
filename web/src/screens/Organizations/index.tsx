@@ -11,6 +11,7 @@ import { Organization } from '../../types';
 import { createOrganization, fetchOrganization } from '../../services/orgService';
 import { User } from '../../types/models/User';
 import { PlusOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router';
 
 const handleDeleteOrg = console.log;
 
@@ -50,26 +51,26 @@ const handleCreateOrg = async (
     name: string,
     user: User,
     userToken: string,
-    callback: () => void,
+    callback: (newOrgName: string) => void,
 ) => {
     if (!name) {
         message.error('Insert a valid org name!');
     }
     try {
-        const newOrgId = await createOrganization(name, userToken);
+        const newOrgName = await createOrganization(name, userToken);
 
-        if (!newOrgId) {
+        if (!newOrgName) {
             throw new Error('failed to create org!');
         }
 
         await addResourceUserRoles(
             userToken,
             user.id,
-            newOrgId,
+            newOrgName,
             'ORG',
         );
 
-        callback();
+        callback(newOrgName);
 
     } catch (error) {
         message.error('failed to create new org');
@@ -79,9 +80,73 @@ const handleCreateOrg = async (
 
 type Props = {};
 
-export const Organizations: React.FC<Props> = () => {
+const AddOrgModal = () => {
+    const { user, userToken } = useContext(CoreCtx);
     const [showAddModal, setShowAddModal] = useState(false);
-    const { user, userToken, refreshUser } = useContext(CoreCtx);
+    const history = useHistory();
+
+    if (!user || !userToken) {
+        return null;
+    }
+
+    return (
+        <>
+            <div
+                onClick={ () => setShowAddModal(true) }
+                className="create-button"
+            >
+                <PlusOutlined/>
+            </div>
+            <Modal
+                title="Create Organization"
+                visible={ showAddModal }
+                onCancel={ () => setShowAddModal(false) }
+                footer={ null }
+            >
+                <Form
+                    name="basic"
+                    initialValues={ { remember: true } }
+                    onFinish={
+                        (values: any) => handleCreateOrg(
+                            values.name,
+                            user,
+                            userToken,
+                            (newOrgName) => {
+                                setShowAddModal(false);
+                                history.push(`/${ newOrgName }/surveys`);
+                            },
+                        )
+                    }
+                    onFinishFailed={ console.log }
+                >
+                    <Form.Item
+                        name="name"
+                        label="Name"
+                        rules={ [
+                            {
+                                required: true,
+                                whitespace: true,
+                                message: 'Please input your a valid name for your organization!',
+                            },
+                        ] }
+                    >
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item style={ { textAlign: 'center', marginTop: '60px' } }>
+                        <Button type="primary" htmlType="submit" style={ { width: '40%' } }>
+                            Create
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
+    )
+};
+
+export const Organizations: React.FC<Props> = () => {
+
+    const { user, userToken } = useContext(CoreCtx);
     const [orgs, setOrgs] = useState<ReadonlyArray<Organization>>([]);
 
     useEffect(() => {
@@ -98,24 +163,30 @@ export const Organizations: React.FC<Props> = () => {
 
             setOrgs(fetchedOrgs);
         })();
-    }, [user, userToken, showAddModal]);
+    }, [user, userToken]);
 
     if (!userToken || !user) {
         return null;
     }
 
-
     const dataSource = orgs.map(org => ({
-        id: org.id,
-        key: org.id,
+        id: org.meta.name,
+        key: org.meta.name,
         title: org.meta.name,
     }));
 
+    if (orgs.length === 0) {
+        return <Layout>
+            <div>
+                Click on the plus button to create your first organisation!
+            </div>
+            <AddOrgModal/>
+        </Layout>
+    }
+
     return <div className="table">
         <Layout>
-
             <Layout.Content>
-
                 <Table
                     dataSource={ dataSource }
                     columns={ columns(userToken) }
@@ -124,56 +195,6 @@ export const Organizations: React.FC<Props> = () => {
                 />
             </Layout.Content>
         </Layout>
-
-        <div
-            onClick={ () => setShowAddModal(true) }
-            className="create-button"
-        >
-            <PlusOutlined/>
-        </div>
-        <Modal
-            title="Create Organization"
-            visible={ showAddModal }
-            onCancel={ () => setShowAddModal(false) }
-            footer={ null }
-        >
-            <Form
-                name="basic"
-                initialValues={ { remember: true } }
-                onFinish={
-                    (values: any) => handleCreateOrg(
-                        values.name,
-                        user,
-                        userToken,
-                        async () => {
-                            await refreshUser();
-                            setShowAddModal(false);
-                        },
-                    )
-                }
-                onFinishFailed={ console.log }
-            >
-                <Form.Item
-                    name="name"
-                    label="Name"
-                    rules={ [
-                        {
-                            required: true,
-                            whitespace: true,
-                            message: 'Please input your a valid name for your organization!',
-                        },
-                    ] }
-                >
-                    <Input/>
-                </Form.Item>
-
-                <Form.Item style={ { textAlign: 'center', marginTop: '60px' } }>
-                    <Button type="primary" htmlType="submit" style={ { width: '40%' } }>
-                        Create
-                    </Button>
-                </Form.Item>
-            </Form>
-        </Modal>
-
+        <AddOrgModal/>
     </div>;
 };

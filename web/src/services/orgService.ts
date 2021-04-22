@@ -5,6 +5,9 @@ const SO7_CREATE_ORGANIZATION_MUTATION = `
     mutation($orgName: String!){
         createOrganization(orgName: $orgName){
             id
+            meta {
+                name
+            }
         }
     }
 `;
@@ -36,6 +39,9 @@ const SO7_ORG_QUERY = `
 type CreateOrganizationResponse = Readonly<{
     createOrganization?: {
         id?: string;
+        meta?: {
+            name?: string;
+        }
     };
 }>;
 
@@ -54,13 +60,13 @@ export async function createOrganization(
             variables,
         );
 
-        const id = responseData?.createOrganization?.id ?? null;
+        const name = responseData?.createOrganization?.meta?.name ?? null;
 
-        if (!id) {
+        if (!name) {
             throw new Error('Organization couldn\'t be created');
         }
 
-        return id;
+        return name;
 
     } catch (error) {
         throw new Error(error);
@@ -94,5 +100,3 @@ export async function fetchOrganization(
         throw new Error(error);
     }
 }
-
-
