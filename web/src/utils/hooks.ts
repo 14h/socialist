@@ -1,5 +1,5 @@
 import { Item, Section, Survey } from '../types';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { fetchSurvey, fetchSurveys, setSurveySections } from '../services/surveyService';
 import { User } from '../types/models/User';
 import { message } from 'antd';
@@ -278,3 +278,42 @@ export const useSurveys =  (
 
     return surveys;
 };
+
+export const useElementBiEvent = <T extends HTMLElement>(
+    eventA: keyof HTMLElementEventMap,
+    eventB: keyof HTMLElementEventMap,
+): [ React.MutableRefObject<T | null>, boolean ] => {
+    const [ value, setValue ] = useState(false);
+
+    const ref = useRef<T | null>(null);
+
+    const handleTick = () => setValue(true);
+    const handleTock = () => setValue(false);
+
+    useEffect(
+        () => {
+            const node = ref.current;
+
+            if (node) {
+                node.addEventListener(eventA, handleTick);
+                node.addEventListener(eventB, handleTock);
+
+                return () => {
+                    node.removeEventListener(eventA, handleTick);
+                    node.removeEventListener(eventB, handleTock);
+                };
+            }
+
+            return () => {
+                // nop
+            };
+        },
+        [ ref.current ],
+    );
+
+    return [ ref, value ];
+};
+
+
+export const useFocus = <T extends HTMLElement>(): [ React.MutableRefObject<T | null>, boolean ] =>
+    useElementBiEvent<T>('focus', 'blur');
