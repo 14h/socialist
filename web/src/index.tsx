@@ -10,11 +10,11 @@ import { TCoreState } from './types';
 import Translations from './screens/Translations';
 import { Organizations } from './screens/Organizations';
 import { Surveys } from './screens/Surveys';
-import { EditSurvey } from './screens/EditSurvey';
 import { User } from './types/models/User';
 import { login_so7, logoutApi, meApi } from './services/userService';
 import { useLocalStorage } from '@utils/helpers';
 import { SurveySectionList } from './screens/SurveySectionList';
+import { EditSurvey } from './screens/EditSurvey';
 
 export const CoreCtx = React.createContext<TCoreState>({} as TCoreState);
 
@@ -112,7 +112,7 @@ export const App = () => {
                     <Route exact={ true } path={ '/organizations' } component={ Organizations }/>
                     <Route exact={ true } path={ '/:orgName/surveys' } component={ Surveys }/>
                     <Route exact={ true } path={ '/:orgName/people' } component={ Surveys }/>
-                    <Route exact={ true } path={ '/:orgName/surveys/:survey_id' } component={ SurveySectionList }/>
+                    <Route exact={ false } path={ '/:orgName/surveys/:survey_id' } component={ EditSurvey }/>
                     <Route exact={ true } path={ '/:orgName/translations' } component={ Translations }/>
                 </Switch>
             </Layout.Content>

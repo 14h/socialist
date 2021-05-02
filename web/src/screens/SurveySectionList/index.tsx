@@ -1,96 +1,43 @@
-import React, { useContext } from 'react';
-import { Breadcrumb, message, Popconfirm, Space, Table } from 'antd';
+import React from 'react';
 
 import './styles.less';
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router';
-import { CoreCtx } from '../../index';
-import { HomeOutlined } from '@ant-design/icons';
-import { SurveyStore, useSurvey } from '@utils/hooks';
+import { SurveyStore } from '@utils/hooks';
 import { EditableText } from '@components/EditableText';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
+import arrayMove from 'array-move';
+import { EditOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
 
-const columns = (
-    userToken: string,
-    orgName: string,
-    surveyStore: SurveyStore,
-) => [
-    {
-        title: 'Title',
-        dataIndex: 'title',
-        width: '90%',
-        render: (
-            text: any,
-            record: any,
-        ) => (
-            <EditableText
-                text={ text }
-                placeholder="Name this section!"
-                onUpdate={ console.log }
-            />
-        )
-    },
-    {
-        title: null,
-        key: 'action',
-        render: (
-            text: any,
-            record: any,
-        ) => (
-            <Space size="middle">
-                <Link to={ `/${ orgName }/surveys/${ record.id }` }>Edit</Link>
-                <Popconfirm
-                    title={ `Delete survey ${ record.title }` }
-                    onConfirm={ () => surveyStore.deleteSection(record.id) }
-                >
-                    <Link to="#">Delete</Link>
-                </Popconfirm>
-            </Space>
-        ),
-    },
-];
+type TProps = {
+    surveyStore: SurveyStore;
+    userToken: string;
+    orgName: string;
+}
 
-const PageBreadcrumbs = ({orgName, surveyName}: {orgName: string, surveyName: string}) => (
-    <Breadcrumb>
-        <Breadcrumb.Item href="">
-            <HomeOutlined />
-        </Breadcrumb.Item>
-        <Breadcrumb.Item href="">
-            <span>{ orgName }</span>
-        </Breadcrumb.Item>
-        <span>Surveys</span>
-        <Breadcrumb.Item href="">
-            <span>{ surveyName }</span>
-        </Breadcrumb.Item>
-    </Breadcrumb>
-);
-
-export const SurveySectionList = () => {
-    const { orgName, survey_id } = useParams();
-    const {user, userToken} = useContext(CoreCtx);
-
-    const surveyStore = useSurvey(
-        userToken,
-        survey_id,
-        user,
-    );
+export const SurveySectionList = (props: TProps) => {
+    const {
+        surveyStore,
+        orgName,
+    } = props;
 
     const survey = surveyStore.value;
 
-    if (!userToken || !orgName || !user) {
-        return null;
-    }
+    const onDragEnd = (result: DropResult) => {
+        if (!result.destination) {
+            return;
+        }
 
-    const dataSource = survey.sections.map(section => ({
-        id: section.name,
-        key: section.name,
-        title: section.name,
-    }));
+        surveyStore.setValue({
+            ...survey,
+            sections: arrayMove(survey.sections, result.source.index, result.destination.index),
+        });
+    };
+
 
     if (survey.sections.length === 0) {
         return (
             <>
-                <PageBreadcrumbs orgName={ orgName } surveyName={ survey.meta.name } />
                 Click on the plus button to create your first Section!
             </>
         );
@@ -98,12 +45,57 @@ export const SurveySectionList = () => {
 
     return (
         <div className="table">
-            <PageBreadcrumbs orgName={ orgName } surveyName={ survey.meta.name } />
-            <Table
-                dataSource={ dataSource }
-                columns={ columns(userToken, orgName, surveyStore) }
-                pagination={ false }
-            />
+            <PlusOutlined />
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="droppable">
+                    {(provided, snapshot) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            {survey.sections.map((section, index) => (
+                                <Draggable key={index} draggableId={`section-${index}`} index={index}>
+                                    {(provided, snapshot) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+
+                                            style={ {
+                                                ...provided.draggableProps.style
+                                            }}
+                                        >
+                                            <div className="survey-section">
+                                                <div className="section-options">
+
+                                                    <Link to={ `/${ orgName }/surveys/${survey.id}/section/${ index }` }>
+                                                        <EditOutlined
+                                                            // style={{
+                                                            //     fontSize: '24px',
+                                                            // }}
+                                                        />
+                                                    </Link>
+                                                    <MenuOutlined
+                                                        // style={{
+                                                        //     fontSize: '24px',
+                                                        // }}
+                                                        {...provided.dragHandleProps}
+                                                    />
+                                                </div>
+                                                <EditableText
+                                                    text={ section.name }
+                                                    placeholder="Name this section!"
+                                                    onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}) }
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
         </div>
     );
 };
