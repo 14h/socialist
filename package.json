@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@craco/craco": "^5.9.0",
-    "craco-less": "^1.17.1"
-  }
-}
