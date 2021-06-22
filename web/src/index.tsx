@@ -102,21 +102,25 @@ export const App = () => {
     }
 
     return (
+
         <Layout>
             <Layout.Header>
                 <LayoutHeader/>
             </Layout.Header>
             <Layout.Content>
-                <Switch>
-                    <Route exact={ true } path={ '/' } component={ Organizations }/>
-                    <Route exact={ true } path={ '/organizations' } component={ Organizations }/>
-                    <Route exact={ true } path={ '/:orgName/surveys' } component={ Surveys }/>
-                    <Route exact={ true } path={ '/:orgName/people' } component={ Surveys }/>
-                    <Route exact={ false } path={ '/:orgName/surveys/:survey_id' } component={ EditSurvey }/>
-                    <Route exact={ true } path={ '/:orgName/translations' } component={ Translations }/>
-                </Switch>
+                <div className="table">
+                    <Switch>
+                        <Route exact={ true } path={ '/' } component={ Organizations }/>
+                        <Route exact={ true } path={ '/organizations' } component={ Organizations }/>
+                        <Route exact={ true } path={ '/:orgName/surveys' } component={ Surveys }/>
+                        <Route exact={ true } path={ '/:orgName/people' } component={ Surveys }/>
+                        <Route exact={ false } path={ '/:orgName/surveys/:survey_id' } component={ EditSurvey }/>
+                        <Route exact={ true } path={ '/:orgName/translations' } component={ Translations }/>
+                    </Switch>
+                </div>
             </Layout.Content>
         </Layout>
+
     );
 };
 

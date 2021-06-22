@@ -8,6 +8,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautif
 
 import arrayMove from 'array-move';
 import { EditOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
+import { Condition, Item, TranslationRef } from '../../types';
 
 type TProps = {
     surveyStore: SurveyStore;
@@ -35,17 +36,30 @@ export const SurveySectionList = (props: TProps) => {
     };
 
 
-    if (survey.sections.length === 0) {
-        return (
-            <>
-                Click on the plus button to create your first Section!
-            </>
-        );
+    const addSection = (index: number) => {
+        console.log("-> index", index);
+        console.log("-> survey.sections.slice(0, index)", survey.sections.slice(0, index));
+        console.log("-> survey.sections.slice(index)", survey.sections.slice(index));
+
+        const newSection = {
+            name: 'Name this section',
+            description: '',
+            items: [],
+            conditions: [],
+        }
+        surveyStore.setValue({
+            ...survey,
+            sections: [
+                ...survey.sections.slice(0, index),
+                newSection,
+                ...survey.sections.slice(index),
+            ]
+        })
     }
 
+
     return (
-        <div className="table">
-            <PlusOutlined />
+        <>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable">
                     {(provided, snapshot) => (
@@ -53,49 +67,68 @@ export const SurveySectionList = (props: TProps) => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
+                            <div
+                                onClick={ () => addSection(0) }
+                                style={{
+                                    width: '100%',
+                                    backgroundColor: '#111',
+                                    padding: '12px',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <PlusOutlined/>
+                            </div>
                             {survey.sections.map((section, index) => (
-                                <Draggable key={index} draggableId={`section-${index}`} index={index}>
-                                    {(provided, snapshot) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
+                                <div
+                                    key={index}
+                                >
+                                    <Draggable draggableId={`section-${index}`} index={index}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
 
-                                            style={ {
-                                                ...provided.draggableProps.style
-                                            }}
-                                        >
-                                            <div className="survey-section">
-                                                <div className="section-options">
+                                                style={ {
+                                                    ...provided.draggableProps.style
+                                                }}
+                                            >
+                                                <div className="survey-section">
+                                                    <div className="section-options">
 
-                                                    <Link to={ `/${ orgName }/surveys/${survey.id}/section/${ index }` }>
-                                                        <EditOutlined
-                                                            // style={{
-                                                            //     fontSize: '24px',
-                                                            // }}
+                                                        <Link to={ `/${ orgName }/surveys/${survey.id}/section/${ index }` }>
+                                                            <EditOutlined/>
+                                                        </Link>
+                                                        <MenuOutlined
+                                                            {...provided.dragHandleProps}
                                                         />
-                                                    </Link>
-                                                    <MenuOutlined
-                                                        // style={{
-                                                        //     fontSize: '24px',
-                                                        // }}
-                                                        {...provided.dragHandleProps}
+                                                    </div>
+                                                    <EditableText
+                                                        text={ section.name }
+                                                        placeholder="Name this section!"
+                                                        onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}) }
                                                     />
                                                 </div>
-                                                <EditableText
-                                                    text={ section.name }
-                                                    placeholder="Name this section!"
-                                                    onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}) }
-                                                />
                                             </div>
-                                        </div>
-                                    )}
-                                </Draggable>
+                                        )}
+                                    </Draggable>
+                                    <div
+                                        onClick={ () => addSection(index + 1) }
+                                        style={{
+                                            width: '100%',
+                                            backgroundColor: '#111',
+                                            padding: '12px',
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        <PlusOutlined/>
+                                    </div>
+                                </div>
                             ))}
                             {provided.placeholder}
                         </div>
                     )}
                 </Droppable>
             </DragDropContext>
-        </div>
+        </>
     );
 };

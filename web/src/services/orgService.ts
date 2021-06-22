@@ -1,5 +1,6 @@
 import { apiGraphQLClient } from "@utils/graphQlClient";
 import {Organization} from "../types";
+import { message } from 'antd';
 
 const SO7_CREATE_ORGANIZATION_MUTATION = `
     mutation($orgName: String!){
@@ -38,9 +39,9 @@ const SO7_ORG_QUERY = `
 
 type CreateOrganizationResponse = Readonly<{
     createOrganization?: {
-        id?: string;
-        meta?: {
-            name?: string;
+        id: string;
+        meta: {
+            name: string;
         }
     };
 }>;
@@ -48,7 +49,12 @@ type CreateOrganizationResponse = Readonly<{
 export async function createOrganization(
     orgName: string,
     userToken: string,
-): Promise<string | null> {
+): Promise<{
+    id: string;
+    meta: {
+        name: string;
+    }
+}> {
     const variables = {
         orgName,
     };
@@ -60,16 +66,17 @@ export async function createOrganization(
             variables,
         );
 
-        const name = responseData?.createOrganization?.meta?.name ?? null;
 
-        if (!name) {
+        if (!responseData?.createOrganization?.id) {
             throw new Error('Organization couldn\'t be created');
         }
 
-        return name;
+        return responseData?.createOrganization;
 
     } catch (error) {
-        throw new Error(error);
+        message.error(`${orgName} organization could not be created. Please try again later.`);
+
+        throw new Error( error )
     }
 }
 

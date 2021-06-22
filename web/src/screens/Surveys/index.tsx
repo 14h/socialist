@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Breadcrumb, message, Popconfirm, Space, Table } from 'antd';
+import { Breadcrumb, Layout, message, Popconfirm, Space, Table, Typography } from 'antd';
 
 import './styles.less';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { deleteSurvey } from '../../services/surveyService';
 import { HomeOutlined } from '@ant-design/icons';
 import { useSurveys } from '@utils/hooks';
 import { CreateSurveyModal } from '@components/Modals';
+
+const { Title } = Typography;
 
 const handleDeleteSurvey = async (
     userToken: string,
@@ -20,6 +22,9 @@ const handleDeleteSurvey = async (
         await deleteSurvey(userToken, surveyId);
         hide();
         message.success(`${ surveyId } got successfully deleted!`);
+
+        // TODO: optimise this so we don't have to reload the entire app
+        window.location.reload();
     } catch (error) {
         hide();
         message.error(`Failed to delete ${ surveyId }: ${ error.message }`);
@@ -56,10 +61,10 @@ const columns = (
     },
 ];
 
-const PageBreadcrumbs = ({orgName}: {orgName: string}) => (
+const PageBreadcrumbs = ({ orgName }: { orgName: string }) => (
     <Breadcrumb>
-        <Breadcrumb.Item href="">
-            <HomeOutlined />
+        <Breadcrumb.Item href="/">
+            <HomeOutlined/>
         </Breadcrumb.Item>
         <Breadcrumb.Item href="">
             <span>{ orgName }</span>
@@ -70,7 +75,7 @@ const PageBreadcrumbs = ({orgName}: {orgName: string}) => (
 
 export const Surveys = () => {
     const { orgName } = useParams();
-    const {user, userToken} = useContext(CoreCtx);
+    const { user, userToken } = useContext(CoreCtx);
 
     const surveys = useSurveys(orgName);
 
@@ -87,22 +92,41 @@ export const Surveys = () => {
     if (surveys.length === 0) {
         return (
             <>
-                <PageBreadcrumbs orgName={ orgName } />
+                <Layout>
+                    <Layout.Content>
+                        <PageBreadcrumbs orgName={ orgName }/>
+                        <Title style={{textAlign: 'center'}}>
+                            { orgName } surveys
+                        </Title>
+                        <br/>
+                        <h3>Click on the plus button to create your first Survey!</h3>
+                    </Layout.Content>
+                </Layout>
                 <CreateSurveyModal/>
-                Click on the plus button to create your first Survey!
             </>
         );
     }
 
     return (
-        <div className="table">
-            <PageBreadcrumbs orgName={ orgName } />
+        <>
+            <Layout>
+                <Layout.Content>
+                    <PageBreadcrumbs orgName={ orgName }/>
+                    <br/>
+                    <Title style={{textAlign: 'center'}}>
+                        { orgName } surveys
+                    </Title>
+                    <br/>
+                    <Table
+                        dataSource={ dataSource }
+                        columns={ columns(userToken, orgName) }
+                        pagination={ false }
+                        showHeader={ false }
+                    />
+                </Layout.Content>
+            </Layout>
             <CreateSurveyModal/>
-            <Table
-                dataSource={ dataSource }
-                columns={ columns(userToken, orgName) }
-                pagination={ false }
-            />
-        </div>
+
+        </>
     );
 };

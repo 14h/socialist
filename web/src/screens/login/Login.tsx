@@ -28,16 +28,12 @@ export const SignUp: React.FC<Props> = () => {
                 throw new Error('failed to fetch user!');
             }
 
-            const newOrgName = await createOrganization(orgName, newToken);
-
-            if (!newOrgName) {
-                throw new Error('failed to create org!');
-            }
+            const { id } = await createOrganization(orgName, newToken);
 
             await addResourceUserRoles(
                 newToken,
                 user.id,
-                newOrgName,
+                id,
                 'ORG',
             );
 

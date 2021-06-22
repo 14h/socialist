@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import './styles.less';
 
-import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table } from 'antd';
+import { Button, Form, Input, Layout, message, Modal, Popconfirm, Space, Table, Typography } from 'antd';
 
 import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
@@ -12,6 +12,8 @@ import { createOrganization, fetchOrganization } from '../../services/orgService
 import { User } from '../../types/models/User';
 import { PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router';
+
+const { Title } = Typography;
 
 const handleDeleteOrg = console.log;
 
@@ -57,20 +59,16 @@ const handleCreateOrg = async (
         message.error('Insert a valid org name!');
     }
     try {
-        const newOrgName = await createOrganization(name, userToken);
-
-        if (!newOrgName) {
-            throw new Error('failed to create org!');
-        }
+        const { id, meta } = await createOrganization(name, userToken);
 
         await addResourceUserRoles(
             userToken,
             user.id,
-            newOrgName,
+            id,
             'ORG',
         );
 
-        callback(newOrgName);
+        callback(meta.name);
 
     } catch (error) {
         message.error('failed to create new org');
@@ -184,9 +182,14 @@ export const Organizations: React.FC<Props> = () => {
         </Layout>
     }
 
-    return <div className="table">
+    return <>
         <Layout>
+
             <Layout.Content>
+                <Title style={{textAlign: 'center'}}>
+                    Your organizations
+                </Title>
+                <br/>
                 <Table
                     dataSource={ dataSource }
                     columns={ columns(userToken) }
@@ -196,5 +199,5 @@ export const Organizations: React.FC<Props> = () => {
             </Layout.Content>
         </Layout>
         <AddOrgModal/>
-    </div>;
+    </>;
 };
