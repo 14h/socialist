@@ -47,7 +47,7 @@ export const SectionItem = (props: TProps) => {
             <div className='item-actions'>
                 <Popconfirm
                     title="Are you sure?"
-                    onConfirm={ console.log }
+                    onConfirm={ () => surveyStore.deleteItem(sectionIndex, itemIndex) }
                     okText="Delete"
                     cancelText="Cancel"
                 >

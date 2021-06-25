@@ -13,7 +13,6 @@ import { Surveys } from './screens/Surveys';
 import { User } from './types/models/User';
 import { login_so7, logoutApi, meApi } from './services/userService';
 import { useLocalStorage } from '@utils/helpers';
-import { SurveySectionList } from './screens/SurveySectionList';
 import { EditSurvey } from './screens/EditSurvey';
 
 export const CoreCtx = React.createContext<TCoreState>({} as TCoreState);

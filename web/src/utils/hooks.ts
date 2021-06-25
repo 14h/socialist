@@ -5,6 +5,7 @@ import { User } from '../types/models/User';
 import { message } from 'antd';
 import { CoreCtx } from '../index';
 import { fetchOrganization } from '../services/orgService';
+import { useLocalStorage } from '@utils/helpers';
 
 export type SurveyStore = {
     value: Survey;
@@ -35,6 +36,8 @@ export const useSurvey = (
 ): SurveyStore => {
     const [value, setValue] = useState<Survey>(DEFAULT_SURVEY);
 
+    // TODO: persist the data on the server
+
     useEffect(() => {
         (async () => {
             if (!surveyId || !userToken || !user) {
@@ -47,6 +50,7 @@ export const useSurvey = (
                 user.email,
                 user.id,
             );
+
             if (!survey) {
                 return;
             }
