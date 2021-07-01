@@ -257,7 +257,7 @@ union SurveyQuestion =
 type SurveySection {
     name: String!
     description: TranslationRef!
-    questions: [SurveyQuestion]!
+    questions: [JSON]!
     condition: [String]
 }
 
@@ -287,7 +287,7 @@ type Survey {
     """Flags of this survey."""
     flags: [String]!
 
-    sections: [SurveySection]!
+    sections: [JSON]!
 }
 
 """The response of a search query, limited to the types of results as specified by the user. If the requester authorization is not privileged these search results will be limited to the directly related entities of the user."""
@@ -341,6 +341,12 @@ type Query {
         userId: ID @auth(privileged: true)
     ): Survey
 
+    """Query for an translation based on its GUID."""
+    translation(
+        """GUID identifying a survey."""
+        id: ID
+    ): JSON
+
     """Query for a user based on their email or GUID."""
     user(
         """Email identifiying a user account. [related OR privileged]"""
@@ -385,6 +391,15 @@ type Mutation {
     revokeUserToken(userToken: String!): Boolean @auth
 
     # Operations
+
+    ## Translation
+    """Create a translation"""
+    createTranslation: JSON
+
+    """Update a translation"""
+    updateTranslation(
+        data: JSON!
+    ): Boolean
 
     ## User
 

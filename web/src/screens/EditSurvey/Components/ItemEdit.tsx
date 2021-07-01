@@ -47,12 +47,10 @@ export const ItemEdit = (props: TProps) => {
                         </Button>
                     </Popconfirm>
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Section logic" key="logic">
-                </Tabs.TabPane>
                 <Tabs.TabPane tab="Sort section items" key="sort">
                     <ReactSortable
                         list={ section.items as any[] }
-                        setList={ ((items: Item[]) => surveyStore.updateSection({ ...section, items })) as any }
+                        setList={ ((items: Item[]) => surveyStore.updateSection({ ...section, items }, sectionIndex)) as any }
                         className="sider-list"
                     >
                         { section.items.map((

@@ -12,10 +12,12 @@ type TProps = {
     surveyStore: SurveyStore;
     sectionIndex: number;
     itemIndex: number;
+    userToken: string;
 };
 
 export const SectionItem = (props: TProps) => {
     const {
+        userToken,
         item,
         editMode,
         surveyStore,
@@ -33,12 +35,13 @@ export const SectionItem = (props: TProps) => {
 
         <div className={ `item-wrapper ${ editMode && 'item-wrapper-selected' }` }>
             <TranslationEditor
-                description={ item?.description }
-                updateDescription={ console.log }
+                id={ item?.description }
+                userToken={ userToken }
                 editMode={ editMode }
             />
 
             <ItemOptions
+                userToken={ userToken }
                 item={ item }
                 updateItem={ updateItem }
                 editMode={ editMode }

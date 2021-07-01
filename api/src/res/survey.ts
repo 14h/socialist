@@ -3,7 +3,7 @@ import { Nullable, ResourceDeps, ResourceType } from '../types';
 import { UserRole, UserRoles } from './rights';
 import { OrgEnvelope } from './organization';
 import { RootAuditor } from '../core/rootAuditor';
-import { validation_assert, assert_valid_fqdn } from '../util/helpers';
+import { validation_assert, build_slug } from '../util/helpers';
 import { Section } from '../types/contracts';
 
 export interface SureyData {
@@ -46,11 +46,11 @@ export class Survey extends RootAuditor<Survey> {
         name: string,
         orgId: string,
     ): Promise<Nullable<SurveyEnvelope>> {
-        const nameLC = name.toLowerCase();
+        const surveyId = build_slug(name);
 
         validation_assert(
             !await this._deps.db.exists(
-                `survey:name:${ nameLC }`,
+                `survey:name:${ surveyId }`,
             ),
             'A survey with that name already exists.',
         );
@@ -58,8 +58,6 @@ export class Survey extends RootAuditor<Survey> {
         const meta: SureyData = {
             name,
         };
-
-        const surveyId = this._deps.uuid();
 
         await this._set_meta(
             surveyId,
@@ -238,11 +236,6 @@ export class Survey extends RootAuditor<Survey> {
         meta: SureyData,
         oldMeta?: Nullable<SureyData>,
     ): Promise<any> {
-        const name = meta.name!.toLowerCase();
-
-        assert_valid_fqdn(name);
-
-        const newMeta = Object.assign({}, meta, { name });
 
         let tx = this._deps
             .db
@@ -260,9 +253,9 @@ export class Survey extends RootAuditor<Survey> {
             tx = tx
                 .del(`survey:id:${ surveyId }:org`)
                 .del(`survey:id:${ surveyId }:meta`)
-                .set(`survey:name:${ name }`, surveyId)
+                .set(`survey:name:${ surveyId }`, meta.name)
                 .set(`survey:id:${ surveyId }:org`, orgId)
-                .hmset(`survey:id:${ surveyId }:meta`, newMeta as any);
+                .hmset(`survey:id:${ surveyId }:meta`, meta as any);
         }
 
         await Database.exec_multi(

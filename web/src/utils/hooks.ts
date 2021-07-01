@@ -5,13 +5,12 @@ import { User } from '../types/models/User';
 import { message } from 'antd';
 import { CoreCtx } from '../index';
 import { fetchOrganization } from '../services/orgService';
-import { useLocalStorage } from '@utils/helpers';
 
 export type SurveyStore = {
     value: Survey;
     setValue: (s: Survey) => void;
-    updateSection: (s: Section) => void;
-    insertSection: (s: Section) => Promise<void>;
+    updateSection: (s: Section, index: number) => void;
+    insertSection: (s: Section, index: number) => Promise<void>;
     deleteSection: (key: string) => void;
     insertItem: (i: Item, sectionIndex: number, itemIndex: number) => void;
     updateItem: (sectionIndex: number, itemIndex: number, item: Item) => void;
@@ -28,6 +27,25 @@ const DEFAULT_SURVEY: Survey = {
     sections: [],
 };
 
+export const useDebounce = <T>(
+    value: T,
+    delay = 500,
+) => {
+    const [ debouncedValue, setDebouncedValue ] = useState<T>(value);
+
+    useEffect(
+        () => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        },
+        [ value, delay ],
+    );
+
+    return debouncedValue;
+};
 
 export const useSurvey = (
     userToken: string | null,
@@ -35,8 +53,6 @@ export const useSurvey = (
     user: User | null,
 ): SurveyStore => {
     const [value, setValue] = useState<Survey>(DEFAULT_SURVEY);
-
-    // TODO: persist the data on the server
 
     useEffect(() => {
         (async () => {
@@ -85,22 +101,38 @@ export const useSurvey = (
         };
         setValue(newValue);
     };
-    const insertItem = (
+
+    const insertItem = async (
         item: Item,
         sectionIndex: number,
         itemIndex: number,
     ) => {
+        if (!userToken || !surveyId) {
+            return;
+        }
+
         const sectionsClone = value.sections.slice();
-        sectionsClone[sectionIndex]?.items?.splice(
-            itemIndex,
-            0,
+        const oldItems = sectionsClone[sectionIndex]?.items ?? [];
+        sectionsClone[sectionIndex].items = [
+            ...oldItems.slice(0, itemIndex),
             item,
-        );
+            ...oldItems.slice(itemIndex),
+        ] ;
+
         const newValue = {
             ...value,
             sections: sectionsClone,
         };
+
         setValue(newValue);
+
+        try {
+            await setSurveySections(userToken, surveyId, sectionsClone)
+
+            setValue(newValue);
+        } catch (err) {
+            message.error(JSON.stringify(err))
+        }
     };
 
     const deleteItem = async (
@@ -141,24 +173,14 @@ export const useSurvey = (
         setValue(newValue);
     };
 
-    const updateSection = (newPage: Section) => {
-        const sectionsClone = value.sections.slice();
-        const sectionIndex = sectionsClone.findIndex((p: Section) => p.name === newPage.name);
-        sectionsClone[sectionIndex] = newPage;
-        const newValue = {
-            ...value,
-            sections: sectionsClone,
-        };
-        setValue(newValue);
-    };
-
-    const insertSection = async (section: Section) => {
+    const updateSection = async (newSection: Section, index: number) => {
         if (!userToken || !surveyId) {
             return;
         }
-        const sectionsClone = value.sections?.slice() ?? [];
 
-        sectionsClone.push(section);
+        const sectionsClone = value.sections.slice();
+
+        sectionsClone[index] = newSection;
 
         const newValue = {
             ...value,
@@ -167,6 +189,31 @@ export const useSurvey = (
 
         try {
             await setSurveySections(userToken, surveyId, sectionsClone)
+
+            setValue(newValue);
+        } catch (err) {
+            message.error(JSON.stringify(err))
+        }
+    };
+
+    const insertSection = async (section: Section, index: number) => {
+        if (!userToken || !surveyId) {
+            return;
+        }
+
+        const sections = [
+            ...value.sections.slice(0, index),
+            section,
+            ...value.sections.slice(index),
+        ];
+
+        const newValue = {
+            ...value,
+            sections
+        };
+
+        try {
+            await setSurveySections(userToken, surveyId, sections)
 
             setValue(newValue);
         } catch (err) {

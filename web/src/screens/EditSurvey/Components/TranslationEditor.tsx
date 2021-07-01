@@ -1,24 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { TranslationRef } from '../../../types';
-import { Translation } from '../../Translations';
+import { fetchTranslation, updateTranslation } from '../../../services/translationService';
 
 type TProps = {
-    description: TranslationRef;
-    updateDescription: (newName: string) => any;
+    id: TranslationRef;
     editMode: boolean;
+    userToken: string;
 };
 
 export const TranslationEditor = (props: TProps) => {
     const {
-        updateDescription,
-        description,
+        id,
+        userToken,
         editMode,
     } = props;
+    const [translation, setTranslation] = useState<any>(null);
 
-    const translations = new Map<string, Translation>();
-    const setTranslations = console.log;
-    const translation = description ? translations.get(description) : {};
+    useEffect( () => {
+        if (!id) {
+            return;
+        }
+        fetchTranslation(userToken, id)
+            .then(setTranslation)
+            .catch(console.error);
+    }, [])
+
     const currentLang = 'en';
     const content = translation?.[currentLang];
 
@@ -35,28 +42,23 @@ export const TranslationEditor = (props: TProps) => {
 
 
     const onChangeTranslation = (text: string) => {
-        const newTranslationKey = description || translations.size.toString();
-
-        if (!description) {
-            updateDescription(newTranslationKey);
-        }
-        const newTranslation = Object.assign(
+        const data = Object.assign(
             {},
             translation,
             {
                 [currentLang]: text,
             },
         );
-        const cloneMap = new Map(translations);
-        cloneMap.set(
-            newTranslationKey,
-            newTranslation,
-        );
 
-        setTranslations(
-            cloneMap,
-        );
+        setTranslation(data);
+        updateTranslation(userToken, data)
+            .then(console.log)
+            .catch(console.error);
     };
+
+    if (!translation) {
+        return null;
+    }
 
     if (!editMode) {
         return (

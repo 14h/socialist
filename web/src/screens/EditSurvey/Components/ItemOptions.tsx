@@ -10,10 +10,11 @@ type TProps = {
     item: Item;
     updateItem: (item: Item) => void;
     editMode: boolean;
+    userToken: string;
 };
 
 export const ItemOptions = (props: TProps) => {
-    const { item, updateItem, editMode } = props;
+    const { item, updateItem, editMode, userToken } = props;
     const translations = new Map<string, Translation>();
     const setTranslations = console.log;
     // TODO fix translations here
@@ -130,8 +131,8 @@ export const ItemOptions = (props: TProps) => {
                             </div> }
                     >
                         <TranslationEditor
-                            description={ option?.description }
-                            updateDescription={ (t) => updateOptionDescription(t, index) }
+                            id={ option?.description }
+                            userToken={ userToken }
                             editMode={ editMode }
                         />
                     </List.Item>

@@ -13,27 +13,27 @@ import { Route, Switch } from 'react-router-dom';
 import { SurveySectionList } from '../SurveySectionList';
 import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { AddItem } from './Components/AddItem';
+import { createTranslation } from '../../services/translationService';
 
 const { Title } = Typography;
 
-const Sections = ({ surveyStore }: { surveyStore: SurveyStore }) => {
+const Sections = ({ surveyStore, userToken }: { surveyStore: SurveyStore; userToken: string }) => {
     const { section_index } = useParams();
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-    console.log('section_index', section_index)
-
 
     if (!section_index) {
         return null;
     }
 
     const section = surveyStore.value?.sections?.[Number(section_index)];
-    console.log('section', section)
 
-    const addItem = (type: Item["type"], index: number) => {
+    const addItem = async (type: Item["type"], index: number) => {
+        const translation = await createTranslation(userToken)
+
         const newItem: Item = {
             type,
             name: 'newItem',
-            description: 'TranslationRef',
+            description: translation.id,
         }
 
         surveyStore.insertItem(
@@ -60,6 +60,7 @@ const Sections = ({ surveyStore }: { surveyStore: SurveyStore }) => {
                     >
                         <SectionItem
                             key={ `EditSurveyListItem-${ itemIndex }` }
+                            userToken={ userToken }
                             item={ item }
                             surveyStore={ surveyStore }
                             editMode={ selectedItemIndex === itemIndex }
@@ -120,7 +121,9 @@ export const EditSurvey = () => {
             </Title>
             <div className="survey-title">
                 <PageBreadcrumbs orgName={ orgName } surveyName={ survey.meta.name } />
-                <SurveyActions/>
+                <SurveyActions
+                    surveyStore={surveyStore}
+                />
             </div>
 
             <Switch>
@@ -137,6 +140,7 @@ export const EditSurvey = () => {
                 <Route exact={ true } path={ `${ path }/section/:section_index` } render={ () => (
                     <Sections
                         surveyStore={surveyStore}
+                        userToken={userToken}
                     />
                 ) }/>
             </Switch>

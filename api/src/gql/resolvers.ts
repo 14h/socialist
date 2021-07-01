@@ -26,6 +26,7 @@ import {
     UserRelatedEntitySrc, SurveyMultiQuery,
 } from '../types';
 import { validate_registered_user_token } from '../core/token';
+import { TranslationEnvelope } from '../res/translation';
 
 export const get_resolvers = () => {
     const resolvers = {
@@ -498,6 +499,13 @@ export const get_resolvers = () => {
                     }),
                 );
             },
+            translation(
+                _source: {},
+                args: {id: string},
+                ctx: RootCtx,
+            ) {
+                return ctx.deps.translation.get(args.id);
+            }
         },
 
         Mutation: {
@@ -588,6 +596,37 @@ export const get_resolvers = () => {
             },
 
             // Operations
+
+            //// Tranlsation
+            async createTranslation(
+                _source: {},
+                _args: {},
+                ctx: RootCtx,
+            ): Promise<TranslationEnvelope> {
+                const translationEnvelope = await ctx.deps.translation.create();
+
+                validation_assert(
+                    translationEnvelope !== null,
+                    'Translation could not be created.',
+                );
+
+                return translationEnvelope;
+            },
+
+            async updateTranslation(
+                _source: {},
+                args: {data: any},
+                ctx: RootCtx,
+            ): Promise<TranslationEnvelope> {
+                const translationEnvelope = await ctx.deps.translation.update(args.data);
+
+                validation_assert(
+                    translationEnvelope !== null,
+                    'Translation could not be created.',
+                );
+
+                return translationEnvelope;
+            },
 
             //// User
 

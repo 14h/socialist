@@ -24,24 +24,15 @@ export const SurveySectionList = (props: TProps) => {
     const survey = surveyStore.value;
 
     const addSection = (index: number) => {
-        console.log("-> index", index);
-        console.log("-> survey.sections.slice(0, index)", survey.sections.slice(0, index));
-        console.log("-> survey.sections.slice(index)", survey.sections.slice(index));
-
-        const newSection = {
-            name: 'Name this section',
-            description: '',
-            items: [],
-            conditions: [],
-        }
-        surveyStore.setValue({
-            ...survey,
-            sections: [
-                ...survey.sections.slice(0, index),
-                newSection,
-                ...survey.sections.slice(index),
-            ]
-        })
+        surveyStore.insertSection(
+            {
+                name: 'Name this section',
+                description: '',
+                items: [],
+                conditions: [],
+            },
+            index,
+        )
     }
 
 
@@ -73,7 +64,7 @@ export const SurveySectionList = (props: TProps) => {
                         <EditableText
                             text={ section.name }
                             placeholder="Name this section!"
-                            onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}) }
+                            onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}, index) }
                         />
                     </div>
                     <div
@@ -185,7 +176,7 @@ export const DraggableSurveySectionList = (props: TProps) => {
                                                     <EditableText
                                                         text={ section.name }
                                                         placeholder="Name this section!"
-                                                        onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}) }
+                                                        onUpdate={ name => surveyStore.updateSection({...section, name: name ?? 'Untitled section'}, index) }
                                                     />
                                                 </div>
                                             </div>

@@ -11,6 +11,8 @@ import { Org } from '../res/organization';
 import { Nullable, ResourceDeps, ResourceType, UnpackedScopedToken, ValidationDeps } from '../types';
 import { logger } from './logger';
 import { buildAuditEmitter } from '../core/rootAuditor';
+import slugify from 'slugify';
+import { Translation } from '../res/translation';
 
 export const create_random_key = () => {
     return randomBytes(64);
@@ -55,7 +57,7 @@ export const validation_deps = (): ValidationDeps => ({
     },
 });
 
-const SURVEY_REGEX = /^[a-z0-9_][a-z0-9-_]{1,59}[a-z0-9_]$/;
+const SURVEY_REGEX = /^[a-z0-9_][*]{1,59}[a-z0-9_]$/;
 
 export const assert_valid_fqdn = (name: string) =>
     validation_assert(
@@ -99,8 +101,9 @@ export const prepare_deps = (): (userContext: UnpackedScopedToken | null) =>
         const user = new User(ctxDeps);
         const survey = new Survey(ctxDeps);
         const org = new Org(ctxDeps);
+        const translation = new Translation(ctxDeps);
 
-        [user, survey, org].forEach(
+        [user, survey, org, translation].forEach(
             res =>
                 Object.assign(res, { userContext }),
         );
@@ -112,6 +115,7 @@ export const prepare_deps = (): (userContext: UnpackedScopedToken | null) =>
                 survey,
                 user,
                 org,
+                translation,
             },
         );
 
@@ -174,7 +178,7 @@ export const resolve_res_params = async (
 
         if (name) {
             resId = await deps.survey.resolve_name(
-                name!,
+                slugify(name)!,
             );
         }
 
@@ -215,3 +219,15 @@ export const remove_duplicates_by = (
         return acum.has(value[uniqKey]) ? acum : acum.set(value[uniqKey], value);
     }, new Map()).values());
 };
+
+export const build_slug = (string: string): string => (
+    slugify(
+        string.replace(/[_|*+~.\\\/()\[\]{}!:,=]/g, '-'),
+        {
+            replacement: '-',
+            lower: true,
+            strict: true,
+            // remove: /[*+~.()\[\]{}'"!:@,]/g,
+        }
+    ).replace(/^-|-$/g, '') // strip trailing/leading dashes
+);

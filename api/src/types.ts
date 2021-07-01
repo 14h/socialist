@@ -4,6 +4,7 @@ import { Org } from './res/organization';
 import { User } from './res/user';
 import { Survey } from './res/survey';
 import { TAuditEmitter } from './core/rootAuditor';
+import { Translation } from './res/translation';
 
 export type Nullable<T> = T | null;
 
@@ -13,6 +14,7 @@ export enum ResourceType {
     ORG = 'org',
     SURVEY = 'survey',
     USER = 'user',
+    TRANSLATION = 'translation',
 }
 
 export enum InternalResourceType {
@@ -35,6 +37,7 @@ export interface ResourceDeps {
     survey: Survey;
     org: Org;
     user: User;
+    translation: Translation;
 
     uuid: () => string;
 
