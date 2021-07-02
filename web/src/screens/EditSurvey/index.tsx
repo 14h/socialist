@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { Breadcrumb, Button, Layout, Tabs, Typography } from 'antd';
-import { Item, Section, TranslationRef } from '../../types';
+import { Breadcrumb, Typography } from 'antd';
+import { Item } from '../../types';
 import { useParams, useRouteMatch } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import { SurveyActions } from './Components/SurveyActions';
@@ -11,7 +11,7 @@ import './styles.less';
 import { CoreCtx } from '../../index';
 import { Route, Switch } from 'react-router-dom';
 import { SurveySectionList } from '../SurveySectionList';
-import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
+import { HomeOutlined } from '@ant-design/icons';
 import { AddItem } from './Components/AddItem';
 import { createTranslation } from '../../services/translationService';
 
@@ -27,12 +27,16 @@ const Sections = ({ surveyStore, userToken }: { surveyStore: SurveyStore; userTo
 
     const section = surveyStore.value?.sections?.[Number(section_index)];
 
-    const addItem = async (type: Item["type"], index: number) => {
+    const addItem = async (
+        type: Item["type"],
+        name: string,
+        index: number,
+    ) => {
         const translation = await createTranslation(userToken)
 
         const newItem: Item = {
             type,
-            name: 'newItem',
+            name,
             description: translation.id,
         }
 
@@ -44,11 +48,10 @@ const Sections = ({ surveyStore, userToken }: { surveyStore: SurveyStore; userTo
 
     };
 
-
     return (
         <div className='section-tab'>
             <AddItem
-                callback={(type) => addItem(type, 0)}
+                callback={(type, name) => addItem(type, name, 0)}
             />
             { (section?.items ?? []).map((item: Item, itemIndex: number) => (
                 <>
@@ -70,7 +73,7 @@ const Sections = ({ surveyStore, userToken }: { surveyStore: SurveyStore; userTo
                     </div>
 
                     <AddItem
-                        callback={(type) => addItem(type, itemIndex + 1)}
+                        callback={(type, name) => addItem(type, name, itemIndex + 1)}
                     />
                 </>
             )) }
