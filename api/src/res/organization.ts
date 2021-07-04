@@ -2,7 +2,7 @@ import { Database } from '../core/db';
 import { Nullable, ResourceDeps, ResourceType } from '../types';
 import { UserRole, UserRoles } from './rights';
 import { RootAuditor } from '../core/rootAuditor';
-import { assert_valid_fqdn, validation_assert } from '../util/helpers';
+import { build_slug, validation_assert } from '../util/helpers';
 
 export interface OrgData {
     name: string;
@@ -43,9 +43,11 @@ export class Org extends RootAuditor<Org> {
     public async create(
         name: string,
     ): Promise<Nullable<OrgEnvelope>> {
+        const orgId = build_slug(name);
+
         validation_assert(
             !await this._deps.db.exists(
-                `org:name:${name}`,
+                `org:name:${orgId}`,
             ),
             'Organization already exists.',
         );
@@ -53,8 +55,6 @@ export class Org extends RootAuditor<Org> {
         const meta: OrgData = {
             name,
         };
-
-        const orgId = this._deps.uuid();
 
         await this._set_meta(
             orgId,
@@ -69,7 +69,7 @@ export class Org extends RootAuditor<Org> {
 
     public async update(
         orgId: string,
-        meta: Partial<OrgData>,
+        meta: OrgData,
     ): Promise<any> {
         const oldMeta: Partial<OrgData> = await this.get_meta(orgId) || {};
         const newMeta = Object.assign({}, oldMeta, meta);
@@ -228,28 +228,23 @@ export class Org extends RootAuditor<Org> {
 
     private async _set_meta(
         orgId: string,
-        meta: Partial<OrgData>,
+        meta: OrgData,
         oldMeta?: Nullable<Partial<OrgData>>,
     ): Promise<boolean> {
-        const name = meta.name!.toLowerCase();
-
-        assert_valid_fqdn(name);
-
-        const newMeta = Object.assign({}, meta, { name });
 
         let tx = this._deps
             .db
             .multi();
 
         if (oldMeta && oldMeta.name) {
-            tx = tx.del(`org:name:${oldMeta.name}`);
+            tx = tx.del(`org:name:${orgId}`);
         }
 
         await Database.exec_multi(
             tx
-                .set(`org:name:${name}`, orgId)
+                .set(`org:name:${orgId}`, meta.name)
                 .del(`org:id:${orgId}:meta`)
-                .hmset(`org:id:${orgId}:meta`, newMeta as any),
+                .hmset(`org:id:${orgId}:meta`, meta as any),
         );
 
         return true;

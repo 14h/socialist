@@ -3,8 +3,10 @@ import React from 'react';
 import { TranslationEditor } from './TranslationEditor';
 import { ItemOptions } from './ItemOptions';
 import { SurveyStore } from '@utils/hooks';
-import { Popconfirm } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons/lib';
+import { Button, Popconfirm } from 'antd';
+import { ArrowDownOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons/lib';
+import { ItemFormat, SelectFormatModal } from './ItemFormat';
+import { ItemSettings } from './ItemSettings';
 
 type TProps = {
     item: Item;
@@ -25,19 +27,26 @@ export const SectionItem = (props: TProps) => {
         itemIndex,
     } = props;
 
-    const updateItem = (newItem: Item) => surveyStore.updateItem(sectionIndex, itemIndex, newItem);
 
     if (!item) {
         return null;
     }
 
+    const updateItem = (newItem: Item) => surveyStore.updateItem(sectionIndex, itemIndex, newItem);
+
     return (
 
         <div className={ `item-wrapper ${ editMode && 'item-wrapper-selected' }` }>
+
+            <ItemSettings
+                item={ item }
+                updateItem={ updateItem }
+            />
+            <hr/>
             <TranslationEditor
                 id={ item?.description }
                 userToken={ userToken }
-                editMode={ editMode }
+                editMode={ true }
             />
 
             <ItemOptions

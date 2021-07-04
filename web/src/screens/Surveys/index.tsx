@@ -74,12 +74,12 @@ const PageBreadcrumbs = ({ orgName }: { orgName: string }) => (
 );
 
 export const Surveys = () => {
-    const { orgName } = useParams();
+    const { orgId } = useParams();
     const { user, userToken } = useContext(CoreCtx);
 
-    const surveys = useSurveys(orgName);
+    const surveys = useSurveys(orgId);
 
-    if (!userToken || !orgName || !user) {
+    if (!userToken || !orgId || !user) {
         return null;
     }
 
@@ -94,9 +94,9 @@ export const Surveys = () => {
             <>
                 <Layout>
                     <Layout.Content>
-                        <PageBreadcrumbs orgName={ orgName }/>
+                        <PageBreadcrumbs orgName={ orgId }/>
                         <Title style={{textAlign: 'center'}}>
-                            { orgName } surveys
+                            { orgId } surveys
                         </Title>
                         <br/>
                         <h3>Click on the plus button to create your first Survey!</h3>
@@ -111,15 +111,15 @@ export const Surveys = () => {
         <>
             <Layout>
                 <Layout.Content>
-                    <PageBreadcrumbs orgName={ orgName }/>
+                    <PageBreadcrumbs orgName={ orgId }/>
                     <br/>
                     <Title style={{textAlign: 'center'}}>
-                        { orgName } surveys
+                        { orgId } surveys
                     </Title>
                     <br/>
                     <Table
                         dataSource={ dataSource }
-                        columns={ columns(userToken, orgName) }
+                        columns={ columns(userToken, orgId) }
                         pagination={ false }
                         showHeader={ false }
                     />

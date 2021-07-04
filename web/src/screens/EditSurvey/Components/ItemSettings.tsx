@@ -5,7 +5,6 @@ import { Item } from '../../../types';
 import { EditOutlined } from '@ant-design/icons/lib';
 import { ItemFormat } from './ItemFormat';
 
-const { Text } = Typography;
 
 
 export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (item: Item) => void; }) => {
@@ -24,7 +23,7 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
                     </div>
                     <div className='option-item'>
                         <span>Max Characters: </span>
-                        <InputNumber defaultValue={ item?.minCharacters } onChange={ updateMaxChars }/>
+                        <InputNumber defaultValue={ item?.maxCharacters } onChange={ updateMaxChars }/>
                     </div>
                 </>
             );
@@ -84,21 +83,20 @@ export const ItemSettings = ({ item, updateItem }: { item: Item; updateItem: (it
         );
     };
     const onChangeType = (type: Item['type']) => updateItem({ type, name: item.name, description: item.description });
-    const updateName = (name: string) => updateItem(Object.assign({}, item, { name }));
 
     return (
         <div className='item-block'>
             <div className='option-item'>
-                <span>Item name: </span>
-                <Text editable={ { onChange: updateName } }>{ item.name }</Text>
+                <span>Question: </span>
+                <span>{item.name}</span>
             </div>
             <div className='option-item'>
-                <span>Item type: </span>
+                <span>Type: </span>
                 <ItemFormat callback={ onChangeType } className="edit-format">
+                    { item.type }
                     <Button
                         type="link"
                     >
-                        { item.type }
                         <EditOutlined/>
                     </Button>
                 </ItemFormat>

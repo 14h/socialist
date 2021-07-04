@@ -83,7 +83,7 @@ export type Section = {
     name: string;
     description: TranslationRef
     items: Item[];
-    conditions?: Condition[];
+    conditions: Condition[];
 }
 
 export type Survey = {

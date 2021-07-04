@@ -111,8 +111,7 @@ export const App = () => {
                     <Switch>
                         <Route exact={ true } path={ '/' } component={ Organizations }/>
                         <Route exact={ true } path={ '/organizations' } component={ Organizations }/>
-                        <Route exact={ true } path={ '/:orgName/surveys' } component={ Surveys }/>
-                        <Route exact={ true } path={ '/:orgName/people' } component={ Surveys }/>
+                        <Route exact={ true } path={ '/:orgId/surveys' } component={ Surveys }/>
                         <Route exact={ false } path={ '/:orgName/surveys/:survey_id' } component={ EditSurvey }/>
                         <Route exact={ true } path={ '/:orgName/translations' } component={ Translations }/>
                     </Switch>

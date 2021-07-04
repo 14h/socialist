@@ -22,6 +22,9 @@ export const EditableText = (props: TProps) => {
     }, [isFocused]);
 
     const [ newText, setNewText ] = useState(text);
+    useEffect(() => {
+        setNewText(text);
+    }, [text]);
 
     const onKeyDown = (evt: any) => {
         if (evt.keyCode === 13 || evt.keyCode === 27) {

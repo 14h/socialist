@@ -1,6 +1,7 @@
 import { apiGraphQLClient } from "@utils/graphQlClient";
 import {Organization} from "../types";
 import { message } from 'antd';
+import slugify from 'slugify';
 
 const SO7_CREATE_ORGANIZATION_MUTATION = `
     mutation($orgName: String!){
@@ -10,6 +11,12 @@ const SO7_CREATE_ORGANIZATION_MUTATION = `
                 name
             }
         }
+    }
+`;
+
+const SO7_DELETE_ORGANIZATION_MUTATION = `
+    mutation($orgId: ID!){
+        deleteOrganization(orgId: $orgId)
     }
 `;
 
@@ -81,11 +88,11 @@ export async function createOrganization(
 }
 
 export async function fetchOrganization(
-    orgName: string,
+    orgId: string,
     userToken: string,
-): Promise<Organization> {
+): Promise<Organization | null> {
     const variables = {
-        orgName,
+        orgId,
     };
 
     try {
@@ -104,6 +111,35 @@ export async function fetchOrganization(
         return org;
 
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+
+        return null;
+    }
+}
+
+export async function deleteOrganization(
+    userToken: string,
+    orgId: string,
+): Promise<Organization | null> {
+    const variables = {
+        orgId,
+    };
+
+    try {
+        const responseData = await apiGraphQLClient.authorizedRequest<any, any>(
+            userToken,
+            SO7_DELETE_ORGANIZATION_MUTATION,
+            variables,
+        );
+        if (responseData.deleteOrganization) {
+            window.location.reload();
+        }
+
+        return responseData.deleteOrganization;
+
+    } catch (error) {
+        console.error(error);
+
+        return null;
     }
 }

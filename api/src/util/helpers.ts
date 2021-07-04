@@ -57,14 +57,6 @@ export const validation_deps = (): ValidationDeps => ({
     },
 });
 
-const SURVEY_REGEX = /^[a-z0-9_][*]{1,59}[a-z0-9_]$/;
-
-export const assert_valid_fqdn = (name: string) =>
-    validation_assert(
-        SURVEY_REGEX.test(name),
-        'Invalid survey name. It must have more than 3 and less than 62 characters, alpha-numeric and hyphens. It cannot start or end with a hyphen.',
-    );
-
 export const prepare_deps = (): (userContext: UnpackedScopedToken | null) =>
     ResourceDeps => {
     const db = new Database({

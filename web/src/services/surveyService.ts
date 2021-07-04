@@ -42,16 +42,10 @@ const SO7_SURVEY_MULTI_QUERY = `
 
 const SO7_SURVEY_QUERY = `
     query(
-        $surveyName: String,
         $surveyId: ID,
-        $email: String,
-        $userId: ID,
     ){
         survey(
-            surveyName: $surveyName,
             surveyId: $surveyId,
-            email: $email,
-            userId: $userId,
         ){
             id,
             meta{
@@ -91,11 +85,11 @@ export async function createSurvey(
     surveyName: string,
     userToken: string,
     userId: string,
-    orgName?: string,
+    orgId?: string,
 ): Promise<string | null> {
     const variables = {
         surveyName,
-        orgName,
+        orgId,
     };
 
     try {
@@ -205,13 +199,9 @@ export const setSurveySections = async (
 export const fetchSurvey = async (
     userToken: string,
     surveyId: string,
-    email: string,
-    userId: string,
 ): Promise<Survey | null> => {
     const variables = {
         surveyId,
-        email,
-        userId,
     };
 
     try {

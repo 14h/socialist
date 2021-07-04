@@ -11,12 +11,12 @@ const handleCreateSurvey = async (
     title: string,
     userToken: string,
     userId: string,
-    orgName: string,
+    orgId: string,
     history: any,
 ) => {
     const hide = message.loading('Creating survey..', 0);
     try {
-        const newSurveyId = await createSurvey(title, userId, userToken, orgName);
+        const newSurveyId = await createSurvey(title, userId, userToken, orgId);
 
         if (!newSurveyId) {
             message.error(`Survey couldn't be created!`);
@@ -28,7 +28,7 @@ const handleCreateSurvey = async (
 
         message.success(`${ title } got successfully created!`);
 
-        history.push(`/${ orgName }/surveys/${ newSurveyId }`);
+        history.push(`/${ orgId }/surveys/${ newSurveyId }`);
     } catch (error) {
         hide();
         message.error(`Failed to create ${ title }: ${ error.message }`);
@@ -37,12 +37,12 @@ const handleCreateSurvey = async (
 
 
 export const CreateSurveyModal = () => {
-    const { orgName } = useParams();
+    const { orgId } = useParams();
     const [showAddModal, setShowAddModal] = useState(false);
     const history = useHistory();
     const { user, userToken } = useContext(CoreCtx);
 
-    if (!userToken || !orgName || !user) {
+    if (!userToken || !orgId || !user) {
         return null;
     }
 
@@ -69,7 +69,7 @@ export const CreateSurveyModal = () => {
                             values.name,
                             user.id,
                             userToken,
-                            orgName,
+                            orgId,
                             history,
                         )
                     }

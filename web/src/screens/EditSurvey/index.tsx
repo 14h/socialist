@@ -32,7 +32,7 @@ const Sections = ({ surveyStore, userToken }: { surveyStore: SurveyStore; userTo
         name: string,
         index: number,
     ) => {
-        const translation = await createTranslation(userToken)
+        const translation = await createTranslation(userToken);
 
         const newItem: Item = {
             type,
@@ -89,9 +89,6 @@ const PageBreadcrumbs = ({orgName, surveyName}: {orgName: string, surveyName: st
         <Breadcrumb.Item href="">
             <span>{ orgName }</span>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>
-            <span>Surveys</span>
-        </Breadcrumb.Item>
         <Breadcrumb.Item href="">
             <span>{ surveyName }</span>
         </Breadcrumb.Item>
@@ -119,9 +116,6 @@ export const EditSurvey = () => {
 
     return (
         <div className="survey-wrapper">
-            <Title style={{textAlign: 'center'}}>
-                { survey.meta.name }
-            </Title>
             <div className="survey-title">
                 <PageBreadcrumbs orgName={ orgName } surveyName={ survey.meta.name } />
                 <SurveyActions

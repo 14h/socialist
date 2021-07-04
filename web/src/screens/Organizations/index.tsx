@@ -8,14 +8,13 @@ import { Link } from 'react-router-dom';
 import { CoreCtx } from '../../index';
 import { addResourceUserRoles } from '../../services/surveyService';
 import { Organization } from '../../types';
-import { createOrganization, fetchOrganization } from '../../services/orgService';
+import { createOrganization, deleteOrganization, fetchOrganization } from '../../services/orgService';
 import { User } from '../../types/models/User';
 import { PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router';
+import slugify from 'slugify';
 
 const { Title } = Typography;
-
-const handleDeleteOrg = console.log;
 
 
 const columns = (
@@ -40,7 +39,7 @@ const columns = (
                 <Link to={ `/organizations/${ record.id }` }>Settings</Link>
                 <Popconfirm
                     title={ `Delete organization ${ record.title }` }
-                    onConfirm={ () => handleDeleteOrg(userToken, record.id) }
+                    onConfirm={ () => deleteOrganization(userToken, record.id) }
                 >
                     <Link to="#">Delete</Link>
                 </Popconfirm>
@@ -53,7 +52,7 @@ const handleCreateOrg = async (
     name: string,
     user: User,
     userToken: string,
-    callback: (newOrgName: string) => void,
+    callback: (newOrgId: string) => void,
 ) => {
     if (!name) {
         message.error('Insert a valid org name!');
@@ -68,7 +67,7 @@ const handleCreateOrg = async (
             'ORG',
         );
 
-        callback(meta.name);
+        callback(id);
 
     } catch (error) {
         message.error('failed to create new org');
@@ -109,9 +108,9 @@ const AddOrgModal = () => {
                             values.name,
                             user,
                             userToken,
-                            (newOrgName) => {
+                            (newOrgId) => {
                                 setShowAddModal(false);
-                                history.push(`/${ newOrgName }/surveys`);
+                                history.push(`/${ newOrgId }/surveys`);
                             },
                         )
                     }
@@ -155,7 +154,11 @@ export const Organizations: React.FC<Props> = () => {
 
             const fetchedOrgs = [];
             for (const userOrgName of user?.organization ?? []) {
-                const fetchedOrg = await fetchOrganization(userOrgName, userToken);
+                const fetchedOrg = await fetchOrganization(slugify(userOrgName), userToken);
+
+                if (!fetchedOrg) {
+                    continue;
+                }
                 fetchedOrgs.push(fetchedOrg);
             }
 
@@ -166,9 +169,9 @@ export const Organizations: React.FC<Props> = () => {
     if (!userToken || !user) {
         return null;
     }
-
+console.log("-> orgs", orgs);
     const dataSource = orgs.map(org => ({
-        id: org.meta.name,
+        id: org.id,
         key: org.meta.name,
         title: org.meta.name,
     }));

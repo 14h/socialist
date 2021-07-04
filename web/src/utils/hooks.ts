@@ -11,9 +11,9 @@ export type SurveyStore = {
     setValue: (s: Survey) => void;
     updateSection: (s: Section, index: number) => void;
     insertSection: (s: Section, index: number) => Promise<void>;
-    deleteSection: (key: string) => void;
+    deleteSection: (index: number) => void;
     insertItem: (i: Item, sectionIndex: number, itemIndex: number) => void;
-    updateItem: (sectionIndex: number, itemIndex: number, item: Item) => void;
+    updateItem: (sectionIndex: number, itemIndex: number, item: Item) => Promise<void>;
     duplicateItem: (sectionIndex: number, itemIndex: number) => void;
     deleteItem: (sectionIndex: number, itemIndex: number) => void;
     getItem: (sectionIndex: number, itemIndex: number) => Item;
@@ -63,8 +63,6 @@ export const useSurvey = (
             const survey = await fetchSurvey(
                 userToken,
                 surveyId,
-                user.email,
-                user.id,
             );
 
             if (!survey) {
@@ -159,18 +157,28 @@ export const useSurvey = (
         }
     };
 
-    const updateItem = (
+    const updateItem = async (
         sectionIndex: number,
         itemIndex: number,
         item: Item,
     ) => {
+        if (!userToken || !surveyId) {
+            return;
+        }
         const sectionsClone = value.sections.slice();
         sectionsClone[sectionIndex].items[itemIndex] = item;
         const newValue = {
             ...value,
             sections: sectionsClone,
         };
-        setValue(newValue);
+
+        try {
+            await setSurveySections(userToken, surveyId, sectionsClone)
+
+            setValue(newValue);
+        } catch (err) {
+            message.error(JSON.stringify(err))
+        }
     };
 
     const updateSection = async (newSection: Section, index: number) => {
@@ -221,19 +229,13 @@ export const useSurvey = (
         }
     };
 
-    const deleteSection = async (key: string) => {
+    const deleteSection = async (index: number) => {
         if (!userToken || !surveyId) {
             return;
         }
 
-        const sectionIndex = value.sections.findIndex((s: Section) => s.name === key);
-        if (sectionIndex < 0) {
-            console.warn('Page not found');
-            return;
-        }
-
         const sectionsClone = value.sections.slice();
-        sectionsClone.splice(sectionIndex, 1);
+        sectionsClone.splice(index, 1);
         const newValue = {
             ...value,
             sections: sectionsClone,
@@ -297,19 +299,19 @@ export function useOnClickOutside(ref: any, handler: any) {
 }
 
 export const useSurveys =  (
-    orgName?: string,
+    orgId?: string,
 ): ReadonlyArray<Survey> => {
     const [surveys, setSurveys] = useState<ReadonlyArray<Survey>>([]);
     const {userToken} = useContext(CoreCtx);
 
     useEffect(() => {
         (async () => {
-            if (!orgName || !userToken) {
+            if (!orgId || !userToken) {
                 return;
             }
 
             try {
-                const org = await fetchOrganization(orgName, userToken);
+                const org = await fetchOrganization(orgId, userToken);
                 if (!org?.surveys || !userToken) {
 
                     return;
@@ -325,7 +327,7 @@ export const useSurveys =  (
             }
 
         })();
-    }, [userToken, orgName]);
+    }, [userToken, orgId]);
 
     return surveys;
 };
