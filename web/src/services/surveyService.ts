@@ -144,6 +144,7 @@ export async function addResourceUserRoles(
         return successful;
 
     } catch (error) {
+        message.error(error);
         throw new Error(error);
     }
 }

@@ -154,7 +154,7 @@ export const Organizations: React.FC<Props> = () => {
 
             const fetchedOrgs = [];
             for (const userOrgName of user?.organization ?? []) {
-                const fetchedOrg = await fetchOrganization(slugify(userOrgName), userToken);
+                const fetchedOrg = await fetchOrganization(slugify(userOrgName).toLocaleLowerCase(), userToken);
 
                 if (!fetchedOrg) {
                     continue;

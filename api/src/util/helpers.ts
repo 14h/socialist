@@ -148,14 +148,7 @@ export const resolve_res_params = async (
 
     if (type === ResourceType.ORG) {
         resId = params.orgId! || params.resId!;
-
-        const name = params.orgName || params.resName;
-
-        if (name) {
-            resId = await deps.org.resolve_name(
-                name!,
-            );
-        }
+        console.log("-> here",resId, await deps.org.exists(resId!));
 
         validation_assert(
             await deps.org.exists(resId!),
@@ -166,17 +159,9 @@ export const resolve_res_params = async (
     if (type === ResourceType.SURVEY) {
         resId = params.surveyId! || params.resId!;
 
-        const name = params.surveyName || params.resName;
-
-        if (name) {
-            resId = await deps.survey.resolve_name(
-                slugify(name)!,
-            );
-        }
-
         validation_assert(
             await deps.survey.exists(resId!),
-            `req/resprm/valasrt: ${resId}${name ? ' (' + name + ')' : ''} does not exist.`,
+            'Survey not found.',
         );
     }
 

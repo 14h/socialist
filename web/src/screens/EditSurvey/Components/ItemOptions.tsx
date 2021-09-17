@@ -5,6 +5,8 @@ import { Button, List } from 'antd';
 import { TranslationEditor } from './TranslationEditor';
 import { DeleteOutlined } from '@ant-design/icons/lib';
 import { Translation } from '../../Translations';
+import { AddOption } from './AddOption';
+import { createTranslation } from '../../../services/translationService';
 
 type TProps = {
     item: Item;
@@ -15,8 +17,6 @@ type TProps = {
 
 export const ItemOptions = (props: TProps) => {
     const { item, updateItem, editMode, userToken } = props;
-    const translations = new Map<string, Translation>();
-    const setTranslations = console.log;
     // TODO fix translations here
     const currentLang = 'en';
 
@@ -24,25 +24,11 @@ export const ItemOptions = (props: TProps) => {
         return null;
     }
 
-    const handleOnClick = () => {
-        const newTranslationKey = translations.size.toString();
-        const newTranslation = {
-            [currentLang]: '',
-        };
-
-        const cloneMap = new Map(translations);
-        cloneMap.set(
-            newTranslationKey,
-            newTranslation,
-        );
-
-        setTranslations(
-            cloneMap,
-        );
-
+    const handleOnClick = async (name: string) => {
+        const translation = await createTranslation(userToken);
         const newOption: MultiItemOption = {
-            name: newTranslationKey,
-            description: newTranslationKey,
+            name,
+            description: translation.id,
         };
 
         const itemOptions = [
@@ -59,31 +45,6 @@ export const ItemOptions = (props: TProps) => {
         );
 
         updateItem(newItem);
-    };
-
-    const updateOptionDescription = (translationRef: string, index: number) => {
-        const newOption: MultiItemOption = {
-            name: translationRef,
-            description: translationRef,
-        };
-
-        const newOptions = (item?.options ?? []).slice();
-        newOptions.splice(
-            index,
-            1,
-            newOption,
-        );
-
-        const newItem = Object.assign(
-            {},
-            item,
-            {
-                options: newOptions,
-            },
-        );
-
-        updateItem(newItem);
-
     };
 
     const onDeleteOption = (index: number) => {
@@ -110,12 +71,9 @@ export const ItemOptions = (props: TProps) => {
                 header={ <div>Options</div> }
                 locale={ { emptyText: 'No options found!' } }
                 footer={
-                    <Button
-                        onClick={ handleOnClick }
-                        className='item-option-add-button'
-                    >
-                        Add option
-                    </Button>
+                    <AddOption
+                        callback={handleOnClick}
+                    />
                 }
                 bordered={ true }
                 dataSource={ (item?.options ?? []) as any }
@@ -131,7 +89,7 @@ export const ItemOptions = (props: TProps) => {
                             </div> }
                     >
                         <TranslationEditor
-                            id={ option?.description }
+                            id={ option.description }
                             userToken={ userToken }
                             editMode={ editMode }
                         />

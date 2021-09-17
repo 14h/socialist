@@ -96,7 +96,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 
             AuthDirective._reconcileAuthRequirements(
                 authMeta,
-                ctx.userContext,
+                ctx.userContext!,
                 `Field '${field.name}' requires special privileges.`,
             );
 
@@ -104,7 +104,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
                 if (resolveArgs[argName] !== undefined) {
                     AuthDirective._reconcileAuthRequirements(
                         argRequirements,
-                        ctx.userContext,
+                        ctx.userContext!,
                         `Argument '${argName}' on field '${field.name}' requires special privileges.`,
                     );
                 }

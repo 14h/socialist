@@ -22,16 +22,10 @@ const SO7_DELETE_ORGANIZATION_MUTATION = `
 
 const SO7_ORG_QUERY = `
     query(
-        $orgName: String,
         $orgId: ID,
-        $email: String,
-        $userId: ID,
     ){
         org(
-            orgName: $orgName,
             orgId: $orgId,
-            email: $email,
-            userId: $userId,
         ){
             id
             meta{
